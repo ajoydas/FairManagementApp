@@ -72,7 +72,7 @@ public class FragmentDrawer extends Fragment {
         //load only static data inside a drawer
 
         List<Information> data = new ArrayList<>();
-        int[] icons = {R.drawable.ic_action_personal,R.drawable.ic_action_search_orange, R.drawable.ic_action_trending_orange, R.drawable.ic_action_upcoming_orange};
+        int[] icons = {R.drawable.ic_action_calendar,R.drawable.ic_action_trending, R.drawable.ic_action_upcoming, R.drawable.ic_action_important,R.drawable.ic_action_articles};
         String[] titles = getResources().getStringArray(R.array.drawer_tabs);
         for (int i = 0; i < titles.length; i++) {
             Information information = new Information();

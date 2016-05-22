@@ -16,6 +16,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivityMain"
             android:label="@string/title_activity_main">
@@ -25,6 +26,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="ajoy.com.fairmanagementapp.activities.ActivityFair"
+            android:label="@string/title_activity_fair">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="ajoy.com.fairmanagementapp.activities.ActivitySeller"
+            android:label="@string/title_activity_seller">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivityTouchEvent"
             android:label="@string/title_activity_sub">
@@ -37,8 +59,6 @@
             android:name="ajoy.com.fairmanagementapp.services.ServiceMoviesBoxOffice"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityFair"></activity>
     </application>
 
 </manifest>

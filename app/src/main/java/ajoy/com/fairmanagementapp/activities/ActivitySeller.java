@@ -1,14 +1,15 @@
 package ajoy.com.fairmanagementapp.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,8 +24,8 @@ import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentBoxOffice;
-import ajoy.com.fairmanagementapp.fragments.FragmentDrawer;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerFair;
+import ajoy.com.fairmanagementapp.fragments.FragmentDrawerSeller;
 import ajoy.com.fairmanagementapp.fragments.FragmentSearch;
 import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
 import ajoy.com.fairmanagementapp.logging.L;
@@ -34,8 +35,10 @@ import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 import me.tatarka.support.job.JobScheduler;
 
-public class ActivityFair extends AppCompatActivity  implements MaterialTabListener, View.OnClickListener{
-
+/**
+ * Created by ajoy on 5/22/16.
+ */
+public class ActivitySeller extends AppCompatActivity implements MaterialTabListener, View.OnClickListener{
     //int representing our 0th tab corresponding to the Fragment where search results are dispalyed
     public static final int TAB_SEARCH_RESULTS = 0;
     //int corresponding to our 1st tab corresponding to the Fragment where box office hits are dispalyed
@@ -63,12 +66,12 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
     private ViewPagerAdapter mAdapter;
     private FloatingActionButton mFAB;
     private FloatingActionMenu mFABMenu;
-    private FragmentDrawerFair mDrawerFragment;
+    private FragmentDrawerSeller mDrawerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fair);
+        setContentView(R.layout.activity_seller);
         setupFAB();
         setupTabs();
         //setupJob();
@@ -85,15 +88,15 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         //setup the NavigationDrawer
-        mDrawerFragment = (FragmentDrawerFair)
-                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer_fair);
-        mDrawerFragment.setUp(R.id.fragment_navigation_drawer_fair, (DrawerLayout) findViewById(R.id.drawer_layout_fair), mToolbar);
+        mDrawerFragment = (FragmentDrawerSeller)
+                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer_seller);
+        mDrawerFragment.setUp(R.id.fragment_navigation_drawer_seller, (DrawerLayout) findViewById(R.id.drawer_layout_seller), mToolbar);
     }
 
 
     public void onDrawerItemClicked(int index) {
         if (index == 0) {
-            startActivity(new Intent(this, ActivitySeller.class));
+            startActivity(new Intent(this, ActivityTouchEvent.class));
         } else {
             mPager.setCurrentItem(index-1);
         }
@@ -346,5 +349,4 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
             return getResources().getDrawable(icons[position]);
         }
     }
-
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="drawer_seller_tabs">
+        <item>Seller Logout</item>
+        <item>Stall Details</item>
+        <item>Products</item>
+        <item>Employees</item>
+        <item>Sells</item>
+        <item>Favourite</item>
+        <item>Settings</item>
+    </string-array>
+</resources>

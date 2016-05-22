@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
+import ajoy.com.fairmanagementapp.activities.ActivitySeller;
 import ajoy.com.fairmanagementapp.adapters.AdapterDrawer;
 import ajoy.com.fairmanagementapp.materialtest.MyApplication;
 import ajoy.com.fairmanagementapp.materialtest.R;
@@ -28,7 +29,7 @@ import ajoy.com.fairmanagementapp.pojo.Information;
 /**
  * Created by ajoy on 5/22/16.
  */
-public class FragmentDrawerFair extends Fragment  {
+public class FragmentDrawerSeller extends Fragment {
     public static final String KEY_USER_LEARNED_DRAWER = "user_learned_drawer";
     private RecyclerView mRecyclerDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -39,7 +40,7 @@ public class FragmentDrawerFair extends Fragment  {
     private View mContainer;
     private boolean mDrawerOpened = false;
 
-    public FragmentDrawerFair() {
+    public FragmentDrawerSeller() {
         // Required empty public constructor
     }
 
@@ -48,8 +49,8 @@ public class FragmentDrawerFair extends Fragment  {
         //load only static data inside a drawer
 
         List<Information> data = new ArrayList<>();
-        int[] icons = {R.drawable.ic_action_personal,R.drawable.ic_action_trending,R.drawable.ic_action_search, R.drawable.ic_action_new, R.drawable.ic_action_important,R.drawable.ic_action_articles};
-        String[] titles = getResources().getStringArray(R.array.drawer_fair_tabs);
+        int[] icons = {R.drawable.ic_action_personal,R.drawable.ic_action_trending,R.drawable.ic_action_search,R.drawable.ic_action_personal, R.drawable.ic_action_new, R.drawable.ic_action_important,R.drawable.ic_action_articles};
+        String[] titles = getResources().getStringArray(R.array.drawer_seller_tabs);
         for (int i = 0; i < titles.length; i++) {
             Information information = new Information();
             information.title = titles[i];
@@ -70,7 +71,7 @@ public class FragmentDrawerFair extends Fragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_navigation_drawer_fair, container, false);
+        return inflater.inflate(R.layout.fragment_navigation_drawer_seller, container, false);
     }
 
     @Override
@@ -83,7 +84,7 @@ public class FragmentDrawerFair extends Fragment  {
             @Override
             public void onClick(View view, int position) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-                ((ActivityFair) getActivity()).onDrawerItemClicked(position - 1);
+                ((ActivitySeller) getActivity()).onDrawerItemClicked(position - 1);
             }
 
             @Override
@@ -119,7 +120,7 @@ public class FragmentDrawerFair extends Fragment  {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                ((ActivityFair) getActivity()).onDrawerSlide(slideOffset);
+                ((ActivitySeller) getActivity()).onDrawerSlide(slideOffset);
                 toolbar.setAlpha(1 - slideOffset / 2);
             }
         };
