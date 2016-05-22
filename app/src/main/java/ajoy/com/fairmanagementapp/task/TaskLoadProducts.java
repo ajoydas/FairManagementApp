@@ -25,8 +25,8 @@ public class TaskLoadProducts extends AsyncTask<Void,Void,ArrayList<Product>> {
     @Override
     protected ArrayList<Product> doInBackground(Void... params) {
 
-        ArrayList<Product> listMovies = MovieUtils.loadProducts();
-        return listMovies;
+        ArrayList<Product> listProducts = MovieUtils.loadProducts();
+        return listProducts;
     }
 
     @Override

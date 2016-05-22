@@ -339,7 +339,7 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return getResources().getStringArray(R.array.tabs)[position];
+            return getResources().getStringArray(R.array.tab_fair)[position];
         }
 
         private Drawable getIcon(int position) {

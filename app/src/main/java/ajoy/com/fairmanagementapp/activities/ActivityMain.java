@@ -25,8 +25,11 @@ import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentBoxOffice;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawer;
+import ajoy.com.fairmanagementapp.fragments.FragmentDrawerFair;
+import ajoy.com.fairmanagementapp.fragments.FragmentRunningFairs;
 import ajoy.com.fairmanagementapp.fragments.FragmentSearch;
 import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
+import ajoy.com.fairmanagementapp.fragments.FragmentUpcomingFairs;
 import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.materialtest.R;
 import it.neokree.materialtabs.MaterialTab;
@@ -324,7 +327,8 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
 //                        mFAB.setVisibility(View.INVISIBLE);
 //
 //                    }
-                    fragment = FragmentSearch.newInstance("", "");
+                    fragment = FragmentRunningFairs.newInstance("", "");
+                    L.t(getApplicationContext(),"Opened Running fair");
                     break;
 
                 case TAB_HITS:
@@ -334,7 +338,8 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
 //
 //                    }
 
-                    fragment = FragmentBoxOffice.newInstance("", "");
+                    fragment = FragmentUpcomingFairs.newInstance("", "");
+                    L.t(getApplicationContext(),"Opened Upcoming fair");
                     break;
                 /*case TAB_UPCOMING:
 
@@ -356,7 +361,7 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return getResources().getStringArray(R.array.tabs)[position];
+            return getResources().getStringArray(R.array.tab_main)[position];
         }
 
         private Drawable getIcon(int position) {

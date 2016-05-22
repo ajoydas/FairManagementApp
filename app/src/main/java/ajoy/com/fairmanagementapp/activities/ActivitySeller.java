@@ -342,7 +342,7 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return getResources().getStringArray(R.array.tabs)[position];
+            return getResources().getStringArray(R.array.tab_seller)[position];
         }
 
         private Drawable getIcon(int position) {

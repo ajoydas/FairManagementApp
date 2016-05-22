@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/custom_movie_box_office"
+    android:paddingBottom="@dimen/size_byte"
+    android:paddingLeft="@dimen/size_word"
+    android:paddingRight="@dimen/size_word"
+    android:paddingTop="@dimen/size_byte">
+
+    <TextView
+        android:id="@+id/fairTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:alpha="0.87"
+        android:gravity="right"
+        android:padding="@dimen/size_half_byte"
+        android:textSize="@dimen/size_text_primary"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/fairLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fairTitle"
+        android:alpha="0.87"
+        android:gravity="right"
+        android:padding="@dimen/size_half_byte"
+        android:textSize="@dimen/size_text_secondary"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/to"
+        android:text=" to "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0.87"
+        android:padding="@dimen/size_half_byte"
+        android:textSize="@dimen/size_text_secondary"
+        android:layout_below="@id/fairLocation"
+        android:layout_toLeftOf="@+id/fairEndDate" />
+
+    <TextView
+        android:id="@+id/fairEndDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0.87"
+        android:padding="@dimen/size_half_byte"
+        android:textSize="@dimen/size_text_secondary"
+        android:layout_alignParentRight="true"
+    android:layout_below="@id/fairLocation"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fairStartDate"
+        android:alpha="0.87"
+        android:padding="@dimen/size_half_byte"
+        android:textSize="@dimen/size_text_secondary"
+        android:layout_below="@+id/fairLocation"
+        android:layout_toLeftOf="@+id/to" />
+
+</RelativeLayout>
