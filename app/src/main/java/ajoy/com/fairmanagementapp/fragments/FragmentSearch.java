@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import  ajoy.com.fairmanagementapp.activities.ActivityTouchEvent;
+import ajoy.com.fairmanagementapp.activities.ActivityFair;
 import  ajoy.com.fairmanagementapp.adapters.AdapterProducts;
 import  ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
 import  ajoy.com.fairmanagementapp.extras.ProductSorter;
@@ -132,7 +132,7 @@ public class FragmentSearch extends Fragment implements SortListener, ProductLoa
             @Override
             public void onClick(View view, int position) {
 
-                Intent i = new Intent(MyApplication.getAppContext(), ActivityTouchEvent.class);
+                Intent i = new Intent(MyApplication.getAppContext(),ActivityFair.class);
                 i.putExtra("Url","https://www.google.com/maps/d/edit?mid=1lGcLL7WSCrilqiBQLTeXetjgIOI");
                 startActivity(i);
             }

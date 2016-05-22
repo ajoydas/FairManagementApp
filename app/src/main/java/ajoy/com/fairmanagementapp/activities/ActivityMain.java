@@ -44,7 +44,7 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
     //int corresponding to our 2nd tab corresponding to the Fragment where upcoming movies are displayed
     public static final int TAB_UPCOMING = 2;
     //int corresponding to the number of tabs in our Activity
-    public static final int TAB_COUNT = 3;
+    public static final int TAB_COUNT = 2;
     //int corresponding to the id of our JobSchedulerService
     private static final int JOB_ID = 100;
     //tag associated with the FAB menu button that sorts by name
@@ -70,7 +70,7 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setupFAB();
+        //setupFAB();
         setupTabs();
         //setupJob();
         setupDrawer();
@@ -295,7 +295,7 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
     }
 
     public void onDrawerSlide(float slideOffset) {
-        toggleTranslateFAB(slideOffset);
+        //toggleTranslateFAB(slideOffset);
     }
 
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -304,7 +304,8 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
         //icons of the tabs can be changed from here
         int icons[] = {R.drawable.ic_action_search,
                 R.drawable.ic_action_trending,
-                R.drawable.ic_action_upcoming};
+                //R.drawable.ic_action_upcoming
+                };
 
 
         FragmentManager fragmentManager;
@@ -319,30 +320,30 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
 //            L.m("getItem called for " + num);
             switch (num) {
                 case TAB_SEARCH_RESULTS:
-                    if(mFAB.getVisibility()== View.VISIBLE){
-                        mFAB.setVisibility(View.INVISIBLE);
-
-                    }
+//                    if(mFAB.getVisibility()== View.VISIBLE){
+//                        mFAB.setVisibility(View.INVISIBLE);
+//
+//                    }
                     fragment = FragmentSearch.newInstance("", "");
                     break;
 
                 case TAB_HITS:
 
-                    if(mFAB.getVisibility()== View.INVISIBLE){
-                        mFAB.setVisibility(View.VISIBLE);
-
-                    }
+//                    if(mFAB.getVisibility()== View.INVISIBLE){
+//                        mFAB.setVisibility(View.VISIBLE);
+//
+//                    }
 
                     fragment = FragmentBoxOffice.newInstance("", "");
                     break;
-                case TAB_UPCOMING:
+                /*case TAB_UPCOMING:
 
                     if(mFAB.getVisibility()== View.INVISIBLE){
                         mFAB.setVisibility(View.VISIBLE);
 
                     }
                     fragment = FragmentUpcoming.newInstance("", "");
-                    break;
+                    break;*/
             }
             return fragment;
 

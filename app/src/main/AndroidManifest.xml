@@ -38,7 +38,7 @@
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <activity android:name="ajoy.com.fairmanagementapp.activities.fair"></activity>
+        <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityFair"></activity>
     </application>
 
 </manifest>

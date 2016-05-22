@@ -24,6 +24,7 @@ import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentBoxOffice;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawer;
+import ajoy.com.fairmanagementapp.fragments.FragmentDrawerFair;
 import ajoy.com.fairmanagementapp.fragments.FragmentSearch;
 import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
 import ajoy.com.fairmanagementapp.logging.L;
@@ -33,7 +34,7 @@ import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 import me.tatarka.support.job.JobScheduler;
 
-public class fair extends AppCompatActivity  implements MaterialTabListener, View.OnClickListener{
+public class ActivityFair extends AppCompatActivity  implements MaterialTabListener, View.OnClickListener{
 
     //int representing our 0th tab corresponding to the Fragment where search results are dispalyed
     public static final int TAB_SEARCH_RESULTS = 0;
@@ -62,12 +63,12 @@ public class fair extends AppCompatActivity  implements MaterialTabListener, Vie
     private ViewPagerAdapter mAdapter;
     private FloatingActionButton mFAB;
     private FloatingActionMenu mFABMenu;
-    private FragmentDrawer mDrawerFragment;
+    private FragmentDrawerFair mDrawerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_fair);
         setupFAB();
         setupTabs();
         //setupJob();
@@ -84,9 +85,9 @@ public class fair extends AppCompatActivity  implements MaterialTabListener, Vie
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         //setup the NavigationDrawer
-        mDrawerFragment = (FragmentDrawer)
-                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        mDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
+        mDrawerFragment = (FragmentDrawerFair)
+                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer_fair);
+        mDrawerFragment.setUp(R.id.fragment_navigation_drawer_fair, (DrawerLayout) findViewById(R.id.drawer_layout_fair), mToolbar);
     }
 
 
@@ -317,28 +318,13 @@ public class fair extends AppCompatActivity  implements MaterialTabListener, Vie
 //            L.m("getItem called for " + num);
             switch (num) {
                 case TAB_SEARCH_RESULTS:
-                    if(mFAB.getVisibility()== View.VISIBLE){
-                        mFAB.setVisibility(View.INVISIBLE);
-
-                    }
                     fragment = FragmentSearch.newInstance("", "");
                     break;
 
                 case TAB_HITS:
-
-                    if(mFAB.getVisibility()== View.INVISIBLE){
-                        mFAB.setVisibility(View.VISIBLE);
-
-                    }
-
                     fragment = FragmentBoxOffice.newInstance("", "");
                     break;
                 case TAB_UPCOMING:
-
-                    if(mFAB.getVisibility()== View.INVISIBLE){
-                        mFAB.setVisibility(View.VISIBLE);
-
-                    }
                     fragment = FragmentUpcoming.newInstance("", "");
                     break;
             }
