@@ -16,18 +16,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
 import ajoy.com.fairmanagementapp.adapters.AdapterFairs;
 import ajoy.com.fairmanagementapp.callbacks.FairLoadedListener;
-import ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
 import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.materialtest.MyApplication;
 import ajoy.com.fairmanagementapp.materialtest.R;
 import ajoy.com.fairmanagementapp.pojo.Fair;
-import ajoy.com.fairmanagementapp.pojo.Product;
 import ajoy.com.fairmanagementapp.task.TaskLoadFairs;
 
 /**
@@ -100,9 +96,9 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
         mRecyclerFairs.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), mRecyclerFairs, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
-
                 Intent i = new Intent(MyApplication.getAppContext(),ActivityFair.class);
-                i.putExtra("Url","https://www.google.com/maps/d/edit?mid=1lGcLL7WSCrilqiBQLTeXetjgIOI");
+                i.putExtra("Information",mListFairs.get(position));
+                System.out.println(mListFairs.get(position));
                 startActivity(i);
             }
 

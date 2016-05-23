@@ -54,5 +54,6 @@
     <string name="jeez_man_did_you_see_that">Jeez man! Did you see that?</string>
     <string name="title_activity_fair">Fair</string>
     <string name="title_activity_seller">Seller</string>
+    <string name="back">Back</string>
 
 </resources>

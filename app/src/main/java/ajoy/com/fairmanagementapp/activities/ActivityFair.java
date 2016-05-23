@@ -23,12 +23,12 @@ import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentBoxOffice;
-import ajoy.com.fairmanagementapp.fragments.FragmentDrawer;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerFair;
-import ajoy.com.fairmanagementapp.fragments.FragmentSearch;
+import ajoy.com.fairmanagementapp.fragments.FragmentFairDetails;
 import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
 import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.materialtest.R;
+import ajoy.com.fairmanagementapp.pojo.Fair;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
@@ -64,10 +64,14 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
     private FloatingActionButton mFAB;
     private FloatingActionMenu mFABMenu;
     private FragmentDrawerFair mDrawerFragment;
+    public static Fair fair;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fair=(Fair)getIntent().getParcelableExtra("Information");
+        //L.T(getApplicationContext(),fair.toString());
         setContentView(R.layout.activity_fair);
         setupFAB();
         setupTabs();
@@ -297,6 +301,13 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
         toggleTranslateFAB(slideOffset);
     }
 
+    public void fairmapClicked(View view) {
+        //L.T(getApplicationContext(),"Map Button Clicked");
+        Intent i = new Intent(getApplicationContext(), ActivityFairMapView.class);
+        i.putExtra("Url",fair.getMap_address());
+        startActivity(i);
+    }
+
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
 
@@ -318,9 +329,9 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
 //            L.m("getItem called for " + num);
             switch (num) {
                 case TAB_SEARCH_RESULTS:
-                    fragment = FragmentSearch.newInstance("", "");
+                    L.T(getApplicationContext(),"FragmentFairDetails");
+                    fragment = FragmentFairDetails.newInstance("", "");
                     break;
-
                 case TAB_HITS:
                     fragment = FragmentBoxOffice.newInstance("", "");
                     break;

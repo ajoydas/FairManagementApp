@@ -103,7 +103,8 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
             public void onClick(View view, int position) {
 
                 Intent i = new Intent(MyApplication.getAppContext(),ActivityFair.class);
-                i.putExtra("Url","https://www.google.com/maps/d/edit?mid=1lGcLL7WSCrilqiBQLTeXetjgIOI");
+                i.putExtra("Information",mListFairs.get(position));
+                System.out.println(mListFairs.get(position));
                 startActivity(i);
             }
 
