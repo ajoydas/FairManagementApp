@@ -179,6 +179,8 @@ public class FragmentDrawerFair extends Fragment  {
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
         }
+
+
     }
 
 }

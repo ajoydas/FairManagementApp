@@ -11,20 +11,21 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+import ajoy.com.fairmanagementapp.activities.ActivityFair;
+import ajoy.com.fairmanagementapp.activities.ActivitySeller;
 import ajoy.com.fairmanagementapp.materialtest.R;
 import ajoy.com.fairmanagementapp.pojo.Information;
 
-
 /**
- * Created by Windows on 22-12-2014.
+ * Created by ajoy on 5/25/16.
  */
-public class AdapterDrawer extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AdapterDrawerSeller extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     List<Information> data= Collections.emptyList();
     private static final int TYPE_HEADER=0;
     private static final int TYPE_ITEM=1;
     private LayoutInflater inflater;
     private Context context;
-    public AdapterDrawer(Context context, List<Information> data){
+    public AdapterDrawerSeller(Context context, List<Information> data){
         this.context=context;
         inflater= LayoutInflater.from(context);
         this.data=data;
@@ -39,7 +40,7 @@ public class AdapterDrawer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if(viewType==TYPE_HEADER){
             View view=inflater.inflate(R.layout.drawer_header, parent,false);
             TextView headername = (TextView) view.findViewById(R.id.headername);
-            headername.setText("to");
+            headername.setText(ActivitySeller.stall.getStall_name());
             HeaderHolder holder=new HeaderHolder(view);
             return holder;
         }
@@ -100,3 +101,4 @@ public class AdapterDrawer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 }
+

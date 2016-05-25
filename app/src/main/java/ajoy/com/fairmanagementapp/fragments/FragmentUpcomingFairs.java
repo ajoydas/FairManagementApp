@@ -185,6 +185,7 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
         }
+
     }
 
 }

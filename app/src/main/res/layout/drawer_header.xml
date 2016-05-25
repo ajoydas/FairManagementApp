@@ -32,7 +32,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hi"
+            android:text="Welcome"
             android:gravity="right"
             android:textColor="@android:color/white"
             style="@style/TextAppearance.AppCompat.Large" />
@@ -41,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Viewer"
+            android:id="@+id/headername"
             android:textColor="@android:color/white"
             android:gravity="right"
             style="@style/TextAppearance.AppCompat.Medium" />

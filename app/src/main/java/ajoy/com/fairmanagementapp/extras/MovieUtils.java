@@ -28,7 +28,7 @@ import ajoy.com.fairmanagementapp.pojo.Product;
  * Created by Windows on 02-03-2015.
  */
 public class MovieUtils {
-    private static final String url = "jdbc:mysql://192.168.0.101:3306/";
+    private static final String url = "jdbc:mysql://192.168.0.100:3306/";
     private static final String username="ajoy";
     private static final String password="ajoydas";
 

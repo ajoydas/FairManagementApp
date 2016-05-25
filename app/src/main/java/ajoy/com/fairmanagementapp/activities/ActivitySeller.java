@@ -11,11 +11,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
@@ -27,9 +29,11 @@ import ajoy.com.fairmanagementapp.fragments.FragmentBoxOffice;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerFair;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerSeller;
 import ajoy.com.fairmanagementapp.fragments.FragmentSearch;
+import ajoy.com.fairmanagementapp.fragments.FragmentStallDetails;
 import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
 import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.materialtest.R;
+import ajoy.com.fairmanagementapp.pojo.Stall;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
@@ -68,11 +72,17 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
     private FloatingActionMenu mFABMenu;
     private FragmentDrawerSeller mDrawerFragment;
 
+    public static Stall stall;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        stall=(Stall)getIntent().getParcelableExtra("Information");
+
+        /*LayoutInflater inflater = null;
+        View view=inflater.inflate(R.layout.drawer_header, null,false);*/
+
         setContentView(R.layout.activity_seller);
-        setupFAB();
+        //setupFAB();
         setupTabs();
         //setupJob();
         setupDrawer();
@@ -321,7 +331,7 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
 //            L.m("getItem called for " + num);
             switch (num) {
                 case TAB_SEARCH_RESULTS:
-                    fragment = FragmentSearch.newInstance("", "");
+                    fragment = FragmentStallDetails.newInstance("", "");
                     break;
 
                 case TAB_HITS:
@@ -348,5 +358,10 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
         private Drawable getIcon(int position) {
             return getResources().getDrawable(icons[position]);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

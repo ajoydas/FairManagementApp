@@ -21,7 +21,7 @@ import java.util.List;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
 import ajoy.com.fairmanagementapp.activities.ActivitySeller;
-import ajoy.com.fairmanagementapp.adapters.AdapterDrawer;
+import ajoy.com.fairmanagementapp.adapters.AdapterDrawerSeller;
 import ajoy.com.fairmanagementapp.materialtest.MyApplication;
 import ajoy.com.fairmanagementapp.materialtest.R;
 import ajoy.com.fairmanagementapp.pojo.Information;
@@ -34,7 +34,7 @@ public class FragmentDrawerSeller extends Fragment {
     private RecyclerView mRecyclerDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-    private AdapterDrawer mAdapter;
+    private AdapterDrawerSeller mAdapter;
     private boolean mUserLearnedDrawer;
     private boolean mFromSavedInstanceState;
     private View mContainer;
@@ -77,7 +77,7 @@ public class FragmentDrawerSeller extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mRecyclerDrawer = (RecyclerView) view.findViewById(R.id.drawerList);
-        mAdapter = new AdapterDrawer(getActivity(), getData());
+        mAdapter = new AdapterDrawerSeller(getActivity(), getData());
         mRecyclerDrawer.setAdapter(mAdapter);
         mRecyclerDrawer.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerDrawer.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), mRecyclerDrawer, new ClickListener() {
@@ -180,6 +180,7 @@ public class FragmentDrawerSeller extends Fragment {
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
         }
+
     }
 
 }

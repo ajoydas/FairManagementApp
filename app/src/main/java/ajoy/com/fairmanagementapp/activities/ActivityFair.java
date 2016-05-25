@@ -1,12 +1,17 @@
 package ajoy.com.fairmanagementapp.activities;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,21 +19,32 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
-import ajoy.com.fairmanagementapp.fragments.FragmentBoxOffice;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerFair;
 import ajoy.com.fairmanagementapp.fragments.FragmentFairDetails;
+import ajoy.com.fairmanagementapp.fragments.FragmentSearchProducts;
 import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
 import ajoy.com.fairmanagementapp.logging.L;
+import ajoy.com.fairmanagementapp.materialtest.MyApplication;
 import ajoy.com.fairmanagementapp.materialtest.R;
 import ajoy.com.fairmanagementapp.pojo.Fair;
+import ajoy.com.fairmanagementapp.pojo.Stall;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
@@ -65,12 +81,18 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
     private FloatingActionMenu mFABMenu;
     private FragmentDrawerFair mDrawerFragment;
     public static Fair fair;
+    private static Stall stall;
+
+    private static final String url = "jdbc:mysql://192.168.0.100:3306/";
+    private static final String username="ajoy";
+    private static final String password="ajoydas";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         fair=(Fair)getIntent().getParcelableExtra("Information");
+        stall=new Stall();
         //L.T(getApplicationContext(),fair.toString());
         setContentView(R.layout.activity_fair);
         setupFAB();
@@ -95,11 +117,195 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
     }
 
 
+    ProgressDialog loading;
+
+    private String user="",pass="",passrecieved="";
+
     public void onDrawerItemClicked(int index) {
         if (index == 0) {
-            startActivity(new Intent(this, ActivitySeller.class));
+            //startActivity(new Intent(this, ActivitySeller.class));
+            dialogShow();
+
         } else {
             mPager.setCurrentItem(index-1);
+        }
+    }
+
+    private void dialogShow() {
+        final Dialog dialog = new Dialog(ActivityFair.this);
+        dialog.setTitle("Seller Sign In");
+        dialog.setContentView(R.layout.dialog_signin);
+        dialog.show();
+
+        final EditText usernameInput = (EditText) dialog.findViewById(R.id.username);
+        final EditText passwordInput = (EditText) dialog.findViewById(R.id.password);
+        Button bsignin= (Button) dialog.findViewById(R.id.bsignin);
+        Button bcancel= (Button) dialog.findViewById(R.id.bcancel);
+        bsignin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                user=usernameInput.getText().toString();
+                pass=passwordInput.getText().toString();
+                new Mytask().execute();
+                dialog.cancel();
+            }
+        });
+
+        bcancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                L.t(getApplicationContext(), "Request Canceled");
+                dialog.cancel();
+            }
+        });
+    }
+
+
+    private class Mytask extends AsyncTask<Void,Void,Integer>
+    {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = ProgressDialog.show(ActivityFair.this, "Signing In", "Please wait...",true,true);
+            System.out.println(user+pass);
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String Url=url+fair.getDb_name();
+                Connection con= DriverManager.getConnection(Url,username,password);
+
+                System.out.println("Connected");
+
+                PreparedStatement preparedStatement=con.prepareStatement("Select password from  users where username=?");
+                preparedStatement.setString(1,user);
+
+                System.out.println("Statement");
+
+                ResultSet rs=null;
+                //preparedStatement.setString(1,user);
+                rs=preparedStatement.executeQuery();
+
+                System.out.println("Executed");
+
+                int rowcount=0;
+                if (rs.last()) {
+                    rowcount = rs.getRow();
+                    rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
+                }
+                System.out.println("Count: "+rowcount);
+                if(rowcount==0) return 0;
+
+                while(rs.next()) {
+                    passrecieved = rs.getString("password");
+                    System.out.println("username: " + user + " password: " + passrecieved);
+                }
+
+                if (pass.equals(passrecieved)) {
+                    PreparedStatement statement=con.prepareStatement("Select * from  stalls where stall=?");
+                    statement.setString(1,user);
+                    ResultSet internalrs=null;
+                    //preparedStatement.setString(1,user);
+                    internalrs=statement.executeQuery();
+
+                    int row=0;
+                    if (internalrs.last()) {
+                        rowcount = internalrs.getRow();
+                        internalrs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
+                    }
+
+                    if(rowcount==0){
+                        L.T(getApplicationContext(),"Login Successful But User Information Not Found In Database!");
+                        return 3;
+                    }
+
+                    while(internalrs.next()) {
+                        stall.setId(internalrs.getInt("id"));
+                        stall.setStall(internalrs.getString("stall"));
+                        stall.setStall_name(internalrs.getString("stall_name"));
+                        stall.setOwner(internalrs.getString("owner"));
+                        stall.setDescription(internalrs.getString("description"));
+                        stall.setLocation(internalrs.getString("location"));
+                        System.out.println(stall);
+                    }
+                    System.out.println(stall);
+                    return 1;
+                }
+                return 2;
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer value) {
+            super.onPostExecute(value);
+            loading.dismiss();
+
+            L.T(getApplicationContext(),String.valueOf(value));
+
+            if(value==1) {
+
+                L.t(getApplicationContext(), "Login Successfull!");
+                Intent i = new Intent(MyApplication.getAppContext(), ActivitySeller.class);
+                i.putExtra("Information", stall);
+                startActivity(i);
+            }
+            else if(value==2) {
+                //Toast.makeText(getApplicationContext(), "Login failed!",Toast.LENGTH_LONG).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityFair.this);
+                builder.setTitle("Sign In Failed!");
+                builder.setMessage("The password you entered in wrong. Try again?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        dialogShow();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+                //L.t(getApplicationContext(), "Password Wrong");
+            }
+            else if(value==0)
+            {
+                //L.t(getApplicationContext(), "User Not Found or Check Connection");
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityFair.this);
+                builder.setTitle("Sign In Failed!");
+                builder.setMessage("The Username you entered is not found Or Connection to the database not established. Try again?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        dialogShow();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+            }
         }
     }
 
@@ -329,11 +535,11 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
 //            L.m("getItem called for " + num);
             switch (num) {
                 case TAB_SEARCH_RESULTS:
-                    L.T(getApplicationContext(),"FragmentFairDetails");
+                    //L.T(getApplicationContext(),"FragmentFairDetails");
                     fragment = FragmentFairDetails.newInstance("", "");
                     break;
                 case TAB_HITS:
-                    fragment = FragmentBoxOffice.newInstance("", "");
+                    fragment = FragmentSearchProducts.newInstance("", "");
                     break;
                 case TAB_UPCOMING:
                     fragment = FragmentUpcoming.newInstance("", "");

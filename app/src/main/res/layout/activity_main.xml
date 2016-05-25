@@ -30,7 +30,6 @@
                 app:primaryColor="@color/colorPrimary" />
                 <!--app:hasIcons="true"-->
                 <!--app:iconColor="@android:color/white"-->
-
         </LinearLayout>
 
 

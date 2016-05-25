@@ -156,15 +156,15 @@ public class Fair implements Parcelable{
     @Override
     public String toString() {
         return "\nID: " + id +
-                "\n DabaseName "+db_name+
-                "\nTitle " + title +
-                "\nOrganizer "+organizer+
-                "\nLocation "+location+
-                "\nStartDate "+start_date+
-                "\nEndDate "+end_date+
-                "\nOpenTime "+open_time+
-                "\nCloseTime "+close_time+
-                "\nMapAddress "+map_address+
+                "\n DabaseName: "+db_name+
+                "\nTitle: " + title +
+                "\nOrganizer: "+organizer+
+                "\nLocation: "+location+
+                "\nStartDate: "+start_date+
+                "\nEndDate: "+end_date+
+                "\nOpenTime: "+open_time+
+                "\nCloseTime: "+close_time+
+                "\nMapAddress: "+map_address+
                 "\n";
     }
 
