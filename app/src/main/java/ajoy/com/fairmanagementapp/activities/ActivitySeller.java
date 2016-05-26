@@ -1,14 +1,19 @@
 package ajoy.com.fairmanagementapp.activities;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -16,12 +21,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
@@ -32,6 +45,7 @@ import ajoy.com.fairmanagementapp.fragments.FragmentSearch;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallDetails;
 import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
 import ajoy.com.fairmanagementapp.logging.L;
+import ajoy.com.fairmanagementapp.materialtest.MyApplication;
 import ajoy.com.fairmanagementapp.materialtest.R;
 import ajoy.com.fairmanagementapp.pojo.Stall;
 import it.neokree.materialtabs.MaterialTab;
@@ -72,6 +86,17 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
     private FloatingActionMenu mFABMenu;
     private FragmentDrawerSeller mDrawerFragment;
 
+
+    ProgressDialog loading;
+
+    private static final String url = "jdbc:mysql://192.168.0.101:3306/";
+    private static final String username="ajoy";
+    private static final String password="ajoydas";
+    private String stallname;
+    private String stallowner;
+    private String stalldescription;
+
+
     public static Stall stall;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +115,170 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
         AnimationUtils.animateToolbarDroppingDown(mContainerToolbar);
 
     }
+
+
+    public void update()
+    {
+        TextView title=(TextView)findViewById(R.id.detailsstallname);
+        title.setText(ActivitySeller.stall.getStall_name());
+        TextView organizer=(TextView)findViewById(R.id.detailsstallowner);
+        organizer.setText(ActivitySeller.stall.getOwner());
+        TextView location=(TextView)findViewById(R.id.detailsstalldescription);
+        location.setText(ActivitySeller.stall.getDescription());
+    }
+
+
+    public void stallMapClicked(View view) {
+        Intent i = new Intent(ActivitySeller.this, ActivityStallMap.class);
+        i.putExtra("Information",ActivitySeller.stall.getLocation());
+        startActivity(i);
+    }
+
+    public void editDetailsClicked(View view) {
+        editDialogShow();
+        L.t(ActivitySeller.this,"Edit button clicked");
+        update();
+    }
+
+    private void editDialogShow() {
+        final Dialog dialog = new Dialog(ActivitySeller.this);
+        dialog.setTitle("Seller Details Update");
+        dialog.setContentView(R.layout.dialog_update_seller_details);
+        final EditText updatename = (EditText) dialog.findViewById(R.id.updatestallname);
+        final EditText updateowner = (EditText) dialog.findViewById(R.id.updatestallowner);
+        final EditText updatedescription = (EditText) dialog.findViewById(R.id.updatestalldescription);
+        updatename.setText(ActivitySeller.stall.getStall_name());
+        updateowner.setText(ActivitySeller.stall.getOwner());
+        updatedescription.setText(ActivitySeller.stall.getDescription());
+
+        dialog.show();
+        Button bsave= (Button) dialog.findViewById(R.id.bsave);
+        Button bcancel= (Button) dialog.findViewById(R.id.bcancel);
+
+        bsave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //original
+                stallname=updatename.getText().toString();
+                stallowner=updateowner.getText().toString();
+                stalldescription = updatedescription.getText().toString();
+
+                new Mytask().execute();
+                dialog.cancel();
+            }
+        });
+
+        bcancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                L.t(ActivitySeller.this, "Request Canceled");
+                dialog.cancel();
+            }
+        });
+    }
+
+    /*@Override
+    public void onClick(View v) {
+
+        if (v==layout.findViewById(R.id.bedit))
+        {
+            editDetailsClicked(v);
+        }
+    }
+*/
+    private class Mytask extends AsyncTask<Void,Void,Integer>
+    {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = ProgressDialog.show(ActivitySeller.this, "Updating Information", "Please wait...",true,true);
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String Url=url+ActivityFair.fair.getDb_name();
+
+                System.out.println(ActivityFair.fair.getDb_name());
+                Connection con= DriverManager.getConnection(Url,username,password);
+
+                System.out.println("Connected");
+
+                PreparedStatement preparedStatement=con.prepareStatement("update stalls set stall_name=?,owner=?,description=? where stall=?");
+                preparedStatement.setString(1,stallname);
+                preparedStatement.setString(2,stallowner);
+                preparedStatement.setString(3,stalldescription);
+                preparedStatement.setString(4,ActivitySeller.stall.getStall());
+
+                System.out.println("Statement");
+                int rs=0;
+                //preparedStatement.setString(1,user);
+                rs=preparedStatement.executeUpdate();
+
+                System.out.println("Executed");
+
+                System.out.println("Count: "+rs);
+
+                if(rs==1) {
+                    ActivitySeller.stall.setStall_name(stallname);
+                    ActivitySeller.stall.setOwner(stallowner);
+                    ActivitySeller.stall.setDescription(stalldescription);
+
+                    System.out.println(ActivitySeller.stall);
+                    return 1;
+                }
+
+                return 0;
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer value) {
+            super.onPostExecute(value);
+            loading.dismiss();
+
+            L.T(ActivitySeller.this,String.valueOf(value));
+
+            if(value==1) {
+                L.t(ActivitySeller.this, "Updated Successfully!");
+                update();
+            }
+            else if(value==0) {
+                //Toast.makeText(getApplicationContext(), "Login failed!",Toast.LENGTH_LONG).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySeller.this);
+                builder.setTitle("Update Failed!");
+                builder.setMessage("Connection lost. Try again?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        editDialogShow();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+                //L.t(getApplicationContext(), "Password Wrong");
+            }
+        }
+    }
+    
+    
 
     private void setupDrawer() {
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -310,12 +499,6 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
         toggleTranslateFAB(slideOffset);
     }
 
-    public void stallMapClicked(View view) {
-        Intent i = new Intent(getApplicationContext(), ActivityStallMap.class);
-        i.putExtra("Information",stall.getLocation());
-        startActivity(i);
-    }
-
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
 
@@ -332,6 +515,7 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
             fragmentManager = fm;
         }
 
+        @Override
         public Fragment getItem(int num) {
             Fragment fragment = null;
 //            L.m("getItem called for " + num);
