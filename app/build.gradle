@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "ajoy.com.fairmanagementapp"
-        minSdkVersion 15
+        minSdkVersion 17
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -24,7 +24,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':mysql-connector-java-5.0.8-bin')
 
-
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'org.lucasr.dspec:dspec:0.1.1'
     compile 'it.neokree:MaterialTabs:0.11'
@@ -39,6 +38,5 @@ dependencies {
     compile 'com.pkmmte.view:circularimageview:1.1'
     compile 'com.android.support:gridlayout-v7:22.0.0'
     compile 'com.android.support:recyclerview-v7:21.0.+'
-
-
+    compile 'com.google.android.gms:play-services:8.4.0'
 }

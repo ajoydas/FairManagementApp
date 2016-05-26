@@ -83,7 +83,7 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
     public static Fair fair;
     private static Stall stall;
 
-    private static final String url = "jdbc:mysql://192.168.0.100:3306/";
+    private static final String url = "jdbc:mysql://192.168.0.101:3306/";
     private static final String username="ajoy";
     private static final String password="ajoydas";
 
@@ -144,8 +144,14 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
         bsignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                user=usernameInput.getText().toString();
-                pass=passwordInput.getText().toString();
+
+                //original
+                /*user=usernameInput.getText().toString();
+                pass=passwordInput.getText().toString();*/
+
+                user="stall1";
+                pass="stall1";
+
                 new Mytask().execute();
                 dialog.cancel();
             }

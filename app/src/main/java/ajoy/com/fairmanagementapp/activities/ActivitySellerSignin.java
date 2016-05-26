@@ -47,7 +47,7 @@ public class ActivitySellerSignin extends AppCompatActivity {
         fair=(Fair)getIntent().getParcelableExtra("Information");
 
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
-        mContainerToolbar = (ViewGroup) findViewById(R.id.container_app_bar);
+        //mContainerToolbar = (ViewGroup) findViewById(R.id.container_app_bar);
         //set the Toolbar as ActionBar
         setSupportActionBar(mToolbar);
         //getSupportActionBar().setDisplayShowHomeEnabled(true);

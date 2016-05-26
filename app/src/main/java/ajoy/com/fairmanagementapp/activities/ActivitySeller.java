@@ -310,6 +310,12 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
         toggleTranslateFAB(slideOffset);
     }
 
+    public void stallMapClicked(View view) {
+        Intent i = new Intent(getApplicationContext(), ActivityStallMap.class);
+        i.putExtra("Information",stall.getLocation());
+        startActivity(i);
+    }
+
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
 

@@ -112,5 +112,5 @@
         android:layout_below="@+id/bedit"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:onClick="fairmapClicked" />
+        android:onClick="stallMapClicked" />
 </RelativeLayout>
