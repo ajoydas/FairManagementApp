@@ -22,6 +22,8 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MyApplication"
@@ -41,20 +43,10 @@
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivityFair"
             android:label="@string/title_activity_fair">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivitySeller"
             android:label="@string/title_activity_seller">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivityTouchEvent"
@@ -87,7 +79,13 @@
 
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivityStallMap"
-            android:label="@string/title_activity_activity_stall_map"></activity>
+            android:label="@string/title_activity_activity_stall_map" />
+        <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityAddProducts"
+            android:label="@string/title_activity_add_product" android:windowSoftInputMode="stateHidden"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

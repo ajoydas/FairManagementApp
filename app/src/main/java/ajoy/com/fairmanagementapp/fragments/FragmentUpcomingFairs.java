@@ -129,7 +129,7 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
-
+        mListFairs = listFairs;
         mAdapter.setFairs(listFairs);
     }
 

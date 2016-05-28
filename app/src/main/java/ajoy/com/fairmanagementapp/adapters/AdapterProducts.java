@@ -3,6 +3,7 @@ package ajoy.com.fairmanagementapp.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.camera2.CameraManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -47,9 +48,11 @@ public class AdapterProducts  extends RecyclerView.Adapter<AdapterProducts.ViewH
     public void onBindViewHolder(ViewHolderProducts holder, int position) {
         Product currentProduct = mListProducts.get(position);
 
-        holder.productTitle.setText(currentProduct.getTitle());
-        holder.productPrice.setText(String.valueOf(currentProduct.getPrice()));
-        holder.productThumbnail.setImageBitmap(StringToBitMap(currentProduct.getThumbnail()));
+        holder.productTitle.setText(currentProduct.getName());
+        holder.productCompany.setText("Company/Author: "+currentProduct.getCompany());
+        holder.productPrice.setText("Price: "+currentProduct.getPrice());
+        holder.productAvailability.setText("Available: " +currentProduct.getAvailability());
+        holder.productImage.setImageBitmap(StringToBitMap(currentProduct.getImage()));
 
         if (position > mPreviousPosition) {
             AnimationUtils.animateSunblind(holder, true);
@@ -84,16 +87,20 @@ public class AdapterProducts  extends RecyclerView.Adapter<AdapterProducts.ViewH
 
     static class ViewHolderProducts extends RecyclerView.ViewHolder {
 
-        ImageView productThumbnail;
+        ImageView productImage;
         TextView productTitle;
+        TextView productCompany;
         TextView productPrice;
+        TextView productAvailability;
         //RatingBar movieAudienceScore;
 
         public ViewHolderProducts(View itemView) {
             super(itemView);
-            productThumbnail = (ImageView) itemView.findViewById(R.id.productThumbnail);
+            productImage = (ImageView) itemView.findViewById(R.id.productImage);
             productTitle = (TextView) itemView.findViewById(R.id.productTitle);
+            productCompany = (TextView) itemView.findViewById(R.id.productCompany);
             productPrice = (TextView) itemView.findViewById(R.id.productPrice);
+            productAvailability = (TextView) itemView.findViewById(R.id.productAvailability);
             //movieAudienceScore = (RatingBar) itemView.findViewById(R.id.movieAudienceScore);
         }
     }

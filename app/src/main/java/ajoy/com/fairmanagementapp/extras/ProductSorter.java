@@ -15,7 +15,7 @@ public class ProductSorter {
         Collections.sort(products, new Comparator<Product>() {
             @Override
             public int compare(Product lhs, Product rhs) {
-                return lhs.getTitle().compareTo(rhs.getTitle());
+                return lhs.getName().compareTo(rhs.getName());
             }
         });
     }
@@ -24,7 +24,10 @@ public class ProductSorter {
         Collections.sort(products, new Comparator<Product>() {
             @Override
             public int compare(Product lhs, Product rhs) {
-                if(lhs.getPrice()>rhs.getPrice())
+                double ls=Double.parseDouble(lhs.getPrice());
+                double rs=Double.parseDouble(rhs.getPrice());
+
+                if(ls>rs)
                 {
                     return 1;
                 }

@@ -123,14 +123,13 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
-
+        mListFairs=listFairs;
         mAdapter.setFairs(listFairs);
     }
 
     @Override
     public void onRefresh() {
         L.t(getActivity(), "onRefresh");
-        //load the whole feed again on refresh, dont try this at home :)
         new TaskLoadFairs(this,1).execute();
 
     }

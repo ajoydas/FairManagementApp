@@ -32,7 +32,7 @@ public class DBProducts {
         }
 
         //create a sql prepared statement
-        String sql = "INSERT INTO " + ProductsHelper.TABLE_PRODUCT_LIST+ " VALUES (?,?,?,?);";
+        String sql = "INSERT INTO " + ProductsHelper.TABLE_PRODUCT_LIST+ " VALUES (?,?,?,?,?,?,?,?);";
         //compile the statement and start a transaction
         SQLiteStatement statement = mDatabase.compileStatement(sql);
         mDatabase.beginTransaction();
@@ -40,9 +40,13 @@ public class DBProducts {
             Product currentproduct = listProducts.get(i);
             statement.clearBindings();
             //for a given column index, simply bind the data to be put inside that index
-            statement.bindString(2, currentproduct.getTitle());
-            statement.bindDouble(3,currentproduct.getPrice());
-            statement.bindString(4, currentproduct.getThumbnail());
+            statement.bindString(2, currentproduct.getStall());
+            statement.bindString(3, currentproduct.getName());
+            statement.bindString(4, currentproduct.getCompany());
+            statement.bindString(5, currentproduct.getDescription());
+            statement.bindString(6,currentproduct.getPrice());
+            statement.bindString(7, currentproduct.getAvailability());
+            if( currentproduct.getImage()!=null)statement.bindString(8, currentproduct.getImage());
 
             statement.execute();
         }
@@ -57,8 +61,12 @@ public class DBProducts {
 
         //get a list of columns to be retrieved, we need all of them
         String[] columns = {ProductsHelper.COLUMN_UID,
-                ProductsHelper.COLUMN_TITLE,
+                ProductsHelper.COLUMN_STALL,
+                ProductsHelper.COLUMN_NAME,
+                ProductsHelper.COLUMN_COMPANY,
+                ProductsHelper.COLUMN_DESCRIPTION,
                 ProductsHelper.COLUMN_PRICE,
+                ProductsHelper.COLUMN_AVAILABILITY,
                 ProductsHelper.COLUMN_IMAGE
         };
         Cursor cursor = mDatabase.query(ProductsHelper.TABLE_PRODUCT_LIST, columns, null, null, null, null, null);
@@ -69,9 +77,13 @@ public class DBProducts {
                 Product product=new Product();
 
                 product.setId(cursor.getInt(cursor.getColumnIndex(ProductsHelper.COLUMN_UID)));
-                product.setTitle(cursor.getString(cursor.getColumnIndex(ProductsHelper.COLUMN_TITLE)));
-                product.setPrice(cursor.getDouble(cursor.getColumnIndex(ProductsHelper.COLUMN_PRICE)));
-                product.setThumbnail(cursor.getString(cursor.getColumnIndex(ProductsHelper.COLUMN_IMAGE)));
+                product.setStall(cursor.getString(cursor.getColumnIndex(ProductsHelper.COLUMN_STALL)));
+                product.setName(cursor.getString(cursor.getColumnIndex(ProductsHelper.COLUMN_NAME)));
+                product.setCompany(cursor.getString(cursor.getColumnIndex(ProductsHelper.COLUMN_COMPANY)));
+                product.setDescription(cursor.getString(cursor.getColumnIndex(ProductsHelper.COLUMN_DESCRIPTION)));
+                product.setPrice(cursor.getString(cursor.getColumnIndex(ProductsHelper.COLUMN_PRICE)));
+                product.setAvailability(cursor.getString(cursor.getColumnIndex(ProductsHelper.COLUMN_AVAILABILITY)));
+                product.setImage(cursor.getString(cursor.getColumnIndex(ProductsHelper.COLUMN_IMAGE)));
 
                 //add the movie to the list of movie objects which we plan to return
                 listProducts.add(product);
@@ -89,14 +101,22 @@ public class DBProducts {
         public static final String TABLE_PRODUCT_LIST = "product_list";
 
         public static final String COLUMN_UID = "_id";
-        public static final String COLUMN_TITLE = "title";
+        public static final String COLUMN_STALL = "stall";
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_COMPANY = "company";
+        public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_PRICE="price";
+        public static final String COLUMN_AVAILABILITY = "availability";
         public static final String COLUMN_IMAGE="image";
 
         private static final String CREATE_TABLE_PRODUCT_LIST = "CREATE TABLE " +TABLE_PRODUCT_LIST + " (" +
                 COLUMN_UID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                COLUMN_TITLE + " TEXT," +
-                COLUMN_PRICE+" DOUBLE,"+
+                COLUMN_STALL + " TEXT," +
+                COLUMN_NAME + " TEXT," +
+                COLUMN_COMPANY + " TEXT," +
+                COLUMN_DESCRIPTION + " TEXT," +
+                COLUMN_PRICE+" TEXT,"+
+                COLUMN_AVAILABILITY + " TEXT," +
                 COLUMN_IMAGE+" LONGBLOB "+
                 ");";
 

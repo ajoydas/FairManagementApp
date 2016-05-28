@@ -24,7 +24,6 @@ public class TaskLoadFairs extends AsyncTask<Void,Void,ArrayList<Fair>>  {
 
         this.myComponent = myComponent;
         this.tab=tab;
-
     }
 
 

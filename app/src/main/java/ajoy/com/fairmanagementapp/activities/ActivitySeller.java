@@ -1,6 +1,5 @@
 package ajoy.com.fairmanagementapp.activities;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -16,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,19 +31,15 @@ import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
-import ajoy.com.fairmanagementapp.fragments.FragmentBoxOffice;
-import ajoy.com.fairmanagementapp.fragments.FragmentDrawerFair;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerSeller;
-import ajoy.com.fairmanagementapp.fragments.FragmentSearch;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallDetails;
+import ajoy.com.fairmanagementapp.fragments.FragmentStallProducts;
 import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
 import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.materialtest.MyApplication;
 import ajoy.com.fairmanagementapp.materialtest.R;
 import ajoy.com.fairmanagementapp.pojo.Stall;
 import it.neokree.materialtabs.MaterialTab;
@@ -143,7 +137,7 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
     private void editDialogShow() {
         final Dialog dialog = new Dialog(ActivitySeller.this);
         dialog.setTitle("Seller Details Update");
-        dialog.setContentView(R.layout.dialog_update_seller_details);
+        dialog.setContentView(R.layout.dialog_update_stall_details);
         final EditText updatename = (EditText) dialog.findViewById(R.id.updatestallname);
         final EditText updateowner = (EditText) dialog.findViewById(R.id.updatestallowner);
         final EditText updatedescription = (EditText) dialog.findViewById(R.id.updatestalldescription);
@@ -525,7 +519,7 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
                     break;
 
                 case TAB_HITS:
-                    fragment = FragmentBoxOffice.newInstance("", "");
+                    fragment = FragmentStallProducts.newInstance("", "");
                     break;
                 case TAB_UPCOMING:
                     fragment = FragmentUpcoming.newInstance("", "");

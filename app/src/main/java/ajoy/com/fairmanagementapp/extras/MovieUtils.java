@@ -48,6 +48,7 @@ public class MovieUtils {
 
     public static ArrayList<Product> loadProducts()
     {
+/*
         ArrayList<Product> listProducts = new ArrayList<>();
         String Url=url+"logindatabase";
         try {
@@ -101,8 +102,77 @@ public class MovieUtils {
             e.printStackTrace();
             return null;
         }
+*/
+        return null;
+    }
+
+    public static ArrayList<Product> loadStallProducts(String fair_db,String stallname,String query)
+    {
+        ArrayList<Product> listProducts = new ArrayList<>();
+        String Url=url+fair_db;
+        PreparedStatement st=null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection(Url, username, password);
+
+            System.out.println("Connected\nQuery: "+query);
+
+            if(query==null) {
+                st = con.prepareStatement("select * from products where stall=?");
+                //PreparedStatement stcount = con.prepareStatement("select count(*) from images where id = ?");
+                st.setString(1, stallname);
+
+            }
+            //st.setInt(1,Integer.parseInt(id));
+            //stcount.setInt(1,Integer.parseInt(id));
+
+            System.out.println("Statement");
+
+            ResultSet rs = null,rscount=null;
+
+            rs = st.executeQuery();
+            //rscount=st.executeQuery();
+            int rowcount=0;
+            if (rs.last()) {
+                rowcount = rs.getRow();
+                rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
+            }
+
+            System.out.println("Count: "+rowcount);
+
+            if(rowcount==0)
+            {
+                System.out.println(rowcount);
+
+                return null;
+            }
+            else {
+
+                while (rs.next()) {
+                    Product product=new Product();
+                    product.setId(rs.getInt("id"));
+                    product.setStall(rs.getString("stall"));
+                    product.setName(rs.getString("name"));
+                    product.setCompany(rs.getString("company"));
+                    product.setDescription(rs.getString("description"));
+                    product.setPrice(rs.getString("price"));
+                    product.setAvailability(rs.getString("availability"));
+                    product.setImage(rs.getString("image"));
+
+                    listProducts.add(product);
+                }
+                MyApplication.getWritableDatabaseProduct().insertProducts(DBProducts.ProductList, listProducts, true);
+                return listProducts;
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
 
     }
+
+
 
     public static ArrayList<Fair> loadFairs(int table) {
 

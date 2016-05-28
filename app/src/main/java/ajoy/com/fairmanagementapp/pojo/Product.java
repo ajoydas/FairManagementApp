@@ -13,7 +13,7 @@ public class Product implements Parcelable {
     public static final Parcelable.Creator<Product> CREATOR
             = new Parcelable.Creator<Product>() {
         public Product createFromParcel(Parcel in) {
-            L.m("create from parcel :Movie");
+            L.m("create from parcel :Products");
             return new Product(in);
         }
 
@@ -23,9 +23,13 @@ public class Product implements Parcelable {
     };
 
     private int id;
-    private String title;
-    private double price;
-    private String thumbnail;
+    private String stall;
+    private String name;
+    private String company;
+    private String description;
+    private String price;
+    private String availability;
+    private String image;
 
     public Product() {
 
@@ -33,16 +37,24 @@ public class Product implements Parcelable {
 
     public Product(Parcel input) {
         id = input.readInt();
-        title = input.readString();
-        price=input.readDouble();
-        thumbnail=input.readString();
+        stall = input.readString();
+        name = input.readString();
+        company = input.readString();
+        description = input.readString();
+        price=input.readString();
+        availability = input.readString();
+        image=input.readString();
     }
 
-    public Product(int id, String title, double price, String thumbnail) {
+    public Product(int id, String stall, String name, String company, String description, String price, String availability, String image) {
         this.id = id;
-        this.title = title;
+        this.stall = stall;
+        this.name = name;
+        this.company = company;
+        this.description = description;
         this.price = price;
-        this.thumbnail = thumbnail;
+        this.availability = availability;
+        this.image = image;
     }
 
     public int getId() {
@@ -53,36 +65,76 @@ public class Product implements Parcelable {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public static Creator<Product> getCREATOR() {
+        return CREATOR;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getStall() {
+        return stall;
     }
 
-    public double getPrice() {
+    public void setStall(String stall) {
+        this.stall = stall;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public String getThumbnail() {
-        return thumbnail;
+    public String getAvailability() {
+        return availability;
     }
 
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setAvailability(String availability) {
+        this.availability = availability;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override
     public String toString() {
         return "\nID: " + id +
-                "\nTitle " + title +
+                "\nStall: " + stall +
+                "\nName: "+name+
+                "\nCompany: "+company+
+                "\nDescription: "+description+
                 "\nPrice: "+price+
-                "\nThumbnail "+thumbnail+
+                "\nAvailability: "+availability+
+                "\nImage: "+image+
                 "\n";
     }
 
@@ -94,8 +146,12 @@ public class Product implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(id);
-        parcel.writeString(title);
-        parcel.writeDouble(price);
-        parcel.writeString(thumbnail);
+        parcel.writeString(stall);
+        parcel.writeString(name);
+        parcel.writeString(company);
+        parcel.writeString(description);
+        parcel.writeString(price);
+        parcel.writeString(availability);
+        parcel.writeString(image);
     }
 }

@@ -85,33 +85,14 @@ public class FragmentStallDetails extends Fragment /*implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         layout= inflater.inflate(R.layout.fragment_stall_details, container, false);
         L.t(getActivity(),"Inside Fair details");
-        update();
-        Button bedit = (Button) layout.findViewById(R.id.bedit);
-        return layout;
-    }
-
-    public void update()
-    {
         TextView title=(TextView) layout.findViewById(R.id.detailsstallname);
         title.setText(ActivitySeller.stall.getStall_name());
         TextView organizer=(TextView) layout.findViewById(R.id.detailsstallowner);
         organizer.setText(ActivitySeller.stall.getOwner());
         TextView location=(TextView) layout.findViewById(R.id.detailsstalldescription);
         location.setText(ActivitySeller.stall.getDescription());
-    }
-
-
-    public void stallMapClicked(View view) {
-        Intent i = new Intent(getActivity(), ActivityStallMap.class);
-        i.putExtra("Information",ActivitySeller.stall.getLocation());
-        startActivity(i);
-    }
-
-    public void editDetailsClicked(View view) {
-        //editDialogShow();
-        L.t(getActivity(),"Edit button clicked");
-        ActivitySeller.stall.setStall_name("Fuck! It's working");
-        update();
+        //Button bedit = (Button) layout.findViewById(R.id.bedit);
+        return layout;
     }
 
 
