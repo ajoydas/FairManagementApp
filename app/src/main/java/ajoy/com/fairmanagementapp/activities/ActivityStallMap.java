@@ -25,6 +25,7 @@ public class ActivityStallMap extends AppCompatActivity implements OnMapReadyCal
 
     private GoogleMap mMap;
     String markerpoint;
+    String stallName;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private Toolbar mToolbar;
 
@@ -33,7 +34,9 @@ public class ActivityStallMap extends AppCompatActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            markerpoint = extras.getString("Information");
+            markerpoint = extras.getString("Location");
+            stallName = extras.getString("Stallname");
+
         }
         System.out.println(markerpoint);
 
@@ -60,7 +63,7 @@ public class ActivityStallMap extends AppCompatActivity implements OnMapReadyCal
         System.out.println(d1 + " and " + d2);
 
         LatLng stall = new LatLng(Double.parseDouble(d1), Double.parseDouble(d2));
-        mMap.addMarker(new MarkerOptions().position(stall).title(ActivitySeller.stall.getStall_name()));
+        mMap.addMarker(new MarkerOptions().position(stall).title(stallName));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(stall));
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
         enableMyLocation();

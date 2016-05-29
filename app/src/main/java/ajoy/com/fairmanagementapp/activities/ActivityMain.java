@@ -23,12 +23,8 @@ import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
-import ajoy.com.fairmanagementapp.fragments.FragmentBoxOffice;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawer;
-import ajoy.com.fairmanagementapp.fragments.FragmentDrawerFair;
 import ajoy.com.fairmanagementapp.fragments.FragmentRunningFairs;
-import ajoy.com.fairmanagementapp.fragments.FragmentSearch;
-import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
 import ajoy.com.fairmanagementapp.fragments.FragmentUpcomingFairs;
 import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.materialtest.R;
@@ -277,11 +273,11 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
             }
             if (v.getTag().equals(TAG_SORT_DATE)) {
                 //call the sort by date method on any Fragment that implements sortlistener
-                ((SortListener) fragment).onSortByDate();
+                ((SortListener) fragment).onSortByPrice();
             }
             if (v.getTag().equals(TAG_SORT_RATINGS)) {
                 //call the sort by ratings method on any Fragment that implements sortlistener
-                ((SortListener) fragment).onSortByRating();
+                ((SortListener) fragment).onSortByAvailability();
             }
         }
 

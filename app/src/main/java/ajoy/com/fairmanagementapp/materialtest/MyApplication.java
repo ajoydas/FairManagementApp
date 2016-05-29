@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import ajoy.com.fairmanagementapp.database.DBFairs;
 import  ajoy.com.fairmanagementapp.database.DBMovies;
 import  ajoy.com.fairmanagementapp.database.DBProducts;
+import ajoy.com.fairmanagementapp.database.DBStalls;
 
 /**
  * Created by Windows on 30-01-2015.
@@ -21,6 +22,8 @@ public class MyApplication extends Application {
     private static DBMovies mDatabaseMovie;
     private static DBProducts mDatabaseProduct;
     private static DBFairs mDatabaseFair;
+    private static DBStalls mDatabaseStall;
+
     public static MyApplication getInstance() {
         return sInstance;
     }
@@ -48,6 +51,13 @@ public class MyApplication extends Application {
             mDatabaseFair = new DBFairs(getAppContext());
         }
         return mDatabaseFair;
+    }
+
+    public static DBStalls getWritableDatabaseStall() {
+        if (mDatabaseStall == null) {
+            mDatabaseStall = new DBStalls(getAppContext());
+        }
+        return mDatabaseStall;
     }
 
     @Override

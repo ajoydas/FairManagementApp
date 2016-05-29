@@ -16,47 +16,15 @@
             android:queryHint="Search By Name"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
-    </RelativeLayout>
-
-    <RadioGroup
-        android:id="@+id/searchViewRadio"
-        android:layout_width="match_parent"
-
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingBottom="10dp"
-        >
-
-
-        <RadioButton
-            android:id="@+id/byName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="Name" />
-
-        <RadioButton
-            android:id="@+id/byCompany"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="Company/Author"
-            android:paddingRight="5dp" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Search"
-            android:paddingLeft="5dp"
-            android:paddingRight="8dp"
-            android:id="@+id/bsearchproduct"
-            android:layout_weight="1"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true" />
-
-
-    </RadioGroup>
+            android:id="@+id/bsearchstall"
+            android:layout_below="@+id/searchView"
+             />
+    </RelativeLayout>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -69,17 +37,17 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="ajoy.com.fairmanagementapp.fragments.FragmentStallViewProducts">
+        tools:context="ajoy.com.fairmanagementapp.fragments.FragmentSearch">
 
         <!-- TODO: Update blank fragment layout -->
 
         <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipeProducts"
+            android:id="@+id/swipeStalls"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <!-- TODO: Update blank fragment layout -->
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/listProducts"
+                android:id="@+id/listStalls"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </android.support.v4.widget.SwipeRefreshLayout>

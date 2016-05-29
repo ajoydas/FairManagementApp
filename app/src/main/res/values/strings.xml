@@ -26,6 +26,10 @@
         <item>Products</item>
         <item>Sells</item>
     </string-array>
+    <string-array name="tab_stall_view">
+        <item>Details</item>
+        <item>Products</item>
+    </string-array>
 
 
     <string name="title_activity_activity_using_tab_library">SlidingTabLayoutActivity</string>
@@ -74,5 +78,7 @@
     <string name="permission_required_toast">Location permission is required for this.</string>
     <string name="permission_rationale_location">Access to the location service is required to demonstrate the \\\'my location\\\' feature, which shows your current location on the map.</string>
     <string name="title_activity_add_product">Add Product</string>
+    <string name="title_activity_edit_product">Edit Product</string>
+    <string name="title_activity_stall_view">Stall Details</string>
 
 </resources>

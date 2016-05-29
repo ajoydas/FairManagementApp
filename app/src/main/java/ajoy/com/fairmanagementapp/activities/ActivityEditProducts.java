@@ -34,9 +34,10 @@ import java.sql.SQLException;
 import ajoy.com.fairmanagementapp.extras.Utility;
 import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.materialtest.R;
+import ajoy.com.fairmanagementapp.pojo.Product;
 
 
-public class ActivityAddProducts extends AppCompatActivity {
+public class ActivityEditProducts extends AppCompatActivity {
 
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
@@ -67,15 +68,18 @@ public class ActivityAddProducts extends AppCompatActivity {
     private String fair_db_name;
     private String fair_stall;
     private Toolbar mToolbar;
+    private Product product;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fair_db_name=getIntent().getStringExtra("db_name");
-        fair_stall = getIntent().getStringExtra("stall");
+        fair_db_name = ActivityFair.fair.getDb_name();
+        fair_stall = ActivitySeller.stall.getStall();
+        product=getIntent().getParcelableExtra("Information");
+
         System.out.println("Db: "+fair_db_name+"Stall: "+fair_stall);
 
-        setContentView(R.layout.activity_add_products);
+        setContentView(R.layout.activity_edit_products);
 
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(mToolbar);
@@ -85,9 +89,22 @@ public class ActivityAddProducts extends AppCompatActivity {
         descriptionInput = (EditText) findViewById(R.id.addproductdescription);
         priceInput = (EditText) findViewById(R.id.addproductprice);
         availability = "High";
-        image=null;
-        bitmap=null;
+
+        image=product.getImage();
+        bitmap=StringToBitMap(image);
+        imageView.setImageBitmap(bitmap);
+
+        nameInput.setText(product.getName());
+        companyInput.setText(product.getCompany());
+        descriptionInput.setText(product.getDescription());
+        priceInput.setText(product.getPrice());
+
         radioGroup= (RadioGroup)findViewById(R.id.availabilityoption);
+        if(product.getAvailability().equals("High")){radioGroup.check(R.id.addproducthigh);availability="High";}
+        else if(product.getAvailability().equals("Medium")){radioGroup.check(R.id.addproductmedium);availability = "Medium";}
+        else if(product.getAvailability().equals("Low")){radioGroup.check(R.id.addproductlow);availability = "Low";}
+        else if(product.getAvailability().equals("Out of Stock")){radioGroup.check(R.id.addproductoutofstock);availability = "Out of Stock";}
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
@@ -108,7 +125,20 @@ public class ActivityAddProducts extends AppCompatActivity {
 
     }
 
-    public void addProductClicked(View view) {
+
+
+    public Bitmap StringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte= Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
+    public void editProductClicked(View view) {
         name = nameInput.getText().toString();
         company = companyInput.getText().toString();
         description = descriptionInput.getText().toString();
@@ -116,7 +146,7 @@ public class ActivityAddProducts extends AppCompatActivity {
 
         if(name==null||price==null||name.equals("")||!isDouble(price))
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(ActivityAddProducts.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEditProducts.this);
             builder.setTitle("Invalid!");
             builder.setMessage("Product Name or Price is Missing or Invalid.Please Try Again.");
             builder.setCancelable(true);
@@ -176,12 +206,12 @@ public class ActivityAddProducts extends AppCompatActivity {
         final CharSequence[] items = { "Take Photo", "Choose from Library",
                 "Cancel" };
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityAddProducts.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEditProducts.this);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result=Utility.checkPermission(ActivityAddProducts.this);
+                boolean result=Utility.checkPermission(ActivityEditProducts.this);
 
                 if (items[item].equals("Take Photo")) {
                     userChoosenTask ="Take Photo";
@@ -354,7 +384,7 @@ public class ActivityAddProducts extends AppCompatActivity {
                 if(bitmap!=null) {
                     image = getStringImage(bitmap);
                 }
-                loading = ProgressDialog.show(ActivityAddProducts.this, "Saving Product", "Please wait...",true,true);
+                loading = ProgressDialog.show(ActivityEditProducts.this, "Saving Product", "Please wait...",true,true);
             }
 
             @Override
@@ -382,17 +412,15 @@ public class ActivityAddProducts extends AppCompatActivity {
                     Connection con = DriverManager.getConnection(Url, username, password);
                     System.out.println("Connected");
 
-                    PreparedStatement st = con.prepareStatement("INSERT INTO products" +
-                            "(stall,name,company,description,price,availability,image)" +
-                            "VALUES" +
-                            "(?,?,?,?,?,?,?)");
-                    st.setString(1, fair_stall);
-                    st.setString(2,name);
-                    st.setString(3,company);
-                    st.setString(4,description);
-                    st.setString(5,price);
-                    st.setString(6,availability);
-                    st.setString(7,image);
+                    PreparedStatement st = con.prepareStatement("Update products set name=?,company=?,description=?,price=?,availability=?,image=? where id=?");
+
+                    st.setString(1,name);
+                    st.setString(2,company);
+                    st.setString(3,description);
+                    st.setString(4,price);
+                    st.setString(5,availability);
+                    st.setString(6,image);
+                    st.setInt(7, product.getId());
 
                     System.out.println("Statement");
 
@@ -430,4 +458,98 @@ public class ActivityAddProducts extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
+    public void deleteButtonClicked(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEditProducts.this);
+        builder.setTitle("Delete Product!");
+        builder.setMessage("Are you sure you want to remove the product?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                delete();
+                dialog.cancel();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+
+    }
+
+
+    private void delete(){
+        class Delete extends AsyncTask<Void,Void,Integer> {
+
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                if(bitmap!=null) {
+                    image = getStringImage(bitmap);
+                }
+                loading = ProgressDialog.show(ActivityEditProducts.this, "Removing Product", "Please wait...",true,true);
+            }
+
+            @Override
+            protected void onPostExecute(Integer value) {
+                super.onPostExecute(value);
+                loading.dismiss();
+                if(value==1)
+                {
+                    L.t(getApplicationContext(),"Deleted Successfully");
+                    finish();
+                }
+                else
+                {
+                    L.t(getApplicationContext(),"Removing Failed!Please Check Connection!");
+                }
+            }
+
+            @Override
+            protected Integer doInBackground(Void... params) {
+
+                Integer result=0;
+                try {
+                    Class.forName("com.mysql.jdbc.Driver");
+                    String Url = url + fair_db_name;
+                    Connection con = DriverManager.getConnection(Url, username, password);
+                    System.out.println("Connected");
+
+                    PreparedStatement st = con.prepareStatement("Delete from products where id=?");
+
+                    st.setInt(1, product.getId());
+
+                    System.out.println("Statement");
+
+                    ResultSet rs = null;
+
+                    int rows = st.executeUpdate();
+
+                    System.out.println(rows);
+
+                    if (rows == 1) {
+                        result=1;
+                    }
+
+                } catch (ClassNotFoundException | SQLException e) {
+                    e.printStackTrace();
+                }
+                return  result;
+
+            }
+        }
+
+        Delete ui = new Delete();
+        ui.execute();
+    }
+
 }

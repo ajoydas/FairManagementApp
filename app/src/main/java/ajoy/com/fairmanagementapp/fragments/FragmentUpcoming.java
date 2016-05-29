@@ -76,13 +76,13 @@ public class FragmentUpcoming extends Fragment implements SortListener, Upcoming
     }
 
     @Override
-    public void onSortByDate() {
+    public void onSortByPrice() {
         mSorter.sortMoviesByDate(mListMovies);
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onSortByRating() {
+    public void onSortByAvailability() {
         mSorter.sortMoviesByRating(mListMovies);
         mAdapter.notifyDataSetChanged();
     }

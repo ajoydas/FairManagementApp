@@ -42,12 +42,10 @@
         </activity>
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivityFair"
-            android:label="@string/title_activity_fair">
-        </activity>
+            android:label="@string/title_activity_fair" />
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivitySeller"
-            android:label="@string/title_activity_seller">
-        </activity>
+            android:label="@string/title_activity_seller" />
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivityTouchEvent"
             android:label="@string/title_activity_sub">
@@ -80,12 +78,24 @@
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivityStallMap"
             android:label="@string/title_activity_activity_stall_map" />
-        <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityAddProducts"
-            android:label="@string/title_activity_add_product" android:windowSoftInputMode="stateHidden"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <activity
+            android:name="ajoy.com.fairmanagementapp.activities.ActivityAddProducts"
+            android:label="@string/title_activity_add_product"
+            android:windowSoftInputMode="stateHidden" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name="ajoy.com.fairmanagementapp.activities.ActivityEditProducts"
+            android:label="@string/title_activity_edit_product"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityStallView"
+            android:label="@string/title_activity_stall_view"   />
     </application>
 
 </manifest>

@@ -83,7 +83,7 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
 
     ProgressDialog loading;
 
-    private static final String url = "jdbc:mysql://192.168.0.101:3306/";
+    private static final String url = "jdbc:mysql://192.168.0.100:3306/";
     private static final String username="ajoy";
     private static final String password="ajoydas";
     private String stallname;
@@ -106,7 +106,7 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
         //setupJob();
         setupDrawer();
         //animate the Toolbar when it comes into the picture
-        AnimationUtils.animateToolbarDroppingDown(mContainerToolbar);
+        //AnimationUtils.animateToolbarDroppingDown(mContainerToolbar);
 
     }
 
@@ -124,7 +124,9 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
 
     public void stallMapClicked(View view) {
         Intent i = new Intent(ActivitySeller.this, ActivityStallMap.class);
-        i.putExtra("Information",ActivitySeller.stall.getLocation());
+        i.putExtra("Location",ActivitySeller.stall.getLocation());
+        i.putExtra("Stallname",ActivitySeller.stall.getStall_name());
+
         startActivity(i);
     }
 
@@ -469,11 +471,11 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
             }
             if (v.getTag().equals(TAG_SORT_DATE)) {
                 //call the sort by date method on any Fragment that implements sortlistener
-                ((SortListener) fragment).onSortByDate();
+                ((SortListener) fragment).onSortByPrice();
             }
             if (v.getTag().equals(TAG_SORT_RATINGS)) {
                 //call the sort by ratings method on any Fragment that implements sortlistener
-                ((SortListener) fragment).onSortByRating();
+                ((SortListener) fragment).onSortByAvailability();
             }
         }
 

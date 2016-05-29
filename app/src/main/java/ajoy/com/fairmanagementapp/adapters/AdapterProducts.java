@@ -50,7 +50,7 @@ public class AdapterProducts  extends RecyclerView.Adapter<AdapterProducts.ViewH
 
         holder.productTitle.setText(currentProduct.getName());
         holder.productCompany.setText("Company/Author: "+currentProduct.getCompany());
-        holder.productPrice.setText("Price: "+currentProduct.getPrice());
+        holder.productPrice.setText("Price:Tk "+currentProduct.getPrice());
         holder.productAvailability.setText("Available: " +currentProduct.getAvailability());
         holder.productImage.setImageBitmap(StringToBitMap(currentProduct.getImage()));
 

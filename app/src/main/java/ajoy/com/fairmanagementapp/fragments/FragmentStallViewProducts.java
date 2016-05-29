@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
@@ -20,22 +20,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
-import ajoy.com.fairmanagementapp.activities.ActivityAddProducts;
-import ajoy.com.fairmanagementapp.activities.ActivityEditProducts;
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
-import ajoy.com.fairmanagementapp.activities.ActivitySeller;
 import ajoy.com.fairmanagementapp.activities.ActivityStallMap;
+import ajoy.com.fairmanagementapp.activities.ActivityStallView;
 import ajoy.com.fairmanagementapp.adapters.AdapterProducts;
 import ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
+import ajoy.com.fairmanagementapp.extras.AsyncResponse;
 import ajoy.com.fairmanagementapp.extras.ProductSorter;
 import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.materialtest.MyApplication;
@@ -44,14 +47,14 @@ import ajoy.com.fairmanagementapp.pojo.Product;
 import ajoy.com.fairmanagementapp.task.TaskLoadStallProducts;
 
 /**
- * Created by ajoy on 5/27/16.
+ * Created by ajoy on 5/29/16.
  */
-public class FragmentStallProducts extends Fragment implements View.OnClickListener,ProductLoadedListener, SwipeRefreshLayout.OnRefreshListener{
+public class FragmentStallViewProducts extends Fragment implements  View.OnClickListener,ProductLoadedListener, SwipeRefreshLayout.OnRefreshListener {
     private static SearchView searchView;
     private static RadioGroup radioGroup;
 
     //The key used to store arraylist of movie objects to and from parcelable
-    private static final String STATE_STALL_PRODUCTS = "states_stall_products";
+    private static final String STATE_STALL_PRODUCTS = "states_search_products";
     //the arraylist containing our list of box office his
     protected ArrayList<Product> mListProducts;
     //the adapter responsible for displaying our movies within a RecyclerView
@@ -68,13 +71,18 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
 
     private String search;
     private int option;
+    private String location;
+    private String stallname;
+    private boolean res=false;
 
-    public static FragmentStallProducts newInstance(String param1, String param2) {
-        FragmentStallProducts fragment = new FragmentStallProducts();
+
+    public static FragmentStallViewProducts newInstance(String param1, String param2) {
+        FragmentStallViewProducts fragment = new FragmentStallViewProducts();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
+
 
 
     @Override
@@ -85,7 +93,7 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View layout = inflater.inflate(R.layout.fragment_stall_products, container, false);
+        final View layout = inflater.inflate(R.layout.fragment_search_products, container, false);
         L.t(getActivity(),"Inside stall Products!!!");
         searchView= (SearchView) layout.findViewById(R.id.searchView);
         option=1;
@@ -110,7 +118,7 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
             @Override
             public boolean onQueryTextSubmit(String query) {
                 search = query;
-                searchResult(search);
+                searchResult();
                 return false;
             }
 
@@ -136,15 +144,8 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
             //if this fragment starts after a rotation or configuration change, load the existing movies from a parcelable
             mListProducts = savedInstanceState.getParcelableArrayList(STATE_STALL_PRODUCTS);
         } else {
-            new TaskLoadStallProducts(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),null,0).execute();
-            //if this fragment starts for the first time, load the list of movies from a database
-            /*mListProducts = MyApplication.getWritableDatabaseProduct().readProducts();
-            //if the database is empty, trigger an AsycnTask to download movie list from the web
-            if (mListProducts.isEmpty()) {
                 L.m("FragmentUpcoming: executing task from fragment");
-                new TaskLoadStallProducts(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),null,0).execute();
-
-            }*/
+                new TaskLoadStallProducts(this, ActivityFair.fair.getDb_name(), ActivityStallView.stall.getStall(),null,0).execute();
         }
         //update your Adapter to containg the retrieved movies
         mAdapter.setProducts(mListProducts);
@@ -152,10 +153,9 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
         return layout;
     }
 
-
-    private void searchResult(String s)
+    private void searchResult()
     {
-        new TaskLoadStallProducts(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),search,option).execute();
+        new TaskLoadStallProducts(this,ActivityFair.fair.getDb_name(), ActivityStallView.stall.getStall(),search,option).execute();
     }
 
     @Override
@@ -186,7 +186,7 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
     private void editDialogShow(final int position) {
         final Dialog dialog = new Dialog(getActivity());
         dialog.setTitle("Product Details");
-        dialog.setContentView(R.layout.dialog_stall_product_details);
+        dialog.setContentView(R.layout.dialog_stall_view_product_details);
         final TextView productName = (TextView) dialog.findViewById(R.id.dialog_stall_product_name);
         final TextView productCompany = (TextView) dialog.findViewById(R.id.dialog_stall_product_company);
         final TextView productDescription = (TextView) dialog.findViewById(R.id.dialog_stall_product_description);
@@ -202,7 +202,6 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
         productAvailability.setText(mListProducts.get(position).getAvailability());
 
         dialog.show();
-        Button bedit= (Button) dialog.findViewById(R.id.bedit);
         Button bcancel= (Button) dialog.findViewById(R.id.bcancel);
         Button bviewstallmap= (Button) dialog.findViewById(R.id.bviewStallMap);
         final android.widget.LinearLayout.LayoutParams params= (LinearLayout.LayoutParams) productImage.getLayoutParams();
@@ -223,18 +222,6 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
         });
 
 
-
-        bedit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent i = new Intent(getActivity(), ActivityEditProducts.class);
-                i.putExtra("Information",mListProducts.get(position));
-                startActivity(i);
-                dialog.cancel();
-            }
-        });
-
         bcancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -247,12 +234,13 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), ActivityStallMap.class);
-                i.putExtra("Location",ActivitySeller.stall.getLocation());
-                i.putExtra("Stallname",ActivitySeller.stall.getStall_name());
+                i.putExtra("Location", ActivityStallView.stall.getLocation());
+                i.putExtra("Stallname", ActivityStallView.stall.getStall_name());
                 startActivity(i);
             }
         });
     }
+
 
     public Bitmap StringToBitMap(String encodedString){
         try {
@@ -289,8 +277,6 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Button baddproducts = (Button) getActivity().findViewById(R.id.baddproducts);
-        baddproducts.setOnClickListener(this);
         Button bsearchproduct = (Button) getActivity().findViewById(R.id.bsearchproduct);
         bsearchproduct.setOnClickListener(this);
     }
@@ -299,34 +285,27 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
     public void onRefresh() {
         L.t(getActivity(), "onRefresh");
         //load the whole feed again on refresh, dont try this at home :)
-        new TaskLoadStallProducts(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),null,0).execute();
+        new TaskLoadStallProducts(this,ActivityFair.fair.getDb_name(), ActivityStallView.stall.getStall(),null,0).execute();
 
     }
 
     //Click listener for Add Button
     @Override
     public void onClick(View v) {
-        //L.t(getActivity(),"Add button Clicked");
-        if(v.getId()==R.id.baddproducts)
-        {
-            Intent i = new Intent(MyApplication.getAppContext(), ActivityAddProducts.class);
-            i.putExtra("db_name",ActivityFair.fair.getDb_name());
-            i.putExtra("stall", ActivitySeller.stall.getStall());
-            startActivity(i);
-        }
-
         if(v.getId()==R.id.bsearchproduct)
         {
             InputMethodManager inputManager = (InputMethodManager)
-                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
-                InputMethodManager.HIDE_NOT_ALWAYS);
+            inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
 
-            searchResult(search);
+            searchResult();
         }
 
     }
+
+
 
     //Touch
     public static interface ClickListener {

@@ -32,14 +32,14 @@ import  ajoy.com.fairmanagementapp.task.TaskLoadProducts;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FragmentSearch#newInstance} factory method to
+ * Use the  factory method to
  * create an instance of this fragment.
  */
 
-public class FragmentSearch extends Fragment implements SortListener, ProductLoadedListener, SwipeRefreshLayout.OnRefreshListener {
+public class FragmentSearch /*extends Fragment implements SortListener, ProductLoadedListener, SwipeRefreshLayout.OnRefreshListener */{
 
 
-    //The key used to store arraylist of movie objects to and from parcelable
+   /* //The key used to store arraylist of movie objects to and from parcelable
     private static final String STATE_PRODUCTS = "state_products";
     //the arraylist containing our list of box office his
     protected ArrayList<Product> mListProducts;
@@ -77,13 +77,13 @@ public class FragmentSearch extends Fragment implements SortListener, ProductLoa
     //Todo fix SortListener
 
     @Override
-    public void onSortByDate() {
+    public void onSortByPrice() {
         mSorter.sortProductsByPrice(mListProducts);
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onSortByRating() {
+    public void onSortByAvailability() {
 
     }
 
@@ -219,7 +219,7 @@ public class FragmentSearch extends Fragment implements SortListener, ProductLoa
 
 
 
-/*
+*//*
     private static final String url = "jdbc:mysql://192.168.0.100:3306/logindatabase";
     private static final String username="ajoy";
     private static final String password="ajoydas";
@@ -241,15 +241,15 @@ public class FragmentSearch extends Fragment implements SortListener, ProductLoa
         // Required empty public constructor
     }
 
-    */
-/**
+    *//*
+*//**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
      * @return A new instance of fragment FragmentSearch.
-     *//*
+     *//**//*
 
     // TODO: Rename and change types and number of parameters
     public static FragmentSearch newInstance(String param1, String param2) {
@@ -349,9 +349,9 @@ public class FragmentSearch extends Fragment implements SortListener, ProductLoa
         i.putExtra("Url","https://www.google.com/maps/d/edit?mid=1lGcLL7WSCrilqiBQLTeXetjgIOI");
         startActivity(i);
 
+*//*
+
+
 */
-
-
-
 
 }

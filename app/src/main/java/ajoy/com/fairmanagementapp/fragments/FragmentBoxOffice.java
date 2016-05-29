@@ -155,7 +155,7 @@ public class FragmentBoxOffice extends Fragment implements SortListener, BoxOffi
      * Called when the user chooses to sort results by date through the menu displayed inside FAB
      */
     @Override
-    public void onSortByDate() {
+    public void onSortByPrice() {
         mSorter.sortMoviesByDate(mListMovies);
         mAdapter.notifyDataSetChanged();
     }
@@ -164,7 +164,7 @@ public class FragmentBoxOffice extends Fragment implements SortListener, BoxOffi
      * Called when the user chooses to sort results by rating through the menu displayed inside FAB
      */
     @Override
-    public void onSortByRating() {
+    public void onSortByAvailability() {
         mSorter.sortMoviesByRating(mListMovies);
         mAdapter.notifyDataSetChanged();
     }

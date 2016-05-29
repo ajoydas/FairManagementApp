@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.Date;
 import ajoy.com.fairmanagementapp.database.DBFairs;
 import ajoy.com.fairmanagementapp.database.DBMovies;
 import ajoy.com.fairmanagementapp.database.DBProducts;
+import ajoy.com.fairmanagementapp.database.DBStalls;
 import ajoy.com.fairmanagementapp.json.Endpoints;
 import ajoy.com.fairmanagementapp.json.Parser;
 import ajoy.com.fairmanagementapp.json.Requestor;
@@ -23,12 +25,13 @@ import ajoy.com.fairmanagementapp.materialtest.MyApplication;
 import ajoy.com.fairmanagementapp.pojo.Fair;
 import ajoy.com.fairmanagementapp.pojo.Movie;
 import ajoy.com.fairmanagementapp.pojo.Product;
+import ajoy.com.fairmanagementapp.pojo.Stall;
 
 /**
  * Created by Windows on 02-03-2015.
  */
 public class MovieUtils {
-    private static final String url = "jdbc:mysql://192.168.0.101:3306/";
+    private static final String url = "jdbc:mysql://192.168.0.100:3306/";
     private static final String username="ajoy";
     private static final String password="ajoydas";
 
@@ -106,7 +109,7 @@ public class MovieUtils {
         return null;
     }
 
-    public static ArrayList<Product> loadStallProducts(String fair_db,String stallname,String query)
+    public static ArrayList<Product> loadStallProducts(String fair_db,String stallname,String query,int option)
     {
         ArrayList<Product> listProducts = new ArrayList<>();
         String Url=url+fair_db;
@@ -117,12 +120,24 @@ public class MovieUtils {
 
             System.out.println("Connected\nQuery: "+query);
 
-            if(query==null) {
+            if(query==null||query.equals("")||option==0) {
                 st = con.prepareStatement("select * from products where stall=?");
                 //PreparedStatement stcount = con.prepareStatement("select count(*) from images where id = ?");
                 st.setString(1, stallname);
 
             }
+            else if(option==1)
+            {
+                st = con.prepareStatement("select * from products where stall=? and name like '%"+query+"%' ");
+                st.setString(1, stallname);
+            }
+            else if(option==2)
+            {
+                st = con.prepareStatement("select * from products where stall=? and company like '%"+query+"%' ");
+                st.setString(1, stallname);
+            }
+
+
             //st.setInt(1,Integer.parseInt(id));
             //stcount.setInt(1,Integer.parseInt(id));
 
@@ -131,6 +146,100 @@ public class MovieUtils {
             ResultSet rs = null,rscount=null;
 
             rs = st.executeQuery();
+            //rscount=st.executeQuery();
+            int rowcount=0;
+            if (rs.last()) {
+                rowcount = rs.getRow();
+                rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
+            }
+
+            System.out.println("Count: "+rowcount);
+
+            if(rowcount==0)
+            {
+                System.out.println(rowcount);
+
+                return null;
+            }
+            else {
+
+                while (rs.next()) {
+                    Product product=new Product();
+                    product.setId(rs.getInt("id"));
+                    product.setStall(rs.getString("stall"));
+                    product.setName(rs.getString("name"));
+                    product.setCompany(rs.getString("company"));
+                    product.setDescription(rs.getString("description"));
+                    product.setPrice(rs.getString("price"));
+                    product.setAvailability(rs.getString("availability"));
+                    product.setImage(rs.getString("image"));
+
+                    listProducts.add(product);
+                }
+                //MyApplication.getWritableDatabaseProduct().insertProducts(DBProducts.ProductList, listProducts, true);
+                return listProducts;
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+
+    public static ArrayList<Product> loadSearchProducts(String fair_db,String query,int option)
+    {
+        ArrayList<Product> listProducts = new ArrayList<>();
+        String Url=url+fair_db;
+        //Statement st=null;
+        PreparedStatement st=null;
+        ResultSet rs = null,rscount=null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection(Url, username, password);
+            /*st = con.createStatement();
+            System.out.println("Connected\nQuery: "+query);
+
+            if(query==null||query.equals("")||option==0) {
+                rs = st.executeQuery("select * from products");
+                //PreparedStatement stcount = con.prepareStatement("select count(*) from images where id = ?");
+            }
+            else if(option==1)
+            {
+                rs = st.executeQuery("select * from products name like '%"+query+"%' ");
+            }
+            else if(option==2)
+            {
+                rs = st.executeQuery("select * from products company like '%"+query+"%' ");
+            }*/
+
+
+            System.out.println("Connected\nQuery: "+query);
+
+            if(query==null||query.equals("")||option==0) {
+                st = con.prepareStatement("select * from products");
+                //PreparedStatement stcount = con.prepareStatement("select count(*) from images where id = ?");
+                //st.setString(1, "products");
+
+            }
+            else if(option==1)
+            {
+                st = con.prepareStatement("select * from products where name like '%"+query+"%' ");
+                //st.setString(1, "products");
+            }
+            else if(option==2)
+            {
+                st = con.prepareStatement("select * from products where company like '%"+query+"%' ");
+                //st.setString(1, "products");
+            }
+
+
+            System.out.println("Statement");
+
+            rs = st.executeQuery();
+
+
             //rscount=st.executeQuery();
             int rowcount=0;
             if (rs.last()) {
@@ -171,6 +280,7 @@ public class MovieUtils {
         }
 
     }
+
 
 
 
@@ -244,6 +354,72 @@ public class MovieUtils {
                 MyApplication.getWritableDatabaseFair().insertFairs((table == 1 ? DBFairs.RUNNING_FAIR : DBFairs.UPCOMING_FAIR), listFairs, true);
                 System.out.println("Done");
                 return listFairs;
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public static ArrayList<Stall> loadSearchStall(String fair_db,String query) {
+
+        ArrayList<Stall> listStalls= new ArrayList<>();
+        String Url=url+fair_db;
+        //Statement st=null;
+        PreparedStatement st=null;
+        ResultSet rs = null,rscount=null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection(Url, username, password);
+
+            System.out.println("Connected\nQuery: "+query);
+
+            if(query==null||query.equals("")) {
+                st = con.prepareStatement("select * from stalls");
+                //PreparedStatement stcount = con.prepareStatement("select count(*) from images where id = ?");
+                //st.setString(1, "products");
+
+            }
+            else {
+                st = con.prepareStatement("select * from stalls where stall_name like '%" + query + "%' ");
+            }
+
+            System.out.println("Statement");
+
+            rs = st.executeQuery();
+
+
+            //rscount=st.executeQuery();
+            int rowcount=0;
+            if (rs.last()) {
+                rowcount = rs.getRow();
+                rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
+            }
+
+            System.out.println("Count: "+rowcount);
+
+            if(rowcount==0)
+            {
+                System.out.println(rowcount);
+
+                return null;
+            }
+            else {
+
+                while (rs.next()) {
+                    Stall stall=new Stall();
+                    stall.setId(rs.getInt("id"));
+                    stall.setStall(rs.getString("stall"));
+                    stall.setStall_name(rs.getString("stall_name"));
+                    stall.setOwner(rs.getString("owner"));
+                    stall.setDescription(rs.getString("description"));
+                    stall.setLocation(rs.getString("location"));
+                    listStalls.add(stall);
+                }
+                MyApplication.getWritableDatabaseStall().insertStalls(DBStalls.StallList, listStalls, true);
+                return listStalls;
             }
 
         } catch (ClassNotFoundException | SQLException e) {

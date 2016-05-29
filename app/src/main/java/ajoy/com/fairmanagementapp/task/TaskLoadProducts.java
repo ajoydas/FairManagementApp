@@ -14,18 +14,21 @@ import  ajoy.com.fairmanagementapp.pojo.Product;
 public class TaskLoadProducts extends AsyncTask<Void,Void,ArrayList<Product>> {
 
     private ProductLoadedListener myComponent;
+    String fair_db;
+    String query;
+    int option;
 
-    public TaskLoadProducts(ProductLoadedListener myComponent) {
-
+    public TaskLoadProducts(ProductLoadedListener myComponent, String fair_db, String query, int option) {
         this.myComponent = myComponent;
-
+        this.fair_db = fair_db;
+        this.query = query;
+        this.option = option;
     }
-
 
     @Override
     protected ArrayList<Product> doInBackground(Void... params) {
 
-        ArrayList<Product> listProducts = MovieUtils.loadProducts();
+        ArrayList<Product> listProducts = MovieUtils.loadSearchProducts(fair_db,query,option);
         return listProducts;
     }
 
