@@ -58,8 +58,9 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
     public static final int TAB_HITS = 1;
     //int corresponding to our 2nd tab corresponding to the Fragment where upcoming movies are displayed
     public static final int TAB_UPCOMING = 2;
+    public static final int TAB_SELLS = 3;
     //int corresponding to the number of tabs in our Activity
-    public static final int TAB_COUNT = 3;
+    public static final int TAB_COUNT = 4;
     //int corresponding to the id of our JobSchedulerService
     private static final int JOB_ID = 100;
     //tag associated with the FAB menu button that sorts by name
@@ -531,6 +532,10 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
                 case TAB_UPCOMING:
                     fragment = FragmentEmployees.newInstance("", "");
                     break;
+                case TAB_SELLS:
+                    fragment = FragmentUpcoming.newInstance("", "");
+                    break;
+
             }
             return fragment;
 

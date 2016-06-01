@@ -510,7 +510,7 @@ public class ActivityEditProducts extends AppCompatActivity {
                 }
                 else
                 {
-                    L.t(getApplicationContext(),"Removing Failed!Please Check Connection!");
+                    L.t(getApplicationContext(),"Removing Failed!Please Check Connection and Refresh the List!");
                 }
             }
 

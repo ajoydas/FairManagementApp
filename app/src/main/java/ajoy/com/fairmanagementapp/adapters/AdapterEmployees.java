@@ -1,26 +1,29 @@
 package ajoy.com.fairmanagementapp.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.hardware.camera2.CameraManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
-import ajoy.com.fairmanagementapp.extras.Constants;
 import ajoy.com.fairmanagementapp.materialtest.R;
 import ajoy.com.fairmanagementapp.pojo.Employee;
+import ajoy.com.fairmanagementapp.pojo.Product;
 
 /**
- * Created by ajoy on 5/31/16.
+ * Created by ajoy on 5/19/16.
  */
-public class AdapterEmployees extends RecyclerView.Adapter<AdapterEmployees.ViewHolderEmployees>{
+public class AdapterEmployees  extends RecyclerView.Adapter<AdapterEmployees.ViewHolderEmployees> {
+
     private ArrayList<Employee> mListEmployees = new ArrayList<>();
     private LayoutInflater mInflater;
     private int mPreviousPosition = 0;
@@ -29,17 +32,14 @@ public class AdapterEmployees extends RecyclerView.Adapter<AdapterEmployees.View
         this.mInflater = LayoutInflater.from(context);;
     }
 
-    public void setEmployees(ArrayList<Employee> listEmployees) {
-        System.out.println("Inside setEmployees");
-        this.mListEmployees = listEmployees;
-        System.out.println(mListEmployees);
+    public void setEmployees(ArrayList<Employee> listMovies) {
+        this.mListEmployees = listMovies;
         //update the adapter to reflect the new set of movies
         notifyDataSetChanged();
     }
 
     @Override
     public ViewHolderEmployees onCreateViewHolder(ViewGroup parent, int viewType) {
-        System.out.println("Inside ViewHolderEmployees");
         View view = mInflater.inflate(R.layout.custom_employee_list, parent, false);
         ViewHolderEmployees viewHolder = new ViewHolderEmployees(view);
         return viewHolder;
@@ -47,15 +47,11 @@ public class AdapterEmployees extends RecyclerView.Adapter<AdapterEmployees.View
 
     @Override
     public void onBindViewHolder(ViewHolderEmployees holder, int position) {
+        Employee currentEmployee = mListEmployees.get(position);
 
-        System.out.println("Inside onBindViewHolder");
-        Employee currentemployee = mListEmployees.get(position);
+        holder.productTitle.setText(currentEmployee.getName());
+        holder.productCompany.setText("Position: "+currentEmployee.getPosition());
 
-        holder.employeeName.setText(currentemployee.getName());
-        holder.employeeContactNo.setText(currentemployee.getContact_no());
-        holder.employeePosition.setText(currentemployee.getPosition());
-
-        System.out.println("outside onBindViewHolder");
         if (position > mPreviousPosition) {
             AnimationUtils.animateSunblind(holder, true);
 //            AnimationUtils.animateSunblind(holder, true);
@@ -70,6 +66,17 @@ public class AdapterEmployees extends RecyclerView.Adapter<AdapterEmployees.View
         mPreviousPosition = position;
     }
 
+    public Bitmap StringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
     @Override
     public int getItemCount() {
         if(mListEmployees==null)return 0;
@@ -78,15 +85,15 @@ public class AdapterEmployees extends RecyclerView.Adapter<AdapterEmployees.View
 
     static class ViewHolderEmployees extends RecyclerView.ViewHolder {
 
-        TextView employeeName;
-        TextView employeeContactNo;
-        TextView employeePosition;
+        TextView productTitle;
+        TextView productCompany;
+
 
         public ViewHolderEmployees(View itemView) {
             super(itemView);
-            employeeName = (TextView) itemView.findViewById(R.id.employeeName);
-            employeeContactNo = (TextView) itemView.findViewById(R.id.employeeContactNo);
-            employeePosition = (TextView) itemView.findViewById(R.id.employeePosition);
+            productTitle = (TextView) itemView.findViewById(R.id.productTitle);
+            productCompany = (TextView) itemView.findViewById(R.id.productCompany);
+
         }
     }
 }

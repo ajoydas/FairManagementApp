@@ -39,7 +39,7 @@ import ajoy.com.fairmanagementapp.materialtest.R;
 import ajoy.com.fairmanagementapp.pojo.Employee;
 import ajoy.com.fairmanagementapp.task.TaskLoadEmployees;
 
-public class ActivityEmployees extends AppCompatActivity implements/* AsyncResponse,*/ EmployeeLoadedListener/*, SwipeRefreshLayout.OnRefreshListener*/ {
+public class ActivityEmployees extends AppCompatActivity /*implements*//* AsyncResponse,*//* EmployeeLoadedListener*//*, SwipeRefreshLayout.OnRefreshListener*/ {
 
     //The key used to store arraylist of movie objects to and from parcelable
     //the arraylist containing our list of box office his
@@ -60,12 +60,12 @@ public class ActivityEmployees extends AppCompatActivity implements/* AsyncRespo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employees);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.app_bar);
+        /*Toolbar mToolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(mToolbar);
 
         SearchView searchView = (SearchView) findViewById(R.id.searchViewEmployee);
 
-        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        *//*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 search = query;
@@ -78,11 +78,11 @@ public class ActivityEmployees extends AppCompatActivity implements/* AsyncRespo
                 search = newText;
                 return false;
             }
-        });*/
+        });*//*
 
         System.out.println("Outside refresh");
-        /*mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeEmployees);
-        mSwipeRefreshLayout.setOnRefreshListener(this);*/
+        *//*mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeEmployees);
+        mSwipeRefreshLayout.setOnRefreshListener(this);*//*
 
         System.out.println("Outside recycle view");
         RecyclerView mRecyclerEmployees = (RecyclerView) findViewById(R.id.listEmployees);
@@ -112,14 +112,14 @@ public class ActivityEmployees extends AppCompatActivity implements/* AsyncRespo
             }
         }));
 
-
+*/
     }
 
 
-    private void searchResult() {
+    /*private void searchResult() {
         new TaskLoadEmployees(this, ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(), search).execute();
     }
-/*
+*//*
     boolean isImageFitToScreen = false;
 
     //Employee Details dialog
@@ -167,11 +167,11 @@ public class ActivityEmployees extends AppCompatActivity implements/* AsyncRespo
 
             }
         });
-    }*/
+    }*//*
 
     int pos;
 
-    /*private void getLocation(String name){
+    *//*private void getLocation(String name){
 
 
         class GetLocation extends AsyncTask<Void, Void, Boolean> {
@@ -258,26 +258,26 @@ public class ActivityEmployees extends AppCompatActivity implements/* AsyncRespo
             L.t(this, "Connection Error");
         }
 
-    }*/
+    }*//*
 
     @Override
     public void onEmployeeLoaded(ArrayList<Employee> listEmployees) {
 
-        /*if (mSwipeRefreshLayout.isRefreshing()) {
+        *//*if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
-        }*/
+        }*//*
         mListEmployees = listEmployees;
         mAdapter.setEmployees(listEmployees);
     }
 
 
-    /*@Override
+    *//*@Override
     public void onRefresh() {
         L.t(this, "onRefresh");
         //load the whole feed again on refresh, dont try this at home :)
         new TaskLoadEmployees(this, ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(), null).execute();
 
-    }*/
+    }*//*
 
     //Click listener for Add Button
 
@@ -322,7 +322,7 @@ public class ActivityEmployees extends AppCompatActivity implements/* AsyncRespo
         bsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* Employee temp = new Employee();
+               *//* Employee temp = new Employee();
                 temp.setId(0);
                 temp.setStall("");
                 temp.setName(employeeName.getText().toString());
@@ -335,12 +335,12 @@ public class ActivityEmployees extends AppCompatActivity implements/* AsyncRespo
                     L.t(getApplication(), "Name can't be empty!");
                 } else {
                     //addEmployee(temp);
-                }*/
+                }*//*
             }
         });
     }
 
-/*
+*//*
     private void addEmployee(Employee temp) {
 
 
@@ -419,7 +419,7 @@ public class ActivityEmployees extends AppCompatActivity implements/* AsyncRespo
             L.t(this, "Connection Error");
         }
 
-    }*/
+    }*//*
 
     //Touch
     public static interface ClickListener {
@@ -467,5 +467,5 @@ public class ActivityEmployees extends AppCompatActivity implements/* AsyncRespo
 
     }
 
-
+*/
 }

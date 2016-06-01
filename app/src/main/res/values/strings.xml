@@ -24,6 +24,7 @@
     <string-array name="tab_seller">
         <item>Details</item>
         <item>Products</item>
+        <item>Employees</item>
         <item>Sells</item>
     </string-array>
     <string-array name="tab_stall_view">
