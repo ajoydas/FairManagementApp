@@ -79,6 +79,9 @@
             android:name="ajoy.com.fairmanagementapp.activities.ActivityStallMap"
             android:label="@string/title_activity_activity_stall_map" />
         <activity
+            android:name="ajoy.com.fairmanagementapp.activities.ActivityProductMap"
+            android:label="@string/title_activity_activity_stall_map" />
+        <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivityAddProducts"
             android:label="@string/title_activity_add_product"
             android:windowSoftInputMode="stateHidden" />
@@ -94,8 +97,13 @@
             android:name="ajoy.com.fairmanagementapp.activities.ActivityEditProducts"
             android:label="@string/title_activity_edit_product"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityStallView"
-            android:label="@string/title_activity_stall_view"   />
+        <activity
+            android:name="ajoy.com.fairmanagementapp.activities.ActivityStallView"
+            android:label="@string/title_activity_stall_view" />
+        <activity
+            android:name="ajoy.com.fairmanagementapp.activities.ActivityEmployees"
+            android:label="@string/title_activity_employees" />
+        <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityEmployeeList"></activity>
     </application>
 
 </manifest>

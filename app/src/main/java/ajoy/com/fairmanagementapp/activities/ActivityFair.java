@@ -147,11 +147,11 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
             public void onClick(View v) {
 
                 //original
-                user=usernameInput.getText().toString();
-                pass=passwordInput.getText().toString();
+               /* user=usernameInput.getText().toString();
+                pass=passwordInput.getText().toString();*/
 
-                /*user="stall1";
-                pass="stall1";*/
+                user="stall1";
+                pass="stall1";
 
                 new Mytask().execute();
                 dialog.cancel();

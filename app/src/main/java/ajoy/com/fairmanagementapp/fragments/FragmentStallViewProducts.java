@@ -34,6 +34,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
+import ajoy.com.fairmanagementapp.activities.ActivityProductMap;
+import ajoy.com.fairmanagementapp.activities.ActivitySeller;
 import ajoy.com.fairmanagementapp.activities.ActivityStallMap;
 import ajoy.com.fairmanagementapp.activities.ActivityStallView;
 import ajoy.com.fairmanagementapp.adapters.AdapterProducts;
@@ -233,10 +235,20 @@ public class FragmentStallViewProducts extends Fragment implements  View.OnClick
         bviewstallmap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), ActivityStallMap.class);
-                i.putExtra("Location", ActivityStallView.stall.getLocation());
-                i.putExtra("Stallname", ActivityStallView.stall.getStall_name());
-                startActivity(i);
+                if(mListProducts.get(position).getImage()!=null) {
+                    Intent i = new Intent(getActivity(), ActivityProductMap.class);
+                    i.putExtra("Location", ActivityStallView.stall.getLocation());
+                    i.putExtra("Stallname",  ActivityStallView.stall.getStall_name());
+                    i.putExtra("Image", mListProducts.get(position).getImage());
+                    startActivity(i);
+                }
+                else
+                {
+                    Intent i = new Intent(getActivity(), ActivityStallMap.class);
+                    i.putExtra("Location", ActivityStallView.stall.getLocation());
+                    i.putExtra("Stallname",  ActivityStallView.stall.getStall_name());
+                    startActivity(i);
+                }
             }
         });
     }

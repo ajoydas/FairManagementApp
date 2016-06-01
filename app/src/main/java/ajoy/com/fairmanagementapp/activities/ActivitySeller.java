@@ -36,6 +36,7 @@ import java.sql.SQLException;
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerSeller;
+import ajoy.com.fairmanagementapp.fragments.FragmentEmployees;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallDetails;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallProducts;
 import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
@@ -292,7 +293,11 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
     public void onDrawerItemClicked(int index) {
         if (index == 0) {
             startActivity(new Intent(this, ActivityTouchEvent.class));
-        } else {
+        } else if(index == 3){
+            startActivity(new Intent(this, ActivityEmployeeList.class));
+        }
+            else
+            {
             mPager.setCurrentItem(index-1);
         }
     }
@@ -524,7 +529,7 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
                     fragment = FragmentStallProducts.newInstance("", "");
                     break;
                 case TAB_UPCOMING:
-                    fragment = FragmentUpcoming.newInstance("", "");
+                    fragment = FragmentEmployees.newInstance("", "");
                     break;
             }
             return fragment;

@@ -80,5 +80,6 @@
     <string name="title_activity_add_product">Add Product</string>
     <string name="title_activity_edit_product">Edit Product</string>
     <string name="title_activity_stall_view">Stall Details</string>
+    <string name="title_activity_employees">Employees</string>
 
 </resources>

@@ -34,6 +34,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
+import ajoy.com.fairmanagementapp.activities.ActivityProductMap;
 import ajoy.com.fairmanagementapp.activities.ActivityStallMap;
 import ajoy.com.fairmanagementapp.adapters.AdapterProducts;
 import ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
@@ -259,11 +260,12 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
         bviewstallmap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pos = position;
                 getLocation(mListProducts.get(position).getStall());
             }
         });
     }
-
+int pos;
 
     private void getLocation(String name){
 
@@ -333,10 +335,20 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
     @Override
     public void processFinish(Boolean output) {
         if(output) {
-            Intent i = new Intent(getActivity(), ActivityStallMap.class);
-            i.putExtra("Location", location);
-            i.putExtra("Stallname", stallname);
-            startActivity(i);
+            if(mListProducts.get(pos).getImage()!=null) {
+                Intent i = new Intent(getActivity(), ActivityProductMap.class);
+                i.putExtra("Location", location);
+                i.putExtra("Stallname", stallname);
+                i.putExtra("Image", mListProducts.get(pos).getImage());
+                startActivity(i);
+            }
+            else
+            {
+                Intent i = new Intent(getActivity(), ActivityStallMap.class);
+                i.putExtra("Location", location);
+                i.putExtra("Stallname", stallname);
+                startActivity(i);
+            }
         }
         else {
             L.t(getActivity(), "Connection Error");
