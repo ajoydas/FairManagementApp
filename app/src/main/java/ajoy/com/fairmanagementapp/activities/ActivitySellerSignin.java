@@ -36,7 +36,7 @@ public class ActivitySellerSignin extends AppCompatActivity {
     //a layout grouping the toolbar and the tabs together
     private ViewGroup mContainerToolbar;
     private Fair fair;
-    private static final String url = "jdbc:mysql://192.168.0.100:3306/logindatabase";
+    private static final String url = "jdbc:mysql://192.168.0.101:3306/logindatabase";
     private static final String username="ajoy";
     private static final String password="ajoydas";
 

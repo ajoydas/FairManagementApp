@@ -239,11 +239,11 @@ public class ActivityEmployees extends AppCompatActivity /*implements*//* AsyncR
     @Override
     public void processFinish(Boolean output) {
         if(output) {
-            if(mListEmployees.get(pos).getImage()!=null) {
+            if(mListEmployees.get(pos).getEmployee_name()!=null) {
                 Intent i = new Intent(this, ActivityEmployeeMap.class);
                 i.putExtra("Location", location);
                 i.putExtra("Stallname", stallname);
-                i.putExtra("Image", mListEmployees.get(pos).getImage());
+                i.putExtra("Image", mListEmployees.get(pos).getEmployee_name());
                 startActivity(i);
             }
             else

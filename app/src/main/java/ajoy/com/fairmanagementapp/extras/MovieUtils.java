@@ -26,13 +26,14 @@ import ajoy.com.fairmanagementapp.pojo.Employee;
 import ajoy.com.fairmanagementapp.pojo.Fair;
 import ajoy.com.fairmanagementapp.pojo.Movie;
 import ajoy.com.fairmanagementapp.pojo.Product;
+import ajoy.com.fairmanagementapp.pojo.Sell;
 import ajoy.com.fairmanagementapp.pojo.Stall;
 
 /**
  * Created by Windows on 02-03-2015.
  */
 public class MovieUtils {
-    private static final String url = "jdbc:mysql://192.168.0.100:3306/";
+    private static final String url = "jdbc:mysql://192.168.0.101:3306/";
     private static final String username = "ajoy";
     private static final String password = "ajoydas";
 
@@ -458,6 +459,70 @@ public class MovieUtils {
                     listEmployees.add(employee);
                 }
                 return listEmployees;
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public static ArrayList<Sell> loadSells(String fair_db, String stallname, String query) {
+        ArrayList<Sell> listSells = new ArrayList<>();
+        String Url = url + fair_db;
+        //Statement st=null;
+        PreparedStatement st = null;
+        ResultSet rs = null, rscount = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection(Url, username, password);
+
+            System.out.println("Connected\nQuery: " + query);
+
+            if (query == null || query.equals("")) {
+                st = con.prepareStatement("select * from sells");
+
+            } else {
+                st = con.prepareStatement("select * from sells where employee_name like '%" + query + "%' ");
+            }
+
+
+            System.out.println("Statement");
+
+            rs = st.executeQuery();
+
+
+            //rscount=st.executeQuery();
+            int rowcount = 0;
+            if (rs.last()) {
+                rowcount = rs.getRow();
+                rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
+            }
+
+            System.out.println("Count: " + rowcount);
+
+            if (rowcount == 0) {
+                System.out.println(rowcount);
+
+                return null;
+            } else {
+
+                while (rs.next()) {
+                    Sell sell = new Sell();
+                    sell.setId(rs.getInt("id"));
+                    sell.setStall(rs.getString("stall"));
+                    sell.setProduct_name(rs.getString("product_name"));
+                    sell.setEmployee_name(rs.getString("employee_name"));
+                    sell.setDate(rs.getString("date"));
+                    sell.setTime(rs.getString("time"));
+                    sell.setPrice(rs.getString("price"));
+                    sell.setDescription(rs.getString("description"));
+
+                    listSells.add(sell);
+                }
+                System.out.println(listSells);
+                return listSells;
             }
 
         } catch (ClassNotFoundException | SQLException e) {

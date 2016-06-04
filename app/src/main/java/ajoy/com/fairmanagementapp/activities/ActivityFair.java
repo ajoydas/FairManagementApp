@@ -84,7 +84,7 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
     public static Fair fair;
     private static Stall stall;
 
-    public static final String url = "jdbc:mysql://192.168.0.100:3306/";
+    public static final String url = "jdbc:mysql://192.168.0.101:3306/";
     public static final String username="ajoy";
     public static final String password="ajoydas";
 

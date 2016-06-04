@@ -37,6 +37,7 @@ import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerSeller;
 import ajoy.com.fairmanagementapp.fragments.FragmentEmployees;
+import ajoy.com.fairmanagementapp.fragments.FragmentSells;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallDetails;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallProducts;
 import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
@@ -85,7 +86,7 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
 
     ProgressDialog loading;
 
-    private static final String url = "jdbc:mysql://192.168.0.100:3306/";
+    private static final String url = "jdbc:mysql://192.168.0.101:3306/";
     private static final String username="ajoy";
     private static final String password="ajoydas";
     private String stallname;
@@ -533,7 +534,7 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
                     fragment = FragmentEmployees.newInstance("", "");
                     break;
                 case TAB_SELLS:
-                    fragment = FragmentUpcoming.newInstance("", "");
+                    fragment = FragmentSells.newInstance("", "");
                     break;
 
             }

@@ -9,23 +9,27 @@
     android:paddingTop="@dimen/size_byte">
 
     <TextView
-        android:id="@+id/productTitle"
+        android:id="@+id/sellProduct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/productImage"
-        android:layout_marginLeft="56dp"
-        android:gravity="right"
         android:textSize="@dimen/size_text_primary"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/productCompany"
+        android:id="@+id/sellEmployee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/productTitle"
+        android:layout_below="@id/sellProduct"
+        android:textSize="@dimen/size_text_secondary"
+        />
+    <TextView
+        android:id="@+id/sellPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/sellEmployee"
         android:textSize="@dimen/size_text_secondary"
         />
 
