@@ -97,6 +97,7 @@
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivityStallView"
             android:label="@string/title_activity_stall_view" />
+        <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityAbout"></activity>
     </application>
 
 </manifest>

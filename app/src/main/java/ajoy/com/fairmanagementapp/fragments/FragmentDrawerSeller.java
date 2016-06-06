@@ -46,7 +46,7 @@ public class FragmentDrawerSeller extends Fragment {
     public List<Information> getData() {
 
         List<Information> data = new ArrayList<>();
-        int[] icons = {R.drawable.ic_action_personal,R.drawable.ic_action_trending,R.drawable.ic_action_search,R.drawable.ic_action_personal, R.drawable.ic_action_new, R.drawable.ic_action_important,R.drawable.ic_action_articles};
+        int[] icons = {R.drawable.ic_action_personal,R.drawable.ic_action_articles,R.drawable.ic_action_articles,R.drawable.ic_action_personal,R.drawable.ic_action_articles,R.drawable.ic_action_personal};
         String[] titles = getResources().getStringArray(R.array.drawer_seller_tabs);
         for (int i = 0; i < titles.length; i++) {
             Information information = new Information();

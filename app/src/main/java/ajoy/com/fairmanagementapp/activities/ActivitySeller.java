@@ -274,11 +274,11 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
 
     public void onDrawerItemClicked(int index) {
         if (index == 0) {
-            startActivity(new Intent(this, ActivityTouchEvent.class));
-        }
-            else
-            {
-            mPager.setCurrentItem(index-1);
+            finish();
+        } else if (index == 5) {
+            startActivity(new Intent(this, ActivityAbout.class));
+        } else {
+            mPager.setCurrentItem(index - 1);
         }
     }
 
@@ -368,39 +368,13 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            L.m("Settings selected");
+        if (id == R.id.about) {
+            startActivity(new Intent(this, ActivityAbout.class));
             return true;
         }
-        if (id == R.id.action_touch_intercept_activity) {
-            startActivity(new Intent(this, ActivityTouchEvent.class));
-        }
 
-        /*if (R.id.action_activity_calling == id) {
-            startActivity(new Intent(this, ActivityA.class));
-        }*/
-        /*if (R.id.action_shared_transitions == id) {
-            startActivity(new Intent(this, ActivitySharedA.class));
-        }*/
-        /*if (R.id.action_tabs_using_library == id) {
-            startActivity(new Intent(this, ActivitySlidingTabLayout.class));
-        }*/
-        /*if (R.id.action_vector_test_activity == id) {
-            startActivity(new Intent(this, ActivityVectorDrawable.class));
-        }*/
-
-       /* if (R.id.action_dynamic_tabs_activity == id) {
-            startActivity(new Intent(this, ActivityDynamicTabs.class));
-        }*/
-        /*if (R.id.action_recycler_item_animations == id) {
-            startActivity(new Intent(this, ActivityRecylerAnimators.class));
-        }*/
         return super.onOptionsItemSelected(item);
     }
 

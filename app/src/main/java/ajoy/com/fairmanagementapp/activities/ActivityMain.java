@@ -54,7 +54,6 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
     private static final String TAG_SORT_RATINGS = "sortRatings";
     //Run the JobSchedulerService every 2 minutes
     private static final long POLL_FREQUENCY = 28800000;
-    private JobScheduler mJobScheduler;
     private Toolbar mToolbar;
     //a layout grouping the toolbar and the tabs together
     private ViewGroup mContainerToolbar;
@@ -69,9 +68,7 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //setupFAB();
         setupTabs();
-        //setupJob();
         setupDrawer();
         //animate the Toolbar when it comes into the picture
         AnimationUtils.animateToolbarDroppingDown(mContainerToolbar);
@@ -92,10 +89,10 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
 
 
     public void onDrawerItemClicked(int index) {
-        if (index == 0) {
-            startActivity(new Intent(this, ActivityTouchEvent.class));
+        if (index == 2) {
+            startActivity(new Intent(this, ActivityAbout.class));
         } else {
-            mPager.setCurrentItem(index-1);
+            mPager.setCurrentItem(index);
         }
     }
 
@@ -136,39 +133,14 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will 
-        // automatically handle clicks on the Home/Up button, so long 
-        // as you specify a parent activity in AndroidManifest.xml. 
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement 
-        if (id == R.id.action_settings) {
-            L.m("Settings selected");
+        if (id == R.id.about) {
+            startActivity(new Intent(this, ActivityAbout.class));
             return true;
         }
-        if (id == R.id.action_touch_intercept_activity) {
-            startActivity(new Intent(this, ActivityTouchEvent.class));
-        }
 
-        /*if (R.id.action_activity_calling == id) {
-            startActivity(new Intent(this, ActivityA.class));
-        }*/
-        /*if (R.id.action_shared_transitions == id) {
-            startActivity(new Intent(this, ActivitySharedA.class));
-        }*/
-        /*if (R.id.action_tabs_using_library == id) {
-            startActivity(new Intent(this, ActivitySlidingTabLayout.class));
-        }*/
-        /*if (R.id.action_vector_test_activity == id) {
-            startActivity(new Intent(this, ActivityVectorDrawable.class));
-        }*/
-
-       /* if (R.id.action_dynamic_tabs_activity == id) {
-            startActivity(new Intent(this, ActivityDynamicTabs.class));
-        }*/
-        /*if (R.id.action_recycler_item_animations == id) {
-            startActivity(new Intent(this, ActivityRecylerAnimators.class));
-        }*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -210,15 +182,6 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
 
     }
 
-
-    private void toggleTranslateFAB(float slideOffset) {
-        if (mFABMenu != null) {
-            if (mFABMenu.isOpen()) {
-                mFABMenu.close(true);
-            }
-            mFAB.setTranslationX(slideOffset * 200);
-        }
-    }
 
     public void onDrawerSlide(float slideOffset) {
         //toggleTranslateFAB(slideOffset);

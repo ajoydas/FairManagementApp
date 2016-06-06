@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="drawer_tabs">
-        <item>Fairs</item>
-        <item>Running</item>
-        <item>Upcoming</item>
-        <item>Favourites</item>
-        <item>Settings</item>
+        <item>Running Fairs</item>
+        <item>Upcoming Fairs</item>
+        <item>About</item>
     </string-array>
 </resources>

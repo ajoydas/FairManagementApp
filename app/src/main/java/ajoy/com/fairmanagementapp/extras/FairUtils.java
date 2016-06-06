@@ -212,7 +212,7 @@ public class FairUtils {
                     Date date = c.getTime();
 
                     if (table == 1) {
-                        if ((fair.getStart_date()).compareTo(date) == -1) listFairs.add(fair);
+                        if ((fair.getStart_date()).compareTo(date) == -1 && (fair.getEnd_date()).compareTo(date)==1 ) listFairs.add(fair);
                     } else if (table == 2) {
                         if (fair.getStart_date().compareTo(date) != -1) listFairs.add(fair);
                     }

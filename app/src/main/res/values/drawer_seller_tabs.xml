@@ -6,7 +6,6 @@
         <item>Products</item>
         <item>Employees</item>
         <item>Sells</item>
-        <item>Favourite</item>
-        <item>Settings</item>
+        <item>About</item>
     </string-array>
 </resources>

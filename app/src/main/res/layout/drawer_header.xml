@@ -54,7 +54,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Fair Management App"
+            android:text="Fair Files"
             android:textColor="@android:color/white"
             android:gravity="right"
             style="@style/TextAppearance.AppCompat.Small" />
