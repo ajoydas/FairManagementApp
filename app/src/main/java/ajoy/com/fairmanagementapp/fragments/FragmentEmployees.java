@@ -314,11 +314,11 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
                 Integer result = 0;
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url + ActivityFair.fair.getDb_name();
+                    String Url = ActivityFair.url;
                     Connection con = DriverManager.getConnection(Url, ActivityFair.username, ActivityFair.password);
                     System.out.println("Connected");
 
-                    PreparedStatement st = con.prepareStatement("Update employees set name=?,description=?,contact_no=?,position=?,salary=? where id=?");
+                    PreparedStatement st = con.prepareStatement("Update "+ActivityFair.fair.getDb_name()+"_employees set name=?,description=?,contact_no=?,position=?,salary=? where id=?");
 
                     st.setString(1, temp.getName());
                     st.setString(2, temp.getDescription());
@@ -389,11 +389,11 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
                 Integer result=0;
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url + ActivityFair.fair.getDb_name();
+                    String Url = ActivityFair.url;
                     Connection con = DriverManager.getConnection(Url,  ActivityFair.username, ActivityFair.password);
                     System.out.println("Connected");
 
-                    PreparedStatement st = con.prepareStatement("Delete from employees where id=?");
+                    PreparedStatement st = con.prepareStatement("Delete from "+ActivityFair.fair.getDb_name()+"_employees where id=?");
 
                     st.setInt(1, mListEmployees.get(pos).getId());
 
@@ -500,11 +500,11 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
                 Integer result = 0;
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url + ActivityFair.fair.getDb_name();
+                    String Url = ActivityFair.url;
                     Connection con = DriverManager.getConnection(Url, ActivityFair.username, ActivityFair.password);
                     System.out.println("Connected");
 
-                    PreparedStatement st = con.prepareStatement("INSERT INTO employees" +
+                    PreparedStatement st = con.prepareStatement("INSERT INTO "+ActivityFair.fair.getDb_name()+"_employees" +
                             "(stall,name,description,contact_no,position,salary)" +
                             "VALUES" +
                             "(?,?,?,?,?,?)");
@@ -582,7 +582,6 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
     @Override
     public void onRefresh() {
         L.t(getActivity(), "onRefresh");
-        //load the whole feed again on refresh, dont try this at home :)
         new TaskLoadEmployees(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),null).execute();
 
     }
@@ -590,7 +589,6 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
     //Click listener for Add Button
     @Override
     public void onClick(View v) {
-        //L.t(getActivity(),"Add button Clicked");
         if(v.getId()==R.id.baddproductss)
         {
             System.out.println("Add Button");
@@ -612,7 +610,6 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
 
     }
 
-    //Touch
     public static interface ClickListener {
         public void onClick(View view, int position);
 

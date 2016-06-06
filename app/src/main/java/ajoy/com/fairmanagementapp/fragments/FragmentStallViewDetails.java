@@ -79,7 +79,7 @@ public class FragmentStallViewDetails extends Fragment   implements  View.OnClic
         organizer.setText(ActivityStallView.stall.getOwner());
         TextView location=(TextView) layout.findViewById(R.id.detailsstalldescription);
         location.setText(ActivityStallView.stall.getDescription());
-        //Button bedit = (Button) layout.findViewById(R.id.bedit);
+
         return layout;
     }
 

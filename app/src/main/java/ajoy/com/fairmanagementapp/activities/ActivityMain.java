@@ -124,79 +124,6 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
                             .setTabListener(this));
         }
 
-        //setting floating button invisible
-        //mFAB.setVisibility(View.INVISIBLE);
-    }
-    //.setIcon(mAdapter.getIcon(i))
-    /*private void setupJob() {
-        mJobScheduler = JobScheduler.getInstance(this);
-        //set an initial delay with a Handler so that the data loading by the JobScheduler does not clash with the loading inside the Fragment
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //schedule the job after the delay has been elapsed
-                buildJob();
-            }
-        }, 30000);
-    }
-
-    private void buildJob() {
-        //attach the job ID and the name of the Service that will work in the background
-        JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, new ComponentName(this, ServiceMoviesBoxOffice.class));
-        //set periodic polling that needs net connection and works across device reboots
-        builder.setPeriodic(POLL_FREQUENCY)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                .setPersisted(true);
-        mJobScheduler.schedule(builder.build());
-    }*/
-
-    private void setupFAB() {
-        //define the icon for the main floating action button
-        ImageView iconFAB = new ImageView(this);
-        iconFAB.setImageResource(R.drawable.ic_action_new);
-
-        //set the appropriate background for the main floating action button along with its icon
-        mFAB = new FloatingActionButton.Builder(this)
-                .setContentView(iconFAB)
-                .setBackgroundDrawable(R.drawable.selector_button_red)
-                .build();
-
-        //define the icons for the sub action buttons
-        ImageView iconSortName = new ImageView(this);
-        iconSortName.setImageResource(R.drawable.ic_action_alphabets);
-        ImageView iconSortDate = new ImageView(this);
-        iconSortDate.setImageResource(R.drawable.ic_action_calendar);
-        ImageView iconSortRatings = new ImageView(this);
-        iconSortRatings.setImageResource(R.drawable.ic_action_important);
-
-        //set the background for all the sub buttons
-        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
-        itemBuilder.setBackgroundDrawable(getResources().getDrawable(R.drawable.selector_sub_button_gray));
-
-
-        //build the sub buttons
-        SubActionButton buttonSortName = itemBuilder.setContentView(iconSortName).build();
-        SubActionButton buttonSortDate = itemBuilder.setContentView(iconSortDate).build();
-        SubActionButton buttonSortRatings = itemBuilder.setContentView(iconSortRatings).build();
-
-        //to determine which button was clicked, set Tags on each button
-        buttonSortName.setTag(TAG_SORT_NAME);
-        buttonSortDate.setTag(TAG_SORT_DATE);
-        buttonSortRatings.setTag(TAG_SORT_RATINGS);
-
-        buttonSortName.setOnClickListener(this);
-        buttonSortDate.setOnClickListener(this);
-        buttonSortRatings.setOnClickListener(this);
-
-        //add the sub buttons to the main floating action button
-        mFABMenu = new FloatingActionMenu.Builder(this)
-                .addSubActionView(buttonSortName)
-                .addSubActionView(buttonSortDate)
-                .addSubActionView(buttonSortRatings)
-                .attachTo(mFAB)
-                .build();
-
-        //mFAB.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -319,32 +246,14 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
 //            L.m("getItem called for " + num);
             switch (num) {
                 case TAB_SEARCH_RESULTS:
-//                    if(mFAB.getVisibility()== View.VISIBLE){
-//                        mFAB.setVisibility(View.INVISIBLE);
-//
-//                    }
                     fragment = FragmentRunningFairs.newInstance("", "");
                     L.t(getApplicationContext(),"Opened Running fair");
                     break;
 
                 case TAB_HITS:
-
-//                    if(mFAB.getVisibility()== View.INVISIBLE){
-//                        mFAB.setVisibility(View.VISIBLE);
-//
-//                    }
-
                     fragment = FragmentUpcomingFairs.newInstance("", "");
                     L.t(getApplicationContext(),"Opened Upcoming fair");
                     break;
-                /*case TAB_UPCOMING:
-
-                    if(mFAB.getVisibility()== View.INVISIBLE){
-                        mFAB.setVisibility(View.VISIBLE);
-
-                    }
-                    fragment = FragmentUpcoming.newInstance("", "");
-                    break;*/
             }
             return fragment;
 

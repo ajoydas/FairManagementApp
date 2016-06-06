@@ -320,11 +320,11 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
                 Integer result = 0;
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url + ActivityFair.fair.getDb_name();
+                    String Url = ActivityFair.url;
                     Connection con = DriverManager.getConnection(Url, ActivityFair.username, ActivityFair.password);
                     System.out.println("Connected");
 
-                    PreparedStatement st = con.prepareStatement("Update sells set product_name=?,employee_name=?,date=?,time=?,price=?,description=? where id=?");
+                    PreparedStatement st = con.prepareStatement("Update "+ActivityFair.fair.getDb_name()+"_sells set product_name=?,employee_name=?,date=?,time=?,price=?,description=? where id=?");
 
                     st.setString(1, temp.getProduct_name());
                     st.setString(2, temp.getEmployee_name());
@@ -390,11 +390,11 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
                 Integer result = 0;
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url + ActivityFair.fair.getDb_name();
+                    String Url = ActivityFair.url;
                     Connection con = DriverManager.getConnection(Url, ActivityFair.username, ActivityFair.password);
                     System.out.println("Connected");
 
-                    PreparedStatement st = con.prepareStatement("Delete from sells where id=?");
+                    PreparedStatement st = con.prepareStatement("Delete from "+ActivityFair.fair.getDb_name()+"_sells where id=?");
 
                     st.setInt(1, mListSells.get(pos).getId());
 
@@ -503,11 +503,11 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
                 Integer result = 0;
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url + ActivityFair.fair.getDb_name();
+                    String Url = ActivityFair.url;
                     Connection con = DriverManager.getConnection(Url, ActivityFair.username, ActivityFair.password);
                     System.out.println("Connected");
 
-                    PreparedStatement st = con.prepareStatement("INSERT INTO sells" +
+                    PreparedStatement st = con.prepareStatement("INSERT INTO "+ActivityFair.fair.getDb_name()+"_sells" +
                             "(stall,product_name,employee_name,date,time,price,description)" +
                             "VALUES" +
                             "(?,?,?,?,?,?,?)");

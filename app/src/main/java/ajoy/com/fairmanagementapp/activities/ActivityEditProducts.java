@@ -45,9 +45,9 @@ public class ActivityEditProducts extends AppCompatActivity {
     private ImageView ivImage;
     private String userChoosenTask;
 
-    private static final String url = "jdbc:mysql://192.168.0.101:3306/";
-    private static final String username="ajoy";
-    private static final String password="ajoydas";
+    public static final String url = "jdbc:mysql://162.221.186.242:3306/buetian1_fairinfo";
+    public static final String username = "buetian1_ajoy";
+    public static final String password = "termjan2016";
 
     private ImageView imageView;
     private EditText nameInput;
@@ -245,69 +245,6 @@ public class ActivityEditProducts extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
-/*
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE)
-                onSelectFromGalleryResult(data);
-            else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
-        }
-    }
-
-    private void onCaptureImageResult(Intent data) {
-        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-
-        File destination = new File(Environment.getExternalStorageDirectory(),
-                System.currentTimeMillis() + ".jpg");
-
-        FileOutputStream fo;
-        try {
-            destination.createNewFile();
-            fo = new FileOutputStream(destination);
-            fo.write(bytes.toByteArray());
-            fo.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        ivImage.setImageBitmap(thumbnail);
-    }
-
-    @SuppressWarnings("deprecation")
-    private void onSelectFromGalleryResult(Intent data) {
-
-        Bitmap bm=null;
-        if (data != null) {
-            try {
-                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        ivImage.setImageBitmap(bm);
-    }
-
-
-
-    private void showFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image*/
-/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-    }
-
-*/
-
     private static Bitmap codec(Bitmap src,
                                 int quality) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -441,12 +378,6 @@ public class ActivityEditProducts extends AppCompatActivity {
 
             }
 
-                /*HashMap<String,String> data = new HashMap<>();
-                data.put(UPLOAD_KEY, uploadImage);
-
-                String result = rh.sendPostRequest(UPLOAD_URL,data);
-*/
-            //return result;
         }
 
         Upload ui = new Upload();
@@ -520,11 +451,11 @@ public class ActivityEditProducts extends AppCompatActivity {
                 Integer result=0;
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    String Url = url + fair_db_name;
+                    String Url = url;
                     Connection con = DriverManager.getConnection(Url, username, password);
                     System.out.println("Connected");
 
-                    PreparedStatement st = con.prepareStatement("Delete from products where id=?");
+                    PreparedStatement st = con.prepareStatement("Delete from "+fair_db_name+"_products where id=?");
 
                     st.setInt(1, product.getId());
 

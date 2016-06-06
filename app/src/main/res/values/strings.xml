@@ -82,5 +82,8 @@
     <string name="title_activity_edit_product">Edit Product</string>
     <string name="title_activity_stall_view">Stall Details</string>
     <string name="title_activity_employees">Employees</string>
+    <string name="database_URL">jdbc:mysql://162.221.186.242:3306/buetian1_fairinfo</string>
+    <string name="database_USER">buetian1_ajoy</string>
+    <string name="database_PASS">termjan2016</string>
 
 </resources>

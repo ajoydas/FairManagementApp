@@ -1,6 +1,7 @@
 package ajoy.com.fairmanagementapp.activities;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -78,12 +80,30 @@ public class ActivityProductMap extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        String d1 = markerpoint.substring(0, markerpoint.indexOf(',') - 1);
-        String d2 = markerpoint.substring(markerpoint.indexOf(',') + 1, markerpoint.length() - 1);
-        System.out.println(d1 + " and " + d2);
+        LatLng stall = null;
+        try {
+            String d1 = markerpoint.substring(0, markerpoint.indexOf(',') - 1);
+            String d2 = markerpoint.substring(markerpoint.indexOf(',') + 1, markerpoint.length() - 1);
+            System.out.println(d1 + " and " + d2);
 
-        LatLng stall = new LatLng(Double.parseDouble(d1), Double.parseDouble(d2));
+            stall = new LatLng(Double.parseDouble(d1), Double.parseDouble(d2));
+        } catch (Exception e) {
+            stall = new LatLng(0,0);
+            e.printStackTrace();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Location Not Available!");
+            builder.setMessage("The location of the stall is not available now.");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                    finish();
+                }
+            });
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
         mMap.addMarker(new MarkerOptions().position(stall).title(stallName));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(stall));
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );

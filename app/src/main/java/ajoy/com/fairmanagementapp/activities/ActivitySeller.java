@@ -33,14 +33,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerSeller;
 import ajoy.com.fairmanagementapp.fragments.FragmentEmployees;
 import ajoy.com.fairmanagementapp.fragments.FragmentSells;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallDetails;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallProducts;
-import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
 import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.materialtest.R;
 import ajoy.com.fairmanagementapp.pojo.Stall;
@@ -85,10 +83,10 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
 
 
     ProgressDialog loading;
+    public static final String url = "jdbc:mysql://162.221.186.242:3306/buetian1_fairinfo";
+    public static final String username = "buetian1_ajoy";
+    public static final String password = "termjan2016";
 
-    private static final String url = "jdbc:mysql://192.168.0.101:3306/";
-    private static final String username="ajoy";
-    private static final String password="ajoydas";
     private String stallname;
     private String stallowner;
     private String stalldescription;
@@ -100,16 +98,9 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
         super.onCreate(savedInstanceState);
         stall=(Stall)getIntent().getParcelableExtra("Information");
 
-        /*LayoutInflater inflater = null;
-        View view=inflater.inflate(R.layout.drawer_header, null,false);*/
-
         setContentView(R.layout.activity_seller);
-        //setupFAB();
         setupTabs();
-        //setupJob();
         setupDrawer();
-        //animate the Toolbar when it comes into the picture
-        //AnimationUtils.animateToolbarDroppingDown(mContainerToolbar);
 
     }
 
@@ -177,15 +168,6 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
         });
     }
 
-    /*@Override
-    public void onClick(View v) {
-
-        if (v==layout.findViewById(R.id.bedit))
-        {
-            editDetailsClicked(v);
-        }
-    }
-*/
     private class Mytask extends AsyncTask<Void,Void,Integer>
     {
 
@@ -201,14 +183,14 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
 
             try {
                 Class.forName("com.mysql.jdbc.Driver");
-                String Url=url+ActivityFair.fair.getDb_name();
+                String Url=url;
 
                 System.out.println(ActivityFair.fair.getDb_name());
                 Connection con= DriverManager.getConnection(Url,username,password);
 
                 System.out.println("Connected");
 
-                PreparedStatement preparedStatement=con.prepareStatement("update stalls set stall_name=?,owner=?,description=? where stall=?");
+                PreparedStatement preparedStatement=con.prepareStatement("update "+ActivityFair.fair.getDb_name()+"_stalls set stall_name=?,owner=?,description=? where stall=?");
                 preparedStatement.setString(1,stallname);
                 preparedStatement.setString(2,stallowner);
                 preparedStatement.setString(3,stalldescription);
@@ -243,8 +225,6 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
         protected void onPostExecute(Integer value) {
             super.onPostExecute(value);
             loading.dismiss();
-
-            L.T(ActivitySeller.this,String.valueOf(value));
 
             if(value==1) {
                 L.t(ActivitySeller.this, "Updated Successfully!");
@@ -295,8 +275,6 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
     public void onDrawerItemClicked(int index) {
         if (index == 0) {
             startActivity(new Intent(this, ActivityTouchEvent.class));
-        } else if(index == 3){
-            startActivity(new Intent(this, ActivityEmployeeList.class));
         }
             else
             {
@@ -329,31 +307,7 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
                             .setTabListener(this));
         }
 
-        //setting floating button invisible
-        //mFAB.setVisibility(View.INVISIBLE);
     }
-    //.setIcon(mAdapter.getIcon(i))
-    /*private void setupJob() {
-        mJobScheduler = JobScheduler.getInstance(this);
-        //set an initial delay with a Handler so that the data loading by the JobScheduler does not clash with the loading inside the Fragment
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //schedule the job after the delay has been elapsed
-                buildJob();
-            }
-        }, 30000);
-    }
-
-    private void buildJob() {
-        //attach the job ID and the name of the Service that will work in the background
-        JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, new ComponentName(this, ServiceMoviesBoxOffice.class));
-        //set periodic polling that needs net connection and works across device reboots
-        builder.setPeriodic(POLL_FREQUENCY)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                .setPersisted(true);
-        mJobScheduler.schedule(builder.build());
-    }*/
 
     private void setupFAB() {
         //define the icon for the main floating action button

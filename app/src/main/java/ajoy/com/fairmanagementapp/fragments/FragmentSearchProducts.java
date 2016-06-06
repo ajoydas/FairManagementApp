@@ -296,11 +296,11 @@ int pos;
                 Integer result=0;
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url + ActivityFair.fair.getDb_name();
+                    String Url = ActivityFair.url;
                     Connection con = DriverManager.getConnection(Url, ActivityFair.username, ActivityFair.password);
                     System.out.println("Connected");
 
-                    PreparedStatement st = con.prepareStatement("Select location,stall_name from stalls where stall=?");
+                    PreparedStatement st = con.prepareStatement("Select location,stall_name from "+ActivityFair.fair.getDb_name()+"_stalls where stall=?");
 
                     st.setString(1, stall);
 

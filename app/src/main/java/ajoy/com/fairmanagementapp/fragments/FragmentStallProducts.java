@@ -138,14 +138,6 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
             mListProducts = savedInstanceState.getParcelableArrayList(STATE_STALL_PRODUCTS);
         } else {
             new TaskLoadStallProducts(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),null,0).execute();
-            //if this fragment starts for the first time, load the list of movies from a database
-            /*mListProducts = MyApplication.getWritableDatabaseProduct().readProducts();
-            //if the database is empty, trigger an AsycnTask to download movie list from the web
-            if (mListProducts.isEmpty()) {
-                L.m("FragmentUpcoming: executing task from fragment");
-                new TaskLoadStallProducts(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),null,0).execute();
-
-            }*/
         }
         //update your Adapter to containg the retrieved movies
         mAdapter.setProducts(mListProducts);

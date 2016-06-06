@@ -4,9 +4,8 @@ import android.os.AsyncTask;
 
 import java.util.ArrayList;
 
-import ajoy.com.fairmanagementapp.activities.ActivityEmployees;
 import ajoy.com.fairmanagementapp.callbacks.EmployeeLoadedListener;
-import ajoy.com.fairmanagementapp.extras.MovieUtils;
+import ajoy.com.fairmanagementapp.extras.FairUtils;
 import ajoy.com.fairmanagementapp.pojo.Employee;
 
 /**
@@ -28,7 +27,7 @@ public class TaskLoadEmployees extends AsyncTask<Void,Void,ArrayList<Employee>> 
     @Override
     protected ArrayList<Employee> doInBackground(Void... params) {
 
-        ArrayList<Employee> listProducts = MovieUtils.loadEmployees(fair_db,stallname,query);
+        ArrayList<Employee> listProducts = FairUtils.loadEmployees(fair_db,stallname,query);
         return listProducts;
     }
 

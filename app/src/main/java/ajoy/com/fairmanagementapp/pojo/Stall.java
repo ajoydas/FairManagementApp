@@ -26,12 +26,13 @@ public class Stall implements Parcelable {
 
     private int id;
     private String stall;
-    private String stall_name;
-    private String owner;
-    private String description;
-    private String location;
+    private String stall_name="";
+    private String owner="";
+    private String description="";
+    private String location="";
 
     public Stall() {
+
     }
 
     public Stall(Parcel input) {

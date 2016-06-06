@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import java.util.ArrayList;
 
 import  ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
-import  ajoy.com.fairmanagementapp.extras.MovieUtils;
+import ajoy.com.fairmanagementapp.extras.FairUtils;
 import  ajoy.com.fairmanagementapp.pojo.Product;
 
 /**
@@ -28,7 +28,7 @@ public class TaskLoadProducts extends AsyncTask<Void,Void,ArrayList<Product>> {
     @Override
     protected ArrayList<Product> doInBackground(Void... params) {
 
-        ArrayList<Product> listProducts = MovieUtils.loadSearchProducts(fair_db,query,option);
+        ArrayList<Product> listProducts = FairUtils.loadSearchProducts(fair_db,query,option);
         return listProducts;
     }
 

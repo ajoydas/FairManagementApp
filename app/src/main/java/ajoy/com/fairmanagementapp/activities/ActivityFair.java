@@ -33,14 +33,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerFair;
 import ajoy.com.fairmanagementapp.fragments.FragmentFairDetails;
-import ajoy.com.fairmanagementapp.fragments.FragmentSearch;
 import ajoy.com.fairmanagementapp.fragments.FragmentSearchProducts;
 import ajoy.com.fairmanagementapp.fragments.FragmentSearchStalls;
-import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
 import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.materialtest.MyApplication;
 import ajoy.com.fairmanagementapp.materialtest.R;
@@ -84,9 +81,9 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
     public static Fair fair;
     private static Stall stall;
 
-    public static final String url = "jdbc:mysql://192.168.0.101:3306/";
-    public static final String username="ajoy";
-    public static final String password="ajoydas";
+    public static final String url = "jdbc:mysql://162.221.186.242:3306/buetian1_fairinfo";
+    public static final String username = "buetian1_ajoy";
+    public static final String password = "termjan2016";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,11 +144,11 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
             public void onClick(View v) {
 
                 //original
-               /* user=usernameInput.getText().toString();
-                pass=passwordInput.getText().toString();*/
+                user=usernameInput.getText().toString();
+                pass=passwordInput.getText().toString();
 
-                user="stall1";
-                pass="stall1";
+               /* user="stall1";
+                pass="stall1";*/
 
                 new Mytask().execute();
                 dialog.cancel();
@@ -184,12 +181,12 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
 
             try {
                 Class.forName("com.mysql.jdbc.Driver");
-                String Url=url+fair.getDb_name();
+                String Url=url;
                 Connection con= DriverManager.getConnection(Url,username,password);
 
                 System.out.println("Connected");
 
-                PreparedStatement preparedStatement=con.prepareStatement("Select password from  users where username=?");
+                PreparedStatement preparedStatement=con.prepareStatement("Select password from  "+fair.getDb_name()+"_users where username=?");
                 preparedStatement.setString(1,user);
 
                 System.out.println("Statement");
@@ -214,7 +211,8 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
                 }
 
                 if (pass.equals(passrecieved)) {
-                    PreparedStatement statement=con.prepareStatement("Select * from  stalls where stall=?");
+                    Connection connect= DriverManager.getConnection(Url,username,password);
+                    PreparedStatement statement=connect.prepareStatement("Select * from  "+fair.getDb_name()+"_stalls where stall=?");
                     statement.setString(1,user);
                     ResultSet internalrs=null;
                     //preparedStatement.setString(1,user);
@@ -228,6 +226,7 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
 
                     if(rowcount==0){
                         L.T(getApplicationContext(),"Login Successful But User Information Not Found In Database!");
+                        connect.close();
                         return 3;
                     }
 
@@ -241,8 +240,11 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
                         System.out.println(stall);
                     }
                     System.out.println(stall);
+                    connect.close();
+                    con.close();
                     return 1;
                 }
+                con.close();
                 return 2;
 
             } catch (ClassNotFoundException | SQLException e) {
@@ -316,10 +318,6 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
         }
     }
 
-    public View getContainerToolbar() {
-        return mContainerToolbar;
-    }
-
     private void setupTabs() {
         mTabHost = (MaterialTabHost) findViewById(R.id.materialTabHost);
         mPager = (ViewPager) findViewById(R.id.viewPager);
@@ -341,31 +339,7 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
                             .setTabListener(this));
         }
 
-        //setting floating button invisible
-        //mFAB.setVisibility(View.INVISIBLE);
     }
-    //.setIcon(mAdapter.getIcon(i))
-    /*private void setupJob() {
-        mJobScheduler = JobScheduler.getInstance(this);
-        //set an initial delay with a Handler so that the data loading by the JobScheduler does not clash with the loading inside the Fragment
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //schedule the job after the delay has been elapsed
-                buildJob();
-            }
-        }, 30000);
-    }
-
-    private void buildJob() {
-        //attach the job ID and the name of the Service that will work in the background
-        JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, new ComponentName(this, ServiceMoviesBoxOffice.class));
-        //set periodic polling that needs net connection and works across device reboots
-        builder.setPeriodic(POLL_FREQUENCY)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                .setPersisted(true);
-        mJobScheduler.schedule(builder.build());
-    }*/
 
     private void setupFAB() {
         //define the icon for the main floating action button
@@ -515,7 +489,6 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
     }
 
     public void fairmapClicked(View view) {
-        //L.T(getApplicationContext(),"Map Button Clicked");
         Intent i = new Intent(getApplicationContext(), ActivityFairMapView.class);
         i.putExtra("Url",fair.getMap_address());
         startActivity(i);

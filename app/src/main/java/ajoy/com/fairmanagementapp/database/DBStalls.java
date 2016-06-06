@@ -17,7 +17,7 @@ import ajoy.com.fairmanagementapp.pojo.Stall;
  * Created by ajoy on 5/29/16.
  */
 public class DBStalls {
-    public static final int StallList=0;
+    public static final int StallList = 0;
     private StallsHelper mHelper;
     private SQLiteDatabase mDatabase;
 
@@ -30,6 +30,75 @@ public class DBStalls {
         if (clearPrevious) {
             deleteStalls();
         }
+        /*for (int i = 0; i < listStalls.size(); i++) {
+            Stall currentstall = listStalls.get(i);
+            //create a sql prepared statement
+            String sql = null;
+
+            System.out.println("Executing task "+i);
+            if((currentstall.getOwner()==null) &&(currentstall.getDescription()==null))
+            {
+                sql = "INSERT INTO " + StallsHelper.TABLE_STALL_LIST + " VALUES (?,?,?,?,?,?);";
+                SQLiteStatement statement = mDatabase.compileStatement(sql);
+                mDatabase.beginTransaction();
+
+                statement.clearBindings();
+                //for a given column index, simply bind the data to be put inside that index
+                statement.bindString(2, currentstall.getStall());
+                statement.bindString(3, currentstall.getStall_name());
+                statement.bindString(6, currentstall.getLocation());
+
+                statement.execute();
+
+            }
+            else if (currentstall.getOwner()==null) {
+                sql = "INSERT INTO " + StallsHelper.TABLE_STALL_LIST + " VALUES (?,?,?,?,?,?);";
+                SQLiteStatement statement = mDatabase.compileStatement(sql);
+                mDatabase.beginTransaction();
+
+                statement.clearBindings();
+                //for a given column index, simply bind the data to be put inside that index
+                statement.bindString(2, currentstall.getStall());
+                statement.bindString(3, currentstall.getStall_name());
+                statement.bindString(5, currentstall.getDescription());
+                statement.bindString(6, currentstall.getLocation());
+
+                statement.execute();
+            }
+            else if (currentstall.getDescription()==null) {
+                sql = "INSERT INTO " + StallsHelper.TABLE_STALL_LIST + " VALUES (?,?,?,?,?,?);";
+                SQLiteStatement statement = mDatabase.compileStatement(sql);
+                mDatabase.beginTransaction();
+
+                statement.clearBindings();
+                //for a given column index, simply bind the data to be put inside that index
+                statement.bindString(2, currentstall.getStall());
+                statement.bindString(3, currentstall.getStall_name());
+                statement.bindString(4, currentstall.getOwner());
+                statement.bindString(6, currentstall.getLocation());
+
+                statement.execute();
+            }
+            else
+            {
+                sql = "INSERT INTO " + StallsHelper.TABLE_STALL_LIST + " VALUES (?,?,?,?,?,?);";
+                SQLiteStatement statement = mDatabase.compileStatement(sql);
+                mDatabase.beginTransaction();
+
+                statement.clearBindings();
+                //for a given column index, simply bind the data to be put inside that index
+                statement.bindString(2, currentstall.getStall());
+                statement.bindString(3, currentstall.getStall_name());
+                statement.bindString(4, currentstall.getOwner());
+                statement.bindString(5, currentstall.getDescription());
+                statement.bindString(6, currentstall.getLocation());
+
+                statement.execute();
+            }
+            //compile the statement and start a transaction
+
+        }*/
+
 
         //create a sql prepared statement
         String sql = "INSERT INTO " + StallsHelper.TABLE_STALL_LIST + " VALUES (?,?,?,?,?,?);";
@@ -48,6 +117,7 @@ public class DBStalls {
 
             statement.execute();
         }
+        System.out.println("Inserted stalls successfully");
         //set the transaction as successful and end the transaction
         L.m("inserting entries " + listStalls.size() + new Date(System.currentTimeMillis()));
         mDatabase.setTransactionSuccessful();
@@ -70,7 +140,8 @@ public class DBStalls {
             L.m("loading entries " + cursor.getCount() + new Date(System.currentTimeMillis()));
             do {
 
-                Stall stall=new Stall();
+                Stall stall = new Stall();
+                System.out.println("Getting elements......");
 
                 stall.setId(cursor.getInt(cursor.getColumnIndex(StallsHelper.COLUMN_UID)));
                 stall.setStall(cursor.getString(cursor.getColumnIndex(StallsHelper.COLUMN_STALL)));
@@ -83,11 +154,12 @@ public class DBStalls {
             }
             while (cursor.moveToNext());
         }
+        cursor.close();
         return listStalls;
     }
 
     public void deleteStalls() {
-        mDatabase.delete( StallsHelper.TABLE_STALL_LIST, null, null);
+        mDatabase.delete(StallsHelper.TABLE_STALL_LIST, null, null);
     }
 
     private static class StallsHelper extends SQLiteOpenHelper {
@@ -98,7 +170,7 @@ public class DBStalls {
         public static final String COLUMN_STALL_NAME = "stall_name";
         public static final String COLUMN_OWNER = "owner";
         public static final String COLUMN_DESCRIPTION = "description";
-        public static final String COLUMN_LOCATION ="location";
+        public static final String COLUMN_LOCATION = "location";
 
         private static final String CREATE_TABLE_STALL_LIST = "CREATE TABLE " + TABLE_STALL_LIST + " (" +
                 COLUMN_UID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -106,7 +178,7 @@ public class DBStalls {
                 COLUMN_STALL_NAME + " TEXT," +
                 COLUMN_OWNER + " TEXT," +
                 COLUMN_DESCRIPTION + " TEXT," +
-                COLUMN_LOCATION +" TEXT"+
+                COLUMN_LOCATION + " TEXT" +
                 ");";
 
         private static final String DB_NAME = "stalls_db";

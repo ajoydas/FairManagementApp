@@ -3,15 +3,10 @@ package ajoy.com.fairmanagementapp.task;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import ajoy.com.fairmanagementapp.callbacks.FairLoadedListener;
-import ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
-import ajoy.com.fairmanagementapp.extras.MovieUtils;
-import ajoy.com.fairmanagementapp.materialtest.MyApplication;
+import ajoy.com.fairmanagementapp.extras.FairUtils;
 import ajoy.com.fairmanagementapp.pojo.Fair;
-import ajoy.com.fairmanagementapp.pojo.Product;
 
 /**
  * Created by ajoy on 5/22/16.
@@ -30,7 +25,7 @@ public class TaskLoadFairs extends AsyncTask<Void,Void,ArrayList<Fair>>  {
     @Override
     protected ArrayList<Fair> doInBackground(Void... params) {
 
-        ArrayList<Fair> listFairs=  MovieUtils.loadFairs(tab);
+        ArrayList<Fair> listFairs=  FairUtils.loadFairs(tab);
 /*
         Calendar c = Calendar.getInstance();
         Date date=c.getTime();

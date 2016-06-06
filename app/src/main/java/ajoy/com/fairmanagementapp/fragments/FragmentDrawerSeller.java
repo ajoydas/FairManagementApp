@@ -41,12 +41,9 @@ public class FragmentDrawerSeller extends Fragment {
     private boolean mDrawerOpened = false;
 
     public FragmentDrawerSeller() {
-        // Required empty public constructor
     }
 
     public List<Information> getData() {
-
-        //load only static data inside a drawer
 
         List<Information> data = new ArrayList<>();
         int[] icons = {R.drawable.ic_action_personal,R.drawable.ic_action_trending,R.drawable.ic_action_search,R.drawable.ic_action_personal, R.drawable.ic_action_new, R.drawable.ic_action_important,R.drawable.ic_action_articles};
@@ -102,7 +99,6 @@ public class FragmentDrawerSeller extends Fragment {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                Log.d("VIVZ", "onDrawerOpened");
                 if (!mUserLearnedDrawer) {
                     mUserLearnedDrawer = true;
                     MyApplication.saveToPreferences(getActivity(), KEY_USER_LEARNED_DRAWER, mUserLearnedDrawer);
@@ -113,7 +109,6 @@ public class FragmentDrawerSeller extends Fragment {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                Log.d("VIVZ", "onDrawerClosed");
                 getActivity().supportInvalidateOptionsMenu();
             }
 

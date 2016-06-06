@@ -1,17 +1,13 @@
 package ajoy.com.fairmanagementapp.activities;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -19,28 +15,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
-import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerSeller;
-import ajoy.com.fairmanagementapp.fragments.FragmentStallDetails;
-import ajoy.com.fairmanagementapp.fragments.FragmentStallProducts;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallViewDetails;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallViewProducts;
-import ajoy.com.fairmanagementapp.fragments.FragmentUpcoming;
 import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.materialtest.R;
 import ajoy.com.fairmanagementapp.pojo.Stall;
@@ -81,10 +63,9 @@ public class ActivityStallView extends AppCompatActivity implements MaterialTabL
 
 
     ProgressDialog loading;
-
-    private static final String url = "jdbc:mysql://192.168.0.101:3306/";
-    private static final String username="ajoy";
-    private static final String password="ajoydas";
+    private static final String url = "jdbc:mysql://162.221.186.242:3306/buetian1_fairinfo";
+    private static final String username = "buetian1_ajoy";
+    private static final String password = "termjan2016";
     private String stallname;
     private String stallowner;
     private String stalldescription;
@@ -96,21 +77,12 @@ public class ActivityStallView extends AppCompatActivity implements MaterialTabL
         super.onCreate(savedInstanceState);
         stall= getIntent().getParcelableExtra("Information");
 
-        /*LayoutInflater inflater = null;
-        View view=inflater.inflate(R.layout.drawer_header, null,false);*/
-
         setContentView(R.layout.activity_stall_view);
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         mContainerToolbar = (ViewGroup) findViewById(R.id.container_app_bar);
         //set the Toolbar as ActionBar
         setSupportActionBar(mToolbar);
-        //setupFAB();
         setupTabs();
-        //setupJob();
-        //setupDrawer();
-        //animate the Toolbar when it comes into the picture
-        //AnimationUtils.animateToolbarDroppingDown(mContainerToolbar);
-
     }
 
 
@@ -121,19 +93,6 @@ public class ActivityStallView extends AppCompatActivity implements MaterialTabL
         mDrawerFragment = (FragmentDrawerSeller)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer_seller);
         mDrawerFragment.setUp(R.id.fragment_navigation_drawer_seller, (DrawerLayout) findViewById(R.id.drawer_layout_seller), mToolbar);
-    }
-
-
-    public void onDrawerItemClicked(int index) {
-        if (index == 0) {
-            startActivity(new Intent(this, ActivityTouchEvent.class));
-        } else {
-            mPager.setCurrentItem(index-1);
-        }
-    }
-
-    public View getContainerToolbar() {
-        return mContainerToolbar;
     }
 
     private void setupTabs() {
@@ -157,80 +116,8 @@ public class ActivityStallView extends AppCompatActivity implements MaterialTabL
                             .setTabListener(this));
         }
 
-        //setting floating button invisible
-        //mFAB.setVisibility(View.INVISIBLE);
-    }
-    //.setIcon(mAdapter.getIcon(i))
-    /*private void setupJob() {
-        mJobScheduler = JobScheduler.getInstance(this);
-        //set an initial delay with a Handler so that the data loading by the JobScheduler does not clash with the loading inside the Fragment
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //schedule the job after the delay has been elapsed
-                buildJob();
-            }
-        }, 30000);
     }
 
-    private void buildJob() {
-        //attach the job ID and the name of the Service that will work in the background
-        JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, new ComponentName(this, ServiceMoviesBoxOffice.class));
-        //set periodic polling that needs net connection and works across device reboots
-        builder.setPeriodic(POLL_FREQUENCY)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                .setPersisted(true);
-        mJobScheduler.schedule(builder.build());
-    }*/
-
-    private void setupFAB() {
-        //define the icon for the main floating action button
-        ImageView iconFAB = new ImageView(this);
-        iconFAB.setImageResource(R.drawable.ic_action_new);
-
-        //set the appropriate background for the main floating action button along with its icon
-        mFAB = new FloatingActionButton.Builder(this)
-                .setContentView(iconFAB)
-                .setBackgroundDrawable(R.drawable.selector_button_red)
-                .build();
-
-        //define the icons for the sub action buttons
-        ImageView iconSortName = new ImageView(this);
-        iconSortName.setImageResource(R.drawable.ic_action_alphabets);
-        ImageView iconSortDate = new ImageView(this);
-        iconSortDate.setImageResource(R.drawable.ic_action_calendar);
-        ImageView iconSortRatings = new ImageView(this);
-        iconSortRatings.setImageResource(R.drawable.ic_action_important);
-
-        //set the background for all the sub buttons
-        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
-        itemBuilder.setBackgroundDrawable(getResources().getDrawable(R.drawable.selector_sub_button_gray));
-
-
-        //build the sub buttons
-        SubActionButton buttonSortName = itemBuilder.setContentView(iconSortName).build();
-        SubActionButton buttonSortDate = itemBuilder.setContentView(iconSortDate).build();
-        SubActionButton buttonSortRatings = itemBuilder.setContentView(iconSortRatings).build();
-
-        //to determine which button was clicked, set Tags on each button
-        buttonSortName.setTag(TAG_SORT_NAME);
-        buttonSortDate.setTag(TAG_SORT_DATE);
-        buttonSortRatings.setTag(TAG_SORT_RATINGS);
-
-        buttonSortName.setOnClickListener(this);
-        buttonSortDate.setOnClickListener(this);
-        buttonSortRatings.setOnClickListener(this);
-
-        //add the sub buttons to the main floating action button
-        mFABMenu = new FloatingActionMenu.Builder(this)
-                .addSubActionView(buttonSortName)
-                .addSubActionView(buttonSortDate)
-                .addSubActionView(buttonSortRatings)
-                .attachTo(mFAB)
-                .build();
-
-        //mFAB.setVisibility(View.INVISIBLE);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -6,20 +6,16 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import ajoy.com.fairmanagementapp.database.DBFairs;
-import  ajoy.com.fairmanagementapp.database.DBMovies;
 import  ajoy.com.fairmanagementapp.database.DBProducts;
 import ajoy.com.fairmanagementapp.database.DBStalls;
 
 /**
- * Created by Windows on 30-01-2015.
+ * Created by ajoy on 5/22/16.
  */
 public class MyApplication extends Application {
 
-
-    public static final String API_KEY_ROTTEN_TOMATOES = "54wzfswsa4qmjg8hjwa64d4c";
     private static MyApplication sInstance;
 
-    private static DBMovies mDatabaseMovie;
     private static DBProducts mDatabaseProduct;
     private static DBFairs mDatabaseFair;
     private static DBStalls mDatabaseStall;
@@ -30,13 +26,6 @@ public class MyApplication extends Application {
 
     public static Context getAppContext() {
         return sInstance.getApplicationContext();
-    }
-
-    public synchronized static DBMovies getWritableDatabaseMovie() {
-        if (mDatabaseMovie == null) {
-            mDatabaseMovie = new DBMovies(getAppContext());
-        }
-        return mDatabaseMovie;
     }
 
     public synchronized static DBProducts getWritableDatabaseProduct() {
@@ -64,8 +53,9 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
-        mDatabaseMovie = new DBMovies(this);
         mDatabaseProduct=new DBProducts(this);
+        mDatabaseFair = new DBFairs(this);
+        mDatabaseStall = new DBStalls(this);
     }
 
     public static void saveToPreferences(Context context, String preferenceName, String preferenceValue) {

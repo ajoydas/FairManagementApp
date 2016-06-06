@@ -15,7 +15,7 @@ import ajoy.com.fairmanagementapp.materialtest.R;
 
 public class ActivityTouchEvent extends ActionBarActivity {
 
-    public static final String TAG = "VIVZ";
+    public static final String TAG = "AJOY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

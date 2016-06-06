@@ -60,9 +60,6 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityFairMapView" />
-        <activity
-            android:name="ajoy.com.fairmanagementapp.activities.ActivitySellerSignin"
-            android:label="@string/title_activity_activity_seller_login" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -100,10 +97,6 @@
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivityStallView"
             android:label="@string/title_activity_stall_view" />
-        <activity
-            android:name="ajoy.com.fairmanagementapp.activities.ActivityEmployees"
-            android:label="@string/title_activity_employees" />
-        <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityEmployeeList"></activity>
     </application>
 
 </manifest>
