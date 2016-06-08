@@ -46,31 +46,17 @@ import ajoy.com.fairmanagementapp.pojo.Stall;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
-import me.tatarka.support.job.JobScheduler;
 
 public class ActivityFair extends AppCompatActivity  implements MaterialTabListener, View.OnClickListener{
 
-    //int representing our 0th tab corresponding to the Fragment where search results are dispalyed
-    public static final int TAB_SEARCH_RESULTS = 0;
-    //int corresponding to our 1st tab corresponding to the Fragment where box office hits are dispalyed
-    public static final int TAB_HITS = 1;
-    //int corresponding to our 2nd tab corresponding to the Fragment where upcoming movies are displayed
-    public static final int TAB_UPCOMING = 2;
-    //int corresponding to the number of tabs in our Activity
+    public static final int TAB_DETAILS = 0;
+    public static final int TAB_PRODUCTS = 1;
+    public static final int TAB_STALLS = 2;
     public static final int TAB_COUNT = 3;
-    //int corresponding to the id of our JobSchedulerService
-    private static final int JOB_ID = 100;
-    //tag associated with the FAB menu button that sorts by name
     private static final String TAG_SORT_NAME = "sortName";
-    //tag associated with the FAB menu button that sorts by date
-    private static final String TAG_SORT_DATE = "sortDate";
-    //tag associated with the FAB menu button that sorts by ratings
-    private static final String TAG_SORT_RATINGS = "sortRatings";
-    //Run the JobSchedulerService every 2 minutes
-    private static final long POLL_FREQUENCY = 28800000;
-    private JobScheduler mJobScheduler;
+    private static final String TAG_SORT_PRICE = "sortprice";
+    private static final String TAG_SORT_AVAIL = "sortAvail";
     private Toolbar mToolbar;
-    //a layout grouping the toolbar and the tabs together
     private ViewGroup mContainerToolbar;
     private MaterialTabHost mTabHost;
     private ViewPager mPager;
@@ -91,14 +77,10 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
 
         fair=(Fair)getIntent().getParcelableExtra("Information");
         stall=new Stall();
-        //L.T(getApplicationContext(),fair.toString());
         setContentView(R.layout.activity_fair);
         setupFAB();
         setupTabs();
-        //setupJob();
         setupDrawer();
-        //animate the Toolbar when it comes into the picture
-        //AnimationUtils.animateToolbarDroppingDown(mContainerToolbar);
 
     }
 
@@ -261,8 +243,6 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
             super.onPostExecute(value);
             loading.dismiss();
 
-            L.T(getApplicationContext(),String.valueOf(value));
-
             if(value==1) {
 
                 L.t(getApplicationContext(), "Login Successfull!");
@@ -375,8 +355,8 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
 
         //to determine which button was clicked, set Tags on each button
         buttonSortName.setTag(TAG_SORT_NAME);
-        buttonSortDate.setTag(TAG_SORT_DATE);
-        buttonSortRatings.setTag(TAG_SORT_RATINGS);
+        buttonSortDate.setTag(TAG_SORT_PRICE);
+        buttonSortRatings.setTag(TAG_SORT_AVAIL);
 
         buttonSortName.setOnClickListener(this);
         buttonSortDate.setOnClickListener(this);
@@ -440,11 +420,11 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
                 //call the sort by name method on any Fragment that implements sortlistener
                 ((SortListener) fragment).onSortByName();
             }
-            if (v.getTag().equals(TAG_SORT_DATE)) {
+            if (v.getTag().equals(TAG_SORT_PRICE)) {
                 //call the sort by date method on any Fragment that implements sortlistener
                 ((SortListener) fragment).onSortByPrice();
             }
-            if (v.getTag().equals(TAG_SORT_RATINGS)) {
+            if (v.getTag().equals(TAG_SORT_AVAIL)) {
                 //call the sort by ratings method on any Fragment that implements sortlistener
                 ((SortListener) fragment).onSortByAvailability();
             }
@@ -490,16 +470,14 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
 
         public Fragment getItem(int num) {
             Fragment fragment = null;
-//            L.m("getItem called for " + num);
             switch (num) {
-                case TAB_SEARCH_RESULTS:
-                    //L.T(getApplicationContext(),"FragmentFairDetails");
+                case TAB_DETAILS:
                     fragment = FragmentFairDetails.newInstance("", "");
                     break;
-                case TAB_HITS:
+                case TAB_PRODUCTS:
                     fragment = FragmentSearchProducts.newInstance("", "");
                     break;
-                case TAB_UPCOMING:
+                case TAB_STALLS:
                     fragment = FragmentSearchStalls.newInstance("", "");
                     break;
             }

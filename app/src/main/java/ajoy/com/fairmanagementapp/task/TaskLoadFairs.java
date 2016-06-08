@@ -54,8 +54,6 @@ public class TaskLoadFairs extends AsyncTask<Void,Void,ArrayList<Fair>>  {
         }
 */
 
-
-        System.out.println("doing in background");
         return listFairs;
     }
 

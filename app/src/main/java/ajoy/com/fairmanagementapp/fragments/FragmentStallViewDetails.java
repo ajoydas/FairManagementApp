@@ -72,7 +72,7 @@ public class FragmentStallViewDetails extends Fragment   implements  View.OnClic
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         layout= inflater.inflate(R.layout.fragment_stall_view_details, container, false);
-        L.t(getActivity(),"Inside Fair details");
+        //L.t(getActivity(),"Inside Fair details");
         TextView title=(TextView) layout.findViewById(R.id.detailsstallname);
         title.setText(ActivityStallView.stall.getStall_name());
         TextView organizer=(TextView) layout.findViewById(R.id.detailsstallowner);

@@ -52,10 +52,6 @@ public class AdapterDrawerSeller extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
-    /*public void setHeaderName(String headername)
-    {
-
-    }*/
     @Override
     public int getItemViewType(int position) {
         if(position==0){

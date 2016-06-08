@@ -55,10 +55,8 @@ public class ActivityProductMap extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_stall_map);
 
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
-        //mContainerToolbar = (ViewGroup) findViewById(R.id.container_app_bar);
-        //set the Toolbar as ActionBar
         setSupportActionBar(mToolbar);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);

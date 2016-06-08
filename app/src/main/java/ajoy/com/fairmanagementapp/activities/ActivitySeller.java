@@ -34,6 +34,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import ajoy.com.fairmanagementapp.extras.SortListener;
+import ajoy.com.fairmanagementapp.fragments.FragmentDrawer;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerSeller;
 import ajoy.com.fairmanagementapp.fragments.FragmentEmployees;
 import ajoy.com.fairmanagementapp.fragments.FragmentSells;
@@ -51,28 +52,15 @@ import me.tatarka.support.job.JobScheduler;
  * Created by ajoy on 5/22/16.
  */
 public class ActivitySeller extends AppCompatActivity implements MaterialTabListener, View.OnClickListener{
-    //int representing our 0th tab corresponding to the Fragment where search results are dispalyed
-    public static final int TAB_SEARCH_RESULTS = 0;
-    //int corresponding to our 1st tab corresponding to the Fragment where box office hits are dispalyed
-    public static final int TAB_HITS = 1;
-    //int corresponding to our 2nd tab corresponding to the Fragment where upcoming movies are displayed
-    public static final int TAB_UPCOMING = 2;
+    public static final int TAB_DETAILS = 0;
+    public static final int TAB_PRODUCTS = 1;
+    public static final int TAB_EMPLOYEES = 2;
     public static final int TAB_SELLS = 3;
-    //int corresponding to the number of tabs in our Activity
     public static final int TAB_COUNT = 4;
-    //int corresponding to the id of our JobSchedulerService
-    private static final int JOB_ID = 100;
-    //tag associated with the FAB menu button that sorts by name
     private static final String TAG_SORT_NAME = "sortName";
-    //tag associated with the FAB menu button that sorts by date
-    private static final String TAG_SORT_DATE = "sortDate";
-    //tag associated with the FAB menu button that sorts by ratings
-    private static final String TAG_SORT_RATINGS = "sortRatings";
-    //Run the JobSchedulerService every 2 minutes
-    private static final long POLL_FREQUENCY = 28800000;
-    private JobScheduler mJobScheduler;
+    private static final String TAG_SORT_PRICE = "sortprice";
+    private static final String TAG_SORT_AVAIL = "sortAvail";
     private Toolbar mToolbar;
-    //a layout grouping the toolbar and the tabs together
     private ViewGroup mContainerToolbar;
     private MaterialTabHost mTabHost;
     private ViewPager mPager;
@@ -126,7 +114,6 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
 
     public void editDetailsClicked(View view) {
         editDialogShow();
-        L.t(ActivitySeller.this,"Edit button clicked");
         update();
     }
 
@@ -309,55 +296,6 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
 
     }
 
-    private void setupFAB() {
-        //define the icon for the main floating action button
-        ImageView iconFAB = new ImageView(this);
-        iconFAB.setImageResource(R.drawable.ic_action_new);
-
-        //set the appropriate background for the main floating action button along with its icon
-        mFAB = new FloatingActionButton.Builder(this)
-                .setContentView(iconFAB)
-                .setBackgroundDrawable(R.drawable.selector_button_red)
-                .build();
-
-        //define the icons for the sub action buttons
-        ImageView iconSortName = new ImageView(this);
-        iconSortName.setImageResource(R.drawable.ic_action_alphabets);
-        ImageView iconSortDate = new ImageView(this);
-        iconSortDate.setImageResource(R.drawable.ic_action_calendar);
-        ImageView iconSortRatings = new ImageView(this);
-        iconSortRatings.setImageResource(R.drawable.ic_action_important);
-
-        //set the background for all the sub buttons
-        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
-        itemBuilder.setBackgroundDrawable(getResources().getDrawable(R.drawable.selector_sub_button_gray));
-
-
-        //build the sub buttons
-        SubActionButton buttonSortName = itemBuilder.setContentView(iconSortName).build();
-        SubActionButton buttonSortDate = itemBuilder.setContentView(iconSortDate).build();
-        SubActionButton buttonSortRatings = itemBuilder.setContentView(iconSortRatings).build();
-
-        //to determine which button was clicked, set Tags on each button
-        buttonSortName.setTag(TAG_SORT_NAME);
-        buttonSortDate.setTag(TAG_SORT_DATE);
-        buttonSortRatings.setTag(TAG_SORT_RATINGS);
-
-        buttonSortName.setOnClickListener(this);
-        buttonSortDate.setOnClickListener(this);
-        buttonSortRatings.setOnClickListener(this);
-
-        //add the sub buttons to the main floating action button
-        mFABMenu = new FloatingActionMenu.Builder(this)
-                .addSubActionView(buttonSortName)
-                .addSubActionView(buttonSortDate)
-                .addSubActionView(buttonSortRatings)
-                .attachTo(mFAB)
-                .build();
-
-        //mFAB.setVisibility(View.INVISIBLE);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -400,18 +338,6 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
         Fragment fragment = (Fragment) mAdapter.instantiateItem(mPager, mPager.getCurrentItem());
         if (fragment instanceof SortListener) {
 
-            if (v.getTag().equals(TAG_SORT_NAME)) {
-                //call the sort by name method on any Fragment that implements sortlistener
-                ((SortListener) fragment).onSortByName();
-            }
-            if (v.getTag().equals(TAG_SORT_DATE)) {
-                //call the sort by date method on any Fragment that implements sortlistener
-                ((SortListener) fragment).onSortByPrice();
-            }
-            if (v.getTag().equals(TAG_SORT_RATINGS)) {
-                //call the sort by ratings method on any Fragment that implements sortlistener
-                ((SortListener) fragment).onSortByAvailability();
-            }
         }
 
     }
@@ -451,14 +377,14 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
             Fragment fragment = null;
 //            L.m("getItem called for " + num);
             switch (num) {
-                case TAB_SEARCH_RESULTS:
+                case TAB_DETAILS:
                     fragment = FragmentStallDetails.newInstance("", "");
                     break;
 
-                case TAB_HITS:
+                case TAB_PRODUCTS:
                     fragment = FragmentStallProducts.newInstance("", "");
                     break;
-                case TAB_UPCOMING:
+                case TAB_EMPLOYEES:
                     fragment = FragmentEmployees.newInstance("", "");
                     break;
                 case TAB_SELLS:

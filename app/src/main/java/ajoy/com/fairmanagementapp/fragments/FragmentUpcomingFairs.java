@@ -75,20 +75,17 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
 
         //L.t(getActivity(),"FragmentRunning: inside");
         if (savedInstanceState != null) {
-            //if this fragment starts after a rotation or configuration change, load the existing movies from a parcelable
             mListFairs = savedInstanceState.getParcelableArrayList(STATE_UPCOMING_FAIRS);
         } else {
-            //if this fragment starts for the first time, load the list of movies from a database
             mListFairs = MyApplication.getWritableDatabaseFair().readFairs(2);
 
-            //if the database is empty, trigger an AsycnTask to download movie list from the web
+
             if (mListFairs.isEmpty()) {
                 //L.T(getActivity(),"FragmentRunning: executing task from fragment");
                 new TaskLoadFairs(this,2).execute();
 
             }
         }
-        //update your Adapter to containg the retrieved movies
         mAdapter.setFairs(mListFairs);
         return layout;
     }
@@ -135,7 +132,7 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
 
     @Override
     public void onRefresh() {
-        L.t(getActivity(), "onRefresh");
+        L.t(getActivity(), "Refreshing.....");
         //load the whole feed again on refresh, dont try this at home :)
         new TaskLoadFairs(this,2).execute();
 

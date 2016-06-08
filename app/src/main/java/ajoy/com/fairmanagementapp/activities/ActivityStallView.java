@@ -33,26 +33,13 @@ import me.tatarka.support.job.JobScheduler;
 
 public class ActivityStallView extends AppCompatActivity implements MaterialTabListener, View.OnClickListener {
 
-    public static final int TAB_SEARCH_RESULTS = 0;
-    //int corresponding to our 1st tab corresponding to the Fragment where box office hits are dispalyed
-    public static final int TAB_HITS = 1;
-    //int corresponding to our 2nd tab corresponding to the Fragment where upcoming movies are displayed
-    public static final int TAB_UPCOMING = 2;
-    //int corresponding to the number of tabs in our Activity
+    public static final int TAB_DETAILS = 0;
+    public static final int TAB_PRODUCTS = 1;
     public static final int TAB_COUNT = 2;
-    //int corresponding to the id of our JobSchedulerService
-    private static final int JOB_ID = 100;
-    //tag associated with the FAB menu button that sorts by name
     private static final String TAG_SORT_NAME = "sortName";
-    //tag associated with the FAB menu button that sorts by date
-    private static final String TAG_SORT_DATE = "sortDate";
-    //tag associated with the FAB menu button that sorts by ratings
-    private static final String TAG_SORT_RATINGS = "sortRatings";
-    //Run the JobSchedulerService every 2 minutes
-    private static final long POLL_FREQUENCY = 28800000;
-    private JobScheduler mJobScheduler;
+    private static final String TAG_SORT_PRICE = "sortprice";
+    private static final String TAG_SORT_AVAIL = "sortAvail";
     private Toolbar mToolbar;
-    //a layout grouping the toolbar and the tabs together
     private ViewGroup mContainerToolbar;
     private MaterialTabHost mTabHost;
     private ViewPager mPager;
@@ -85,15 +72,6 @@ public class ActivityStallView extends AppCompatActivity implements MaterialTabL
         setupTabs();
     }
 
-
-    private void setupDrawer() {
-
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        //setup the NavigationDrawer
-        mDrawerFragment = (FragmentDrawerSeller)
-                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer_seller);
-        mDrawerFragment.setUp(R.id.fragment_navigation_drawer_seller, (DrawerLayout) findViewById(R.id.drawer_layout_seller), mToolbar);
-    }
 
     private void setupTabs() {
         mTabHost = (MaterialTabHost) findViewById(R.id.materialTabHost);
@@ -161,18 +139,6 @@ public class ActivityStallView extends AppCompatActivity implements MaterialTabL
         Fragment fragment = (Fragment) mAdapter.instantiateItem(mPager, mPager.getCurrentItem());
         if (fragment instanceof SortListener) {
 
-            if (v.getTag().equals(TAG_SORT_NAME)) {
-                //call the sort by name method on any Fragment that implements sortlistener
-                ((SortListener) fragment).onSortByName();
-            }
-            if (v.getTag().equals(TAG_SORT_DATE)) {
-                //call the sort by date method on any Fragment that implements sortlistener
-                ((SortListener) fragment).onSortByPrice();
-            }
-            if (v.getTag().equals(TAG_SORT_RATINGS)) {
-                //call the sort by ratings method on any Fragment that implements sortlistener
-                ((SortListener) fragment).onSortByAvailability();
-            }
         }
 
     }
@@ -212,11 +178,11 @@ public class ActivityStallView extends AppCompatActivity implements MaterialTabL
             Fragment fragment = null;
 //            L.m("getItem called for " + num);
             switch (num) {
-                case TAB_SEARCH_RESULTS:
+                case TAB_DETAILS:
                     fragment = FragmentStallViewDetails.newInstance("", "");
                     break;
 
-                case TAB_HITS:
+                case TAB_PRODUCTS:
                     fragment = FragmentStallViewProducts.newInstance("", "");
                     break;
             }

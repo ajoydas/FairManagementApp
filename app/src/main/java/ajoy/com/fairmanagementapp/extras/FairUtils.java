@@ -19,9 +19,6 @@ import ajoy.com.fairmanagementapp.pojo.Product;
 import ajoy.com.fairmanagementapp.pojo.Sell;
 import ajoy.com.fairmanagementapp.pojo.Stall;
 
-/**
- * Created by Windows on 02-03-2015.
- */
 public class FairUtils {
     private static final String url = "jdbc:mysql://162.221.186.242:3306/buetian1_fairinfo";
     private static final String username = "buetian1_ajoy";

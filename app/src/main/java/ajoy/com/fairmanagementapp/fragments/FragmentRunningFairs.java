@@ -68,22 +68,18 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
         mAdapter = new AdapterFairs(getActivity());
         mRecyclerFairs.setAdapter(mAdapter);
 
-        L.t(getActivity(),"FragmentRunning: inside");
+        //L.t(getActivity(),"FragmentRunning: inside");
         if (savedInstanceState != null) {
-            //if this fragment starts after a rotation or configuration change, load the existing movies from a parcelable
             mListFairs = savedInstanceState.getParcelableArrayList(STATE_RUNNING_FAIRS);
         } else {
-            //if this fragment starts for the first time, load the list of movies from a database
             mListFairs = MyApplication.getWritableDatabaseFair().readFairs(1);
 
-            //if the database is empty, trigger an AsycnTask to download movie list from the web
             if (mListFairs.isEmpty()) {
-                L.T(getActivity(),"FragmentRunning: executing task from fragment");
+                //L.T(getActivity(),"FragmentRunning: executing task from fragment");
                 new TaskLoadFairs(this,1).execute();
 
             }
         }
-        //update your Adapter to containg the retrieved movies
         mAdapter.setFairs(mListFairs);
         return layout;
     }
@@ -129,7 +125,7 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
 
     @Override
     public void onRefresh() {
-        L.t(getActivity(), "onRefresh");
+        L.t(getActivity(), "Refreshing....");
         new TaskLoadFairs(this,1).execute();
 
     }

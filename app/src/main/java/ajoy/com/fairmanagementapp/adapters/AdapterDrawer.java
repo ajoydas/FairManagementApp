@@ -15,9 +15,6 @@ import ajoy.com.fairmanagementapp.materialtest.R;
 import ajoy.com.fairmanagementapp.pojo.Information;
 
 
-/**
- * Created by Windows on 22-12-2014.
- */
 public class AdapterDrawer extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<Information> data= Collections.emptyList();
     private static final int TYPE_HEADER=0;
@@ -51,10 +48,6 @@ public class AdapterDrawer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
-    /*public void setHeaderName(String headername)
-    {
-
-    }*/
     @Override
     public int getItemViewType(int position) {
         if(position==0){

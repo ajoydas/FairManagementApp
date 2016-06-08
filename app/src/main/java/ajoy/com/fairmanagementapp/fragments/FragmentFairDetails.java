@@ -72,7 +72,7 @@ public class FragmentFairDetails extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout= inflater.inflate(R.layout.fragment_fair_details, container, false);
-        L.t(getActivity(),"Inside Fair details");
+        //L.t(getActivity(),"Inside Fair details");
 
 
 
