@@ -345,11 +345,11 @@ public class ActivityEditProducts extends AppCompatActivity {
                 Integer result=0;
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    String Url = url + fair_db_name;
+                    String Url = url;
                     Connection con = DriverManager.getConnection(Url, username, password);
                     System.out.println("Connected");
 
-                    PreparedStatement st = con.prepareStatement("Update products set name=?,company=?,description=?,price=?,availability=?,image=? where id=?");
+                    PreparedStatement st = con.prepareStatement("Update "+fair_db_name+"_products set name=?,company=?,description=?,price=?,availability=?,image=? where id=?");
 
                     st.setString(1,name);
                     st.setString(2,company);

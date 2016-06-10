@@ -48,7 +48,7 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
     private static SearchView searchView;
     private static RadioGroup radioGroup;
 
-    private static final String STATE_STALL_PRODUCTS = "states_stall";
+    private static final String STATE_STALL_PRODUCTS = "states_stall_employee";
     protected ArrayList<Employee> mListEmployees;
     private AdapterEmployees mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;

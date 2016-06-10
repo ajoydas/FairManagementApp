@@ -302,10 +302,12 @@ public class FairUtils {
             System.out.println("Connected\nQuery: " + query);
 
             if (query == null || query.equals("")) {
-                st = con.prepareStatement("select * from "+fair_db+"_employees");
+                st = con.prepareStatement("select * from "+fair_db+"_employees where stall=?");
+                st.setString(1,stallname);
 
             } else {
-                st = con.prepareStatement("select * from "+fair_db+"_employees where name like '%" + query + "%' ");
+                st = con.prepareStatement("select * from "+fair_db+"_employees where stall=? and name like '%" + query + "%' ");
+                st.setString(1,stallname);
             }
 
 
@@ -362,10 +364,12 @@ public class FairUtils {
             System.out.println("Connected\nQuery: " + query);
 
             if (query == null || query.equals("")) {
-                st = con.prepareStatement("select * from "+fair_db+"_sells");
+                st = con.prepareStatement("select * from "+fair_db+"_sells where stall=? ");
+                st.setString(1,stallname);
 
             } else {
-                st = con.prepareStatement("select * from "+fair_db+"_sells where employee_name like '%" + query + "%' ");
+                st = con.prepareStatement("select * from "+fair_db+"_sells where stall=? and employee_name like '%" + query + "%' ");
+                st.setString(1,stallname);
             }
 
             System.out.println("Statement");
