@@ -2,8 +2,7 @@ package ajoy.com.fairmanagementapp.callbacks;
 
 import java.util.ArrayList;
 
-import ajoy.com.fairmanagementapp.pojo.Employee;
-import ajoy.com.fairmanagementapp.pojo.Product;
+import ajoy.com.fairmanagementapp.objects.Employee;
 
 /**
  * Created by ajoy on 5/31/16.

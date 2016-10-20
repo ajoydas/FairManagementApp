@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-import ajoy.com.fairmanagementapp.materialtest.R;
+import ajoy.com.fairmanagementapp.application.R;
 
 
 public class ActivityTouchEvent extends ActionBarActivity {

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.pojo.Stall;
+import ajoy.com.fairmanagementapp.objects.Stall;
 
 /**
  * Created by ajoy on 5/29/16.
@@ -124,7 +124,7 @@ public class DBStalls {
         mDatabase.endTransaction();
     }
 
-    public ArrayList<Stall> readStalls() {
+    /*public ArrayList<Stall> readStalls() {
         ArrayList<Stall> listStalls = new ArrayList<>();
 
         //get a list of columns to be retrieved, we need all of them
@@ -157,7 +157,7 @@ public class DBStalls {
         cursor.close();
         return listStalls;
     }
-
+*/
     public void deleteStalls() {
         mDatabase.delete(StallsHelper.TABLE_STALL_LIST, null, null);
     }

@@ -2,11 +2,10 @@ package ajoy.com.fairmanagementapp.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import ajoy.com.fairmanagementapp.materialtest.R;
+import ajoy.com.fairmanagementapp.application.R;
 
 public class ActivityFairMapView extends AppCompatActivity {
 

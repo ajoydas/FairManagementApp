@@ -19,17 +19,12 @@ import java.util.ArrayList;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
 import ajoy.com.fairmanagementapp.adapters.AdapterFairs;
-import ajoy.com.fairmanagementapp.adapters.AdapterProducts;
 import ajoy.com.fairmanagementapp.callbacks.FairLoadedListener;
-import ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
-import ajoy.com.fairmanagementapp.extras.ProductSorter;
 import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.materialtest.MyApplication;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Fair;
-import ajoy.com.fairmanagementapp.pojo.Product;
+import ajoy.com.fairmanagementapp.application.MyApplication;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Fair;
 import ajoy.com.fairmanagementapp.task.TaskLoadFairs;
-import ajoy.com.fairmanagementapp.task.TaskLoadProducts;
 
 /**
  * Created by ajoy on 5/22/16.
@@ -77,14 +72,14 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
         if (savedInstanceState != null) {
             mListFairs = savedInstanceState.getParcelableArrayList(STATE_UPCOMING_FAIRS);
         } else {
-            mListFairs = MyApplication.getWritableDatabaseFair().readFairs(2);
-
-
-            if (mListFairs.isEmpty()) {
-                //L.T(getActivity(),"FragmentRunning: executing task from fragment");
+//            mListFairs = MyApplication.getWritableDatabaseFair().readFairs(2);
+//
+//
+//            if (mListFairs.isEmpty()) {
+//                //L.T(getActivity(),"FragmentRunning: executing task from fragment");
                 new TaskLoadFairs(this,2).execute();
 
-            }
+            //}
         }
         mAdapter.setFairs(mListFairs);
         return layout;
@@ -181,6 +176,11 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
 
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
         }
 
     }

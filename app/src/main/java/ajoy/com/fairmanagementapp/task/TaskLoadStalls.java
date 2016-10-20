@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import ajoy.com.fairmanagementapp.callbacks.StallLoadedListener;
 import ajoy.com.fairmanagementapp.extras.FairUtils;
-import ajoy.com.fairmanagementapp.pojo.Stall;
+import ajoy.com.fairmanagementapp.objects.Stall;
 
 /**
  * Created by ajoy on 5/29/16.

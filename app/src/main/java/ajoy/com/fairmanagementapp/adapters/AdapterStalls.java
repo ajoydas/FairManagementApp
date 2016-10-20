@@ -10,12 +10,10 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
-import ajoy.com.fairmanagementapp.extras.Constants;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Stall;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Stall;
 
 /**
  * Created by ajoy on 5/29/16.

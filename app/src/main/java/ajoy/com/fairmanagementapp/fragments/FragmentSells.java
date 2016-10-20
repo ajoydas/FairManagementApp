@@ -33,16 +33,12 @@ import java.util.ArrayList;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
 import ajoy.com.fairmanagementapp.activities.ActivitySeller;
-import ajoy.com.fairmanagementapp.adapters.AdapterEmployees;
 import ajoy.com.fairmanagementapp.adapters.AdapterSells;
-import ajoy.com.fairmanagementapp.callbacks.EmployeeLoadedListener;
 import ajoy.com.fairmanagementapp.callbacks.SellLoadedListener;
 import ajoy.com.fairmanagementapp.extras.AsyncResponse;
 import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Employee;
-import ajoy.com.fairmanagementapp.pojo.Sell;
-import ajoy.com.fairmanagementapp.task.TaskLoadEmployees;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Sell;
 import ajoy.com.fairmanagementapp.task.TaskLoadSells;
 
 /**
@@ -649,6 +645,11 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
 
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
         }
 
     }

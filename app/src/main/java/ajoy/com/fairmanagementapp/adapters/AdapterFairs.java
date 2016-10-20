@@ -1,14 +1,10 @@
 package ajoy.com.fairmanagementapp.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -18,9 +14,8 @@ import java.util.Date;
 
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.Constants;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Fair;
-import ajoy.com.fairmanagementapp.pojo.Product;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Fair;
 
 /**
  * Created by ajoy on 5/22/16.

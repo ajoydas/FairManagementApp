@@ -1,11 +1,9 @@
 package ajoy.com.fairmanagementapp.fragments;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,36 +18,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
-import ajoy.com.fairmanagementapp.activities.ActivityStallMap;
 import ajoy.com.fairmanagementapp.activities.ActivityStallView;
-import ajoy.com.fairmanagementapp.adapters.AdapterProducts;
 import ajoy.com.fairmanagementapp.adapters.AdapterStalls;
-import ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
 import ajoy.com.fairmanagementapp.callbacks.StallLoadedListener;
-import ajoy.com.fairmanagementapp.extras.AsyncResponse;
-import ajoy.com.fairmanagementapp.extras.ProductSorter;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.extras.StallSorter;
 import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.materialtest.MyApplication;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Product;
-import ajoy.com.fairmanagementapp.pojo.Stall;
-import ajoy.com.fairmanagementapp.task.TaskLoadProducts;
+import ajoy.com.fairmanagementapp.application.MyApplication;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Stall;
 import ajoy.com.fairmanagementapp.task.TaskLoadStalls;
 
 /**
@@ -128,12 +111,12 @@ public class FragmentSearchStalls extends Fragment implements SortListener,View.
             mListStalls = savedInstanceState.getParcelableArrayList(STATE_STALL_STALLS);
         } else {
 
-            mListStalls = MyApplication.getWritableDatabaseStall().readStalls();
-
-            if (mListStalls.isEmpty()) {
-                L.m("FragmentUpcoming: executing task from fragment");
+//            mListStalls = MyApplication.getWritableDatabaseStall().readStalls();
+//
+//            if (mListStalls.isEmpty()) {
+//                L.m("FragmentUpcoming: executing task from fragment");
                 new TaskLoadStalls(this,ActivityFair.fair.getDb_name(),null).execute();
-            }
+            //}
         }
         mAdapter.setStalls(mListStalls);
 
@@ -296,6 +279,11 @@ public class FragmentSearchStalls extends Fragment implements SortListener,View.
 
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
         }
 
     }

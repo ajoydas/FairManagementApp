@@ -1,34 +1,7 @@
 package ajoy.com.fairmanagementapp.fragments;
 
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-
-import ajoy.com.fairmanagementapp.activities.ActivityFair;
-import  ajoy.com.fairmanagementapp.adapters.AdapterProducts;
-import  ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
-import  ajoy.com.fairmanagementapp.extras.ProductSorter;
-import  ajoy.com.fairmanagementapp.extras.SortListener;
-import  ajoy.com.fairmanagementapp.logging.L;
-import  ajoy.com.fairmanagementapp.materialtest.MyApplication;
-
-import ajoy.com.fairmanagementapp.materialtest.R;
-import  ajoy.com.fairmanagementapp.pojo.Product;
-import  ajoy.com.fairmanagementapp.task.TaskLoadProducts;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
@@ -20,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -39,9 +37,9 @@ import ajoy.com.fairmanagementapp.adapters.AdapterProducts;
 import ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
 import ajoy.com.fairmanagementapp.extras.ProductSorter;
 import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.materialtest.MyApplication;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Product;
+import ajoy.com.fairmanagementapp.application.MyApplication;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Product;
 import ajoy.com.fairmanagementapp.task.TaskLoadStallProducts;
 
 /**
@@ -366,6 +364,11 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
 
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
         }
 
     }

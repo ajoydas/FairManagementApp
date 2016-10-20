@@ -1,10 +1,7 @@
-package ajoy.com.fairmanagementapp.pojo;
+package ajoy.com.fairmanagementapp.objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.sql.Time;
-import java.util.Date;
 
 import ajoy.com.fairmanagementapp.logging.L;
 

@@ -27,7 +27,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import ajoy.com.fairmanagementapp.materialtest.R;
+import ajoy.com.fairmanagementapp.application.R;
 
 /**
  * Utility class for access to runtime permissions.

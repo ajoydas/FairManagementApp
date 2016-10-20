@@ -1,4 +1,4 @@
-package ajoy.com.fairmanagementapp.pojo;
+package ajoy.com.fairmanagementapp.objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;

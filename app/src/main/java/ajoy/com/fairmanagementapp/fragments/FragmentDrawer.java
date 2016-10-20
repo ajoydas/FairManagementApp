@@ -10,7 +10,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,9 +21,9 @@ import java.util.List;
 
 import ajoy.com.fairmanagementapp.activities.ActivityMain;
 import ajoy.com.fairmanagementapp.adapters.AdapterDrawer;
-import ajoy.com.fairmanagementapp.materialtest.MyApplication;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Information;
+import ajoy.com.fairmanagementapp.application.MyApplication;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Information;
 
 
 /**
@@ -176,6 +175,11 @@ public class FragmentDrawer extends Fragment {
 
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
         }
     }
 }

@@ -21,9 +21,9 @@ import ajoy.com.fairmanagementapp.activities.ActivityFair;
 import ajoy.com.fairmanagementapp.adapters.AdapterFairs;
 import ajoy.com.fairmanagementapp.callbacks.FairLoadedListener;
 import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.materialtest.MyApplication;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Fair;
+import ajoy.com.fairmanagementapp.application.MyApplication;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Fair;
 import ajoy.com.fairmanagementapp.task.TaskLoadFairs;
 
 /**
@@ -72,13 +72,13 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
         if (savedInstanceState != null) {
             mListFairs = savedInstanceState.getParcelableArrayList(STATE_RUNNING_FAIRS);
         } else {
-            mListFairs = MyApplication.getWritableDatabaseFair().readFairs(1);
-
-            if (mListFairs.isEmpty()) {
+//            mListFairs = MyApplication.getWritableDatabaseFair().readFairs(1);
+//
+//            if (mListFairs.isEmpty()) {
                 //L.T(getActivity(),"FragmentRunning: executing task from fragment");
                 new TaskLoadFairs(this,1).execute();
 
-            }
+            //}
         }
         mAdapter.setFairs(mListFairs);
         return layout;
@@ -173,6 +173,11 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
 
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
         }
     }
 

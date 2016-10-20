@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.pojo.Fair;
+import ajoy.com.fairmanagementapp.objects.Fair;
 
 /**
  * Created by ajoy on 5/22/16.
@@ -59,6 +59,7 @@ public class DBFairs {
         mDatabase.setTransactionSuccessful();
         mDatabase.endTransaction();
     }
+/*
 
     public ArrayList<Fair> readFairs(int table) {
         ArrayList<Fair> listFairs = new ArrayList<>();
@@ -102,6 +103,7 @@ public class DBFairs {
         }
         return listFairs;
     }
+*/
 
     public void deleteFairs(int  table) {
         mDatabase.delete( (table == RUNNING_FAIR ? FairsHelper.TABLE_RUNNING_FAIR : FairsHelper.TABLE_UPCOMING_FAIR), null, null);

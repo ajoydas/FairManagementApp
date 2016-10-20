@@ -11,10 +11,9 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
-import ajoy.com.fairmanagementapp.activities.ActivityFair;
 import ajoy.com.fairmanagementapp.activities.ActivitySeller;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Information;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Information;
 
 /**
  * Created by ajoy on 5/25/16.

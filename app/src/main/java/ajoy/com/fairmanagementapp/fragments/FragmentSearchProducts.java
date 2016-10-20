@@ -42,9 +42,9 @@ import ajoy.com.fairmanagementapp.extras.AsyncResponse;
 import ajoy.com.fairmanagementapp.extras.ProductSorter;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.materialtest.MyApplication;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Product;
+import ajoy.com.fairmanagementapp.application.MyApplication;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Product;
 import ajoy.com.fairmanagementapp.task.TaskLoadProducts;
 
 /**
@@ -138,12 +138,12 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
         if (savedInstanceState != null) {
             mListProducts = savedInstanceState.getParcelableArrayList(STATE_STALL_PRODUCTS);
         } else {
-            mListProducts = MyApplication.getWritableDatabaseProduct().readProducts();
-            if (mListProducts.isEmpty()) {
-                L.m("FragmentUpcoming: executing task from fragment");
+//            mListProducts = MyApplication.getWritableDatabaseProduct().readProducts();
+//            if (mListProducts.isEmpty()) {
+//                L.m("FragmentUpcoming: executing task from fragment");
                 new TaskLoadProducts(this,ActivityFair.fair.getDb_name(),null,0).execute();
 
-            }
+            //}
         }
         mAdapter.setProducts(mListProducts);
 
@@ -452,6 +452,11 @@ int pos;
 
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
         }
 
     }

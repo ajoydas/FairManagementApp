@@ -4,7 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:background="@color/colorPrimaryText"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <com.pkmmte.view.CircularImageView
         android:id="@+id/image_profile"

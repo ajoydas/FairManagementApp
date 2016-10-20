@@ -33,8 +33,8 @@ import java.sql.SQLException;
 
 import ajoy.com.fairmanagementapp.extras.Utility;
 import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Product;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Product;
 
 
 public class ActivityEditProducts extends AppCompatActivity {

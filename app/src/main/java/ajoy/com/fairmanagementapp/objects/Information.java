@@ -1,4 +1,4 @@
-package ajoy.com.fairmanagementapp.pojo;
+package ajoy.com.fairmanagementapp.objects;
 
 /**
  * Created by Windows on 22-12-2014.

@@ -13,9 +13,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Employee;
-import ajoy.com.fairmanagementapp.pojo.Sell;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Sell;
 
 /**
  * Created by ajoy on 6/2/16.

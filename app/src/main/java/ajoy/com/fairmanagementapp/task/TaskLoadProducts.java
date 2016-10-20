@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import  ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
 import ajoy.com.fairmanagementapp.extras.FairUtils;
-import  ajoy.com.fairmanagementapp.pojo.Product;
+import  ajoy.com.fairmanagementapp.objects.Product;
 
 /**
  * Created by ajoy on 5/19/16.

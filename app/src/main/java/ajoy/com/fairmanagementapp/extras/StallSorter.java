@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import ajoy.com.fairmanagementapp.pojo.Product;
-import ajoy.com.fairmanagementapp.pojo.Stall;
+import ajoy.com.fairmanagementapp.objects.Stall;
 
 /**
  * Created by ajoy on 5/29/16.

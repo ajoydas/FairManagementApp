@@ -1,4 +1,4 @@
-package ajoy.com.fairmanagementapp.materialtest;
+package ajoy.com.fairmanagementapp.application;
 
 import android.app.Application;
 import android.content.Context;

@@ -11,9 +11,8 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Information;
-
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Information;
 
 public class AdapterDrawer extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<Information> data= Collections.emptyList();

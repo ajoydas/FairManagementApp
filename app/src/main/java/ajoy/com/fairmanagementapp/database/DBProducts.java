@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.pojo.Product;
+import ajoy.com.fairmanagementapp.objects.Product;
 
 /**
  * Created by ajoy on 5/19/16.
@@ -55,6 +55,7 @@ public class DBProducts {
         mDatabase.setTransactionSuccessful();
         mDatabase.endTransaction();
     }
+/*
 
     public ArrayList<Product> readProducts() {
         ArrayList<Product> listProducts = new ArrayList<>();
@@ -92,6 +93,7 @@ public class DBProducts {
         }
         return listProducts;
     }
+*/
 
     public void deleteProducts() {
         mDatabase.delete( ProductsHelper.TABLE_PRODUCT_LIST, null, null);

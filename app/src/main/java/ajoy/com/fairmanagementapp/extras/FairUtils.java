@@ -1,10 +1,20 @@
 package ajoy.com.fairmanagementapp.extras;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,15 +22,16 @@ import java.util.Date;
 import ajoy.com.fairmanagementapp.database.DBFairs;
 import ajoy.com.fairmanagementapp.database.DBProducts;
 import ajoy.com.fairmanagementapp.database.DBStalls;
-import ajoy.com.fairmanagementapp.materialtest.MyApplication;
-import ajoy.com.fairmanagementapp.pojo.Employee;
-import ajoy.com.fairmanagementapp.pojo.Fair;
-import ajoy.com.fairmanagementapp.pojo.Product;
-import ajoy.com.fairmanagementapp.pojo.Sell;
-import ajoy.com.fairmanagementapp.pojo.Stall;
+import ajoy.com.fairmanagementapp.application.MyApplication;
+import ajoy.com.fairmanagementapp.objects.Employee;
+import ajoy.com.fairmanagementapp.objects.Fair;
+import ajoy.com.fairmanagementapp.objects.Product;
+import ajoy.com.fairmanagementapp.objects.Sell;
+import ajoy.com.fairmanagementapp.objects.Stall;
+
 
 public class FairUtils {
-    private static final String url = "jdbc:mysql://162.221.186.242:3306/buetian1_fairinfo";
+    private static final String url = "http://buetian14.com/fairmanagementapp/";
     private static final String username = "buetian1_ajoy";
     private static final String password = "termjan2016";
 
@@ -165,7 +176,7 @@ public class FairUtils {
         ArrayList<Fair> listFairs = new ArrayList<>();
         String Url = url;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            /*Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection(Url, username, password);
 
             System.out.println("Connected");
@@ -222,8 +233,53 @@ public class FairUtils {
                 con.close();
                 return listFairs;
             }
+*/
+            URL runingFairUrl = new URL(url + "loadfairs.php");
+            HttpURLConnection httpURLConnection= (HttpURLConnection) runingFairUrl.openConnection();
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder stringBuilder=new StringBuilder();
+            String jsonString;
+            while((jsonString=bufferedReader.readLine())!=null)
+            {
+                stringBuilder.append(jsonString+"\n");
+            }
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+            JSONObject jsonObject=new JSONObject(stringBuilder.toString().trim());
+            JSONArray jsonArray=jsonObject.getJSONArray("result");
+            int count=0;
+            while (count<jsonArray.length())
+            {
+                JSONObject rs=jsonArray.getJSONObject(count);
+                Fair fair = new Fair();
+                fair.setId(rs.getInt("id"));
+                fair.setDb_name(rs.getString("db_name"));
+                fair.setTitle(rs.getString("title"));
+                fair.setOrganizer(rs.getString("organizer"));
+                fair.setLocation(rs.getString("location"));
+                fair.setStart_date(new SimpleDateFormat("yyyy-mm-dd").parse(rs.getString("start_date")));
+                fair.setEnd_date(new SimpleDateFormat("yyyy-mm-dd").parse(rs.getString("end_date")));
+                fair.setOpen_time(Time.valueOf(rs.getString("open_time")));
+                fair.setClose_time(Time.valueOf(rs.getString("close_time")));
+                fair.setMap_address(rs.getString("map_address"));
 
-        } catch (ClassNotFoundException | SQLException e) {
+                System.out.println(fair.getMap_address());
+
+                Calendar c = Calendar.getInstance();
+                Date date = c.getTime();
+
+                if (table == 1) {
+                    if ((fair.getStart_date()).compareTo(date) == -1 && (fair.getEnd_date()).compareTo(date)==1 ) listFairs.add(fair);
+                } else if (table == 2) {
+                    if (fair.getStart_date().compareTo(date) != -1) listFairs.add(fair);
+                }
+                count++;
+            }
+            return listFairs;
+
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

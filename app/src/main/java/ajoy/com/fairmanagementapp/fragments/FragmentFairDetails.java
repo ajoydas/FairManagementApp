@@ -3,8 +3,6 @@ package ajoy.com.fairmanagementapp.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.test.suitebuilder.TestMethod;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +12,9 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.zip.Inflater;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
-import ajoy.com.fairmanagementapp.extras.Constants;
-import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.materialtest.R;
+import ajoy.com.fairmanagementapp.application.R;
 
 /**
  * Created by ajoy on 5/23/16.

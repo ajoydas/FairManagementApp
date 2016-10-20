@@ -21,12 +21,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
-import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -34,19 +32,17 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import ajoy.com.fairmanagementapp.extras.SortListener;
-import ajoy.com.fairmanagementapp.fragments.FragmentDrawer;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerSeller;
 import ajoy.com.fairmanagementapp.fragments.FragmentEmployees;
 import ajoy.com.fairmanagementapp.fragments.FragmentSells;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallDetails;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallProducts;
 import ajoy.com.fairmanagementapp.logging.L;
-import ajoy.com.fairmanagementapp.materialtest.R;
-import ajoy.com.fairmanagementapp.pojo.Stall;
+import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Stall;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
-import me.tatarka.support.job.JobScheduler;
 
 /**
  * Created by ajoy on 5/22/16.
