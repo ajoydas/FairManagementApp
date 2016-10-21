@@ -257,6 +257,12 @@ public class ActivityFair extends AppCompatActivity implements MaterialTabListen
                     }
 
                 }
+                else
+                {
+                    inputStream.close();
+                    bufferedReader.close();
+                    httpURLConnection.disconnect();
+                }
                 return 0;
 
             } catch (Exception e) {

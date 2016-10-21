@@ -24,6 +24,15 @@ import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -307,32 +316,50 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
 
                 Integer result = 0;
                 try {
-                    Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url;
-                    Connection con = DriverManager.getConnection(Url, ActivityFair.username, ActivityFair.password);
-                    System.out.println("Connected");
+                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/updateSell.php");
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    String db =ActivityFair.fair.getDb_name()+"_sells";
+                    String data = URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                            URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(temp.getId()), "UTF-8") + "&" +
+                            URLEncoder.encode("product_name", "UTF-8") + "=" + URLEncoder.encode( temp.getProduct_name(), "UTF-8") + "&" +
+                            URLEncoder.encode("employee_name", "UTF-8") + "=" + URLEncoder.encode(temp.getEmployee_name(), "UTF-8") + "&" +
+                            URLEncoder.encode("date", "UTF-8") + "=" + URLEncoder.encode(temp.getDate(), "UTF-8") + "&" +
+                            URLEncoder.encode("time", "UTF-8") + "=" + URLEncoder.encode(temp.getTime(), "UTF-8") + "&" +
+                            URLEncoder.encode("price", "UTF-8") + "=" + URLEncoder.encode(temp.getPrice(), "UTF-8") + "&" +
+                            URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(temp.getDescription(), "UTF-8");
+                    bufferedWriter.write(data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
 
-                    PreparedStatement st = con.prepareStatement("Update "+ActivityFair.fair.getDb_name()+"_sells set product_name=?,employee_name=?,date=?,time=?,price=?,description=? where id=?");
-
-                    st.setString(1, temp.getProduct_name());
-                    st.setString(2, temp.getEmployee_name());
-                    st.setString(3, temp.getDate());
-                    st.setString(4, temp.getTime());
-                    st.setString(5, temp.getPrice());
-                    st.setString(6, temp.getDescription());
-                    st.setInt(7, temp.getId());
-                    System.out.println("Statement");
-
-                    ResultSet rs = null;
-                    int row = 0;
-                    row = st.executeUpdate();
-
-                    System.out.println("Row ="+row);
-                    if (row == 1) {
-                        return true;
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = "";
+                    String response = "";
+                    if ((line = bufferedReader.readLine()) != null) {
+                        System.out.println(line);
+                        response += line;
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                        if (response.contains("Success")) {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
                     }
 
-                } catch (ClassNotFoundException | SQLException e) {
+
+                } catch (Exception e) {
                     e.printStackTrace();
                     return false;
                 }
@@ -377,28 +404,43 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
 
                 Integer result = 0;
                 try {
-                    Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url;
-                    Connection con = DriverManager.getConnection(Url, ActivityFair.username, ActivityFair.password);
-                    System.out.println("Connected");
+                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/deleteSell.php");
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    String db =ActivityFair.fair.getDb_name()+"_sells";
+                    String data = URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                            URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(String.valueOf( mListSells.get(pos).getId()), "UTF-8");
 
-                    PreparedStatement st = con.prepareStatement("Delete from "+ActivityFair.fair.getDb_name()+"_sells where id=?");
+                    bufferedWriter.write(data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
 
-                    st.setInt(1, mListSells.get(pos).getId());
-
-                    System.out.println("Statement");
-
-                    ResultSet rs = null;
-
-                    int rows = st.executeUpdate();
-
-                    System.out.println(rows);
-
-                    if (rows == 1) {
-                        result = 1;
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = "";
+                    String response = "";
+                    if ((line = bufferedReader.readLine()) != null) {
+                        System.out.println(line);
+                        response += line;
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                        if (response.contains("Success")) {
+                            result = 1;
+                        }
                     }
-
-                } catch (ClassNotFoundException | SQLException e) {
+                    else
+                    {
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return result;
@@ -490,35 +532,50 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
 
                 Integer result = 0;
                 try {
-                    Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url;
-                    Connection con = DriverManager.getConnection(Url, ActivityFair.username, ActivityFair.password);
-                    System.out.println("Connected");
+                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/addSell.php");
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    String db =ActivityFair.fair.getDb_name()+"_sells";
+                    String data = URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                            URLEncoder.encode("stall", "UTF-8") + "=" + URLEncoder.encode(ActivitySeller.stall.getStall(), "UTF-8") + "&" +
+                            URLEncoder.encode("product_name", "UTF-8") + "=" + URLEncoder.encode( temp.getProduct_name(), "UTF-8") + "&" +
+                            URLEncoder.encode("employee_name", "UTF-8") + "=" + URLEncoder.encode(temp.getEmployee_name(), "UTF-8") + "&" +
+                            URLEncoder.encode("date", "UTF-8") + "=" + URLEncoder.encode(temp.getDate(), "UTF-8") + "&" +
+                            URLEncoder.encode("time", "UTF-8") + "=" + URLEncoder.encode(temp.getTime(), "UTF-8") + "&" +
+                            URLEncoder.encode("price", "UTF-8") + "=" + URLEncoder.encode(temp.getPrice(), "UTF-8") + "&" +
+                            URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(temp.getDescription(), "UTF-8");
 
-                    PreparedStatement st = con.prepareStatement("INSERT INTO "+ActivityFair.fair.getDb_name()+"_sells" +
-                            "(stall,product_name,employee_name,date,time,price,description)" +
-                            "VALUES" +
-                            "(?,?,?,?,?,?,?)");
+                    bufferedWriter.write(data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
 
-                    st.setString(1, ActivitySeller.stall.getStall());
-                    st.setString(2, temp.getProduct_name());
-                    st.setString(3, temp.getEmployee_name());
-                    st.setString(4, temp.getDate());
-                    st.setString(5, temp.getTime());
-                    st.setString(6, temp.getPrice());
-                    st.setString(7, temp.getDescription());
-
-                    System.out.println("Statement");
-
-                    ResultSet rs = null;
-                    int row = 0;
-                    row = st.executeUpdate();
-
-                    if (row == 1) {
-                        return true;
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = "";
+                    String response = "";
+                    if ((line = bufferedReader.readLine()) != null) {
+                        System.out.println(line);
+                        response += line;
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                        if (response.contains("Success")) {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
                     }
 
-                } catch (ClassNotFoundException | SQLException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     return false;
                 }

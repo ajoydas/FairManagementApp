@@ -23,8 +23,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -71,9 +80,9 @@ public class ActivityAddProducts extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fair_db_name=getIntent().getStringExtra("db_name");
+        fair_db_name = getIntent().getStringExtra("db_name");
         fair_stall = getIntent().getStringExtra("stall");
-        System.out.println("Db: "+fair_db_name+"Stall: "+fair_stall);
+        System.out.println("Db: " + fair_db_name + "Stall: " + fair_stall);
 
         setContentView(R.layout.activity_add_products);
 
@@ -85,16 +94,15 @@ public class ActivityAddProducts extends AppCompatActivity {
         descriptionInput = (EditText) findViewById(R.id.addproductdescription);
         priceInput = (EditText) findViewById(R.id.addproductprice);
         availability = "High";
-        image=null;
-        bitmap=null;
-        radioGroup= (RadioGroup)findViewById(R.id.availabilityoption);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
+        image = null;
+        bitmap = null;
+        radioGroup = (RadioGroup) findViewById(R.id.availabilityoption);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 // checkedId is the RadioButton selected
                 if (checkedId == R.id.addproducthigh) {
-                    availability="High";
+                    availability = "High";
                 } else if (checkedId == R.id.addproductmedium) {
                     availability = "Medium";
                 } else if (checkedId == R.id.addproductlow) {
@@ -114,8 +122,7 @@ public class ActivityAddProducts extends AppCompatActivity {
         description = descriptionInput.getText().toString();
         price = priceInput.getText().toString();
 
-        if(name==null||price==null||name.equals("")||!isDouble(price))
-        {
+        if (name == null || price == null || name.equals("") || !isDouble(price)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(ActivityAddProducts.this);
             builder.setTitle("Invalid!");
             builder.setMessage("Product Name or Price is Missing or Invalid.Please Try Again.");
@@ -128,8 +135,7 @@ public class ActivityAddProducts extends AppCompatActivity {
             });
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
-        }
-        else {
+        } else {
             upload();
         }
     }
@@ -156,14 +162,15 @@ public class ActivityAddProducts extends AppCompatActivity {
         selectImage();
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(userChoosenTask.equals("Take Photo"))
+                    if (userChoosenTask.equals("Take Photo"))
                         cameraIntent();
-                    else if(userChoosenTask.equals("Choose from Library"))
+                    else if (userChoosenTask.equals("Choose from Library"))
                         galleryIntent();
                 } else {
                     //code for deny
@@ -173,24 +180,24 @@ public class ActivityAddProducts extends AppCompatActivity {
     }
 
     private void selectImage() {
-        final CharSequence[] items = { "Take Photo", "Choose from Library",
-                "Cancel" };
+        final CharSequence[] items = {"Take Photo", "Choose from Library",
+                "Cancel"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ActivityAddProducts.this);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result=Utility.checkPermission(ActivityAddProducts.this);
+                boolean result = Utility.checkPermission(ActivityAddProducts.this);
 
                 if (items[item].equals("Take Photo")) {
-                    userChoosenTask ="Take Photo";
-                    if(result)
+                    userChoosenTask = "Take Photo";
+                    if (result)
                         cameraIntent();
 
                 } else if (items[item].equals("Choose from Library")) {
-                    userChoosenTask ="Choose from Library";
-                    if(result)
+                    userChoosenTask = "Choose from Library";
+                    if (result)
                         galleryIntent();
 
                 } else if (items[item].equals("Cancel")) {
@@ -201,16 +208,14 @@ public class ActivityAddProducts extends AppCompatActivity {
         builder.show();
     }
 
-    private void galleryIntent()
-    {
+    private void galleryIntent() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);//
-        startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);
+        startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
     }
 
-    private void cameraIntent()
-    {
+    private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
@@ -221,9 +226,9 @@ public class ActivityAddProducts extends AppCompatActivity {
         src.compress(Bitmap.CompressFormat.JPEG, quality, os);
 
         byte[] array = os.toByteArray();
-        System.out.println("Byte size:   "+array.length);
-        Bitmap temp=BitmapFactory.decodeByteArray(array, 0, array.length);
-        System.out.println("Byte size:   "+array.length);
+        System.out.println("Byte size:   " + array.length);
+        Bitmap temp = BitmapFactory.decodeByteArray(array, 0, array.length);
+        System.out.println("Byte size:   " + array.length);
         return temp;
     }
 
@@ -234,7 +239,7 @@ public class ActivityAddProducts extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE){
+            if (requestCode == SELECT_FILE) {
                 filePath = data.getData();
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
@@ -244,8 +249,7 @@ public class ActivityAddProducts extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-            else if (requestCode == REQUEST_CAMERA) {
+            } else if (requestCode == REQUEST_CAMERA) {
                 bitmap = (Bitmap) data.getExtras().get("data");
                 //ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 bitmap = codec(bitmap, 50);
@@ -268,7 +272,7 @@ public class ActivityAddProducts extends AppCompatActivity {
 
 
     //Bitmap to string converter
-    public String getStringImage(Bitmap bmp){
+    public String getStringImage(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imageBytes = baos.toByteArray();
@@ -278,8 +282,8 @@ public class ActivityAddProducts extends AppCompatActivity {
 
 
     //process upload image request and upload to database
-    private void upload(){
-        class Upload extends AsyncTask<Void,Void,Integer> {
+    private void upload() {
+        class Upload extends AsyncTask<Void, Void, Integer> {
 
             ProgressDialog loading;
             //RequestHandler rh = new RequestHandler();
@@ -288,65 +292,92 @@ public class ActivityAddProducts extends AppCompatActivity {
             protected void onPreExecute() {
                 super.onPreExecute();
 
-                if(bitmap!=null) {
+                if (bitmap != null) {
                     image = getStringImage(bitmap);
                 }
-                loading = ProgressDialog.show(ActivityAddProducts.this, "Saving Product", "Please wait...",true,true);
+                loading = ProgressDialog.show(ActivityAddProducts.this, "Saving Product", "Please wait...", true, true);
             }
 
             @Override
             protected void onPostExecute(Integer value) {
                 super.onPostExecute(value);
                 loading.dismiss();
-                if(value==1)
-                {
-                    L.t(getApplicationContext(),"Saved Successfully");
+                if (value == 1) {
+                    L.t(getApplicationContext(), "Saved Successfully");
                     finish();
-                }
-                else
-                {
-                    L.t(getApplicationContext(),"Saving Failed!");
+                } else {
+                    L.t(getApplicationContext(), "Saving Failed!");
                 }
             }
 
             @Override
             protected Integer doInBackground(Void... params) {
 
-                Integer result=0;
+                Integer result = 0;
                 try {
-                    Class.forName("com.mysql.jdbc.Driver");
-                    String Url = url;
-                    Connection con = DriverManager.getConnection(Url, username, password);
-                    System.out.println("Connected");
 
-                    PreparedStatement st = con.prepareStatement("INSERT INTO "+ fair_db_name+"_products" +
+                    /*PreparedStatement st = con.prepareStatement("INSERT INTO " + fair_db_name + "_products" +
                             "(stall,name,company,description,price,availability,image)" +
                             "VALUES" +
                             "(?,?,?,?,?,?,?)");
                     st.setString(1, fair_stall);
-                    st.setString(2,name);
-                    st.setString(3,company);
-                    st.setString(4,description);
-                    st.setString(5,price);
-                    st.setString(6,availability);
-                    st.setString(7,image);
+                    st.setString(2, name);
+                    st.setString(3, company);
+                    st.setString(4, description);
+                    st.setString(5, price);
+                    st.setString(6, availability);
+                    st.setString(7, image);*/
 
-                    System.out.println("Statement");
+                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/addProduct.php");
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    String db = fair_db_name + "_products";
+                    String imagename=fair_stall+"_"+System.currentTimeMillis();
+                    System.out.println("Image Name: "+imagename);
 
-                    ResultSet rs = null;
+                    String data = URLEncoder.encode("encoded_string", "UTF-8") + "=" + URLEncoder.encode(image, "UTF-8") + "&" +
+                            URLEncoder.encode("image_name", "UTF-8") + "=" + URLEncoder.encode(imagename, "UTF-8") + "&" +
+                            URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                            URLEncoder.encode("stall", "UTF-8") + "=" + URLEncoder.encode(fair_stall, "UTF-8") + "&" +
+                            URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8") + "&" +
+                            URLEncoder.encode("company", "UTF-8") + "=" + URLEncoder.encode(company, "UTF-8") + "&" +
+                            URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(description, "UTF-8") + "&" +
+                            URLEncoder.encode("price", "UTF-8") + "=" + URLEncoder.encode(price, "UTF-8") + "&" +
+                            URLEncoder.encode("availability", "UTF-8") + "=" + URLEncoder.encode(availability, "UTF-8");
 
-                    int rows = st.executeUpdate();
+                    bufferedWriter.write(data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
 
-                    System.out.println(rows);
-
-                    if (rows == 1) {
-                        result=1;
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = "";
+                    String response = "";
+                    if ((line = bufferedReader.readLine()) != null) {
+                        System.out.println(line);
+                        response += line;
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                        if (response.contains("Success")) {
+                            result = 1;
+                        }
                     }
-
+                    else
+                    {
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                return  result;
+                return result;
 
             }
 

@@ -367,14 +367,14 @@ public class FairUtils {
         String st = null;
         try {
             if (query == null || query.equals("")) {
-                st = "select * from " + fair_db + "_sells where stall=stall='"+stallname+"'";
+                st = "select * from " + fair_db + "_sells where stall='"+stallname+"'";
 
             } else {
-                st = "select * from " + fair_db + "_sells where stall=stall='"+stallname+"' and employee_name like '%" + query + "%' ";
+                st = "select * from " + fair_db + "_sells where stall='"+stallname+"' and employee_name like '%" + query + "%' ";
             }
             System.out.println("Statement");
 
-            URL loadProductUrl = new URL(url + "loadEmployees.php");
+            URL loadProductUrl = new URL(url + "loadSells.php");
             HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
             System.out.println("Connected\nQuery: " + query);
             httpURLConnection.setRequestMethod("POST");
@@ -412,6 +412,7 @@ public class FairUtils {
                 sell.setTime(rs.getString("time"));
                 sell.setPrice(rs.getString("price"));
                 sell.setDescription(rs.getString("description"));
+                System.out.println(sell);
                 listSells.add(sell);
                 count++;
             }

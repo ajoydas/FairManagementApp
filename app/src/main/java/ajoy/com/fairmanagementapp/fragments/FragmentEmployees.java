@@ -24,6 +24,15 @@ import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -302,33 +311,50 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
 
             @Override
             protected Boolean doInBackground(Void... params) {
-
-                Integer result = 0;
                 try {
-                    Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url;
-                    Connection con = DriverManager.getConnection(Url, ActivityFair.username, ActivityFair.password);
-                    System.out.println("Connected");
+                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/updateEmployee.php");
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    String db =ActivityFair.fair.getDb_name()+"_employees";
+                    String data = URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                            URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(temp.getId()), "UTF-8") + "&" +
+                            URLEncoder.encode("stall", "UTF-8") + "=" + URLEncoder.encode(ActivitySeller.stall.getStall(), "UTF-8") + "&" +
+                            URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(temp.getName(), "UTF-8") + "&" +
+                            URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(temp.getDescription(), "UTF-8") + "&" +
+                            URLEncoder.encode("contact_no", "UTF-8") + "=" + URLEncoder.encode(temp.getContact_no(), "UTF-8") + "&" +
+                            URLEncoder.encode("position", "UTF-8") + "=" + URLEncoder.encode(temp.getPosition(), "UTF-8") + "&" +
+                            URLEncoder.encode("salary", "UTF-8") + "=" + URLEncoder.encode(temp.getSalary(), "UTF-8");
+                    bufferedWriter.write(data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
 
-                    PreparedStatement st = con.prepareStatement("Update "+ActivityFair.fair.getDb_name()+"_employees set name=?,description=?,contact_no=?,position=?,salary=? where id=?");
-
-                    st.setString(1, temp.getName());
-                    st.setString(2, temp.getDescription());
-                    st.setString(3, temp.getContact_no());
-                    st.setString(4, temp.getPosition());
-                    st.setString(5, temp.getSalary());
-                    st.setInt(6,temp.getId());
-                    System.out.println("Statement");
-
-                    ResultSet rs = null;
-                    int row = 0;
-                    row = st.executeUpdate();
-
-                    if (row == 1) {
-                        return true;
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = "";
+                    String response = "";
+                    if ((line = bufferedReader.readLine()) != null) {
+                        System.out.println(line);
+                        response += line;
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                        if (response.contains("Success")) {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
                     }
 
-                } catch (ClassNotFoundException | SQLException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     return false;
                 }
@@ -380,28 +406,43 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
 
                 Integer result=0;
                 try {
-                    Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url;
-                    Connection con = DriverManager.getConnection(Url,  ActivityFair.username, ActivityFair.password);
-                    System.out.println("Connected");
+                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/deleteEmployee.php");
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    String db =ActivityFair.fair.getDb_name()+"_employees";
+                    String data = URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                            URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(String.valueOf( mListEmployees.get(pos).getId()), "UTF-8");
 
-                    PreparedStatement st = con.prepareStatement("Delete from "+ActivityFair.fair.getDb_name()+"_employees where id=?");
+                    bufferedWriter.write(data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
 
-                    st.setInt(1, mListEmployees.get(pos).getId());
-
-                    System.out.println("Statement");
-
-                    ResultSet rs = null;
-
-                    int rows = st.executeUpdate();
-
-                    System.out.println(rows);
-
-                    if (rows == 1) {
-                        result=1;
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = "";
+                    String response = "";
+                    if ((line = bufferedReader.readLine()) != null) {
+                        System.out.println(line);
+                        response += line;
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                        if (response.contains("Success")) {
+                            result = 1;
+                        }
                     }
-
-                } catch (ClassNotFoundException | SQLException e) {
+                    else
+                    {
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return  result;
@@ -491,33 +532,47 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
 
                 Integer result = 0;
                 try {
-                    Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url;
-                    Connection con = DriverManager.getConnection(Url, ActivityFair.username, ActivityFair.password);
-                    System.out.println("Connected");
+                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/addEmployee.php");
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    String db =ActivityFair.fair.getDb_name()+"_employees";
+                    String data = URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                            URLEncoder.encode("stall", "UTF-8") + "=" + URLEncoder.encode(ActivitySeller.stall.getStall(), "UTF-8") + "&" +
+                            URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(temp.getName(), "UTF-8") + "&" +
+                            URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(temp.getDescription(), "UTF-8") + "&" +
+                            URLEncoder.encode("contact_no", "UTF-8") + "=" + URLEncoder.encode(temp.getContact_no(), "UTF-8") + "&" +
+                            URLEncoder.encode("position", "UTF-8") + "=" + URLEncoder.encode(temp.getPosition(), "UTF-8") + "&" +
+                            URLEncoder.encode("salary", "UTF-8") + "=" + URLEncoder.encode(temp.getSalary(), "UTF-8");
+                    bufferedWriter.write(data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
 
-                    PreparedStatement st = con.prepareStatement("INSERT INTO "+ActivityFair.fair.getDb_name()+"_employees" +
-                            "(stall,name,description,contact_no,position,salary)" +
-                            "VALUES" +
-                            "(?,?,?,?,?,?)");
-
-                    st.setString(1, ActivitySeller.stall.getStall());
-                    st.setString(2, temp.getName());
-                    st.setString(3, temp.getDescription());
-                    st.setString(4, temp.getContact_no());
-                    st.setString(5, temp.getPosition());
-                    st.setString(6, temp.getSalary());
-                    System.out.println("Statement");
-
-                    ResultSet rs = null;
-                    int row = 0;
-                    row = st.executeUpdate();
-
-                    if (row == 1) {
-                        return true;
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = "";
+                    String response = "";
+                    if ((line = bufferedReader.readLine()) != null) {
+                        System.out.println(line);
+                        response += line;
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                        if (response.contains("Success")) {
+                            return true;
+                        }
                     }
-
-                } catch (ClassNotFoundException | SQLException e) {
+                    else
+                    {
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                     return false;
                 }

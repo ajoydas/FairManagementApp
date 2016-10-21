@@ -23,8 +23,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 
+import com.bumptech.glide.Glide;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -90,9 +101,11 @@ public class ActivityEditProducts extends AppCompatActivity {
         priceInput = (EditText) findViewById(R.id.addproductprice);
         availability = "High";
 
-        image=product.getImage();
-        bitmap=StringToBitMap(image);
-        imageView.setImageBitmap(bitmap);
+        image="";
+        //bitmap=StringToBitMap(image);
+        Glide.with(this).load(product.getImage()).into(imageView);
+
+        //imageView.setImageBitmap(bitmap);
 
         nameInput.setText(product.getName());
         companyInput.setText(product.getCompany());
@@ -344,7 +357,7 @@ public class ActivityEditProducts extends AppCompatActivity {
 
                 Integer result=0;
                 try {
-                    Class.forName("com.mysql.jdbc.Driver");
+                    /*Class.forName("com.mysql.jdbc.Driver");
                     String Url = url;
                     Connection con = DriverManager.getConnection(Url, username, password);
                     System.out.println("Connected");
@@ -365,13 +378,68 @@ public class ActivityEditProducts extends AppCompatActivity {
 
                     int rows = st.executeUpdate();
 
-                    System.out.println(rows);
+                    System.out.println(rows);*/
 
-                    if (rows == 1) {
-                        result=1;
+                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/updateProduct.php");
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    String db = fair_db_name + "_products";
+                    String imagename=fair_stall+"_"+System.currentTimeMillis();
+                    System.out.println("Image Name: "+imagename +"Id: "+String.valueOf(product.getId()));
+                    String data;
+                    if(image.equals("")) {
+                        data = URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                                URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(product.getId()), "UTF-8") + "&" +
+                                URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8") + "&" +
+                                URLEncoder.encode("company", "UTF-8") + "=" + URLEncoder.encode(company, "UTF-8") + "&" +
+                                URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(description, "UTF-8") + "&" +
+                                URLEncoder.encode("price", "UTF-8") + "=" + URLEncoder.encode(price, "UTF-8") + "&" +
+                                URLEncoder.encode("availability", "UTF-8") + "=" + URLEncoder.encode(availability, "UTF-8");
+
                     }
+                    else
+                    {
+                        data = URLEncoder.encode("prev_image", "UTF-8") + "=" + URLEncoder.encode(product.getImage(), "UTF-8") + "&" +URLEncoder.encode("encoded_string", "UTF-8") + "=" + URLEncoder.encode(image, "UTF-8") + "&" +
+                                URLEncoder.encode("image_name", "UTF-8") + "=" + URLEncoder.encode(imagename, "UTF-8") + "&" +
+                                URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                                URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(product.getId()), "UTF-8") + "&" +
+                                URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8") + "&" +
+                                URLEncoder.encode("company", "UTF-8") + "=" + URLEncoder.encode(company, "UTF-8") + "&" +
+                                URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(description, "UTF-8") + "&" +
+                                URLEncoder.encode("price", "UTF-8") + "=" + URLEncoder.encode(price, "UTF-8") + "&" +
+                                URLEncoder.encode("availability", "UTF-8") + "=" + URLEncoder.encode(availability, "UTF-8");
 
-                } catch (ClassNotFoundException | SQLException e) {
+                    }
+                    bufferedWriter.write(data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
+
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = "";
+                    String response = "";
+                    if ((line = bufferedReader.readLine()) != null) {
+                        System.out.println(line);
+                        response += line;
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                        if (response.contains("Success")) {
+                            result = 1;
+                        }
+                    }
+                    else
+                    {
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return  result;
@@ -450,28 +518,46 @@ public class ActivityEditProducts extends AppCompatActivity {
 
                 Integer result=0;
                 try {
-                    Class.forName("com.mysql.jdbc.Driver");
-                    String Url = url;
-                    Connection con = DriverManager.getConnection(Url, username, password);
-                    System.out.println("Connected");
+                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/deleteProduct.php");
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    String db = fair_db_name + "_products";
+                    String imagename=fair_stall+"_"+System.currentTimeMillis();
+                    System.out.println("Image Name: "+imagename +"Id: "+String.valueOf(product.getId()));
+                    String data = URLEncoder.encode("prev_image", "UTF-8") + "=" + URLEncoder.encode(product.getImage(), "UTF-8") + "&" +
+                            URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                            URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(product.getId()), "UTF-8");
 
-                    PreparedStatement st = con.prepareStatement("Delete from "+fair_db_name+"_products where id=?");
+                    bufferedWriter.write(data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
 
-                    st.setInt(1, product.getId());
-
-                    System.out.println("Statement");
-
-                    ResultSet rs = null;
-
-                    int rows = st.executeUpdate();
-
-                    System.out.println(rows);
-
-                    if (rows == 1) {
-                        result=1;
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = "";
+                    String response = "";
+                    if ((line = bufferedReader.readLine()) != null) {
+                        System.out.println(line);
+                        response += line;
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                        if (response.contains("Success")) {
+                            result = 1;
+                        }
                     }
-
-                } catch (ClassNotFoundException | SQLException e) {
+                    else
+                    {
+                        inputStream.close();
+                        bufferedReader.close();
+                        httpURLConnection.disconnect();
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return  result;

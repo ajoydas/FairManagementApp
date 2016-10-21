@@ -216,6 +216,12 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
                         return 0;
                     }
                 }
+                else
+                {
+                    inputStream.close();
+                    bufferedReader.close();
+                    httpURLConnection.disconnect();
+                }
                 return 0;
             } catch (Exception e) {
                 e.printStackTrace();
