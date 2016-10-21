@@ -26,6 +26,20 @@ import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -45,13 +59,14 @@ import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.application.MyApplication;
 import ajoy.com.fairmanagementapp.application.R;
 import ajoy.com.fairmanagementapp.objects.Product;
+import ajoy.com.fairmanagementapp.objects.Stall;
 import ajoy.com.fairmanagementapp.task.TaskLoadProducts;
 
 /**
  * Created by ajoy on 5/24/16.
  */
 
-public class FragmentSearchProducts extends Fragment implements AsyncResponse,SortListener,View.OnClickListener,ProductLoadedListener, SwipeRefreshLayout.OnRefreshListener{
+public class FragmentSearchProducts extends Fragment implements AsyncResponse, SortListener, View.OnClickListener, ProductLoadedListener, SwipeRefreshLayout.OnRefreshListener {
     private static SearchView searchView;
     private static RadioGroup radioGroup;
 
@@ -68,7 +83,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
     private int option;
     private String location;
     private String stallname;
-    private boolean res=false;
+    private boolean res = false;
 
 
     public static FragmentSearchProducts newInstance(String param1, String param2) {
@@ -77,7 +92,6 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
         fragment.setArguments(args);
         return fragment;
     }
-
 
 
     @Override
@@ -90,21 +104,19 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View layout = inflater.inflate(R.layout.fragment_search_products, container, false);
         //L.t(getActivity(),"Inside stall Products!!!");
-        searchView= (SearchView) layout.findViewById(R.id.searchView);
-        option=1;
-        radioGroup= (RadioGroup) layout.findViewById(R.id.searchViewRadio);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
+        searchView = (SearchView) layout.findViewById(R.id.searchView);
+        option = 1;
+        radioGroup = (RadioGroup) layout.findViewById(R.id.searchViewRadio);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 // checkedId is the RadioButton selected
-                if (checkedId==R.id.byName){
+                if (checkedId == R.id.byName) {
                     searchView.setQueryHint("Search by Name");
-                    option=1;
-                }
-                else {
+                    option = 1;
+                } else {
                     searchView.setQueryHint("Search by Author/Company");
-                    option=2;
+                    option = 2;
                 }
             }
         });
@@ -119,7 +131,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                search=newText;
+                search = newText;
                 return false;
             }
         });
@@ -141,7 +153,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
 //            mListProducts = MyApplication.getWritableDatabaseProduct().readProducts();
 //            if (mListProducts.isEmpty()) {
 //                L.m("FragmentUpcoming: executing task from fragment");
-                new TaskLoadProducts(this,ActivityFair.fair.getDb_name(),null,0).execute();
+            new TaskLoadProducts(this, ActivityFair.fair.getDb_name(), null, 0).execute();
 
             //}
         }
@@ -169,9 +181,8 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
     }
 
 
-    private void searchResult()
-    {
-        new TaskLoadProducts(this,ActivityFair.fair.getDb_name(),search,option).execute();
+    private void searchResult() {
+        new TaskLoadProducts(this, ActivityFair.fair.getDb_name(), search, option).execute();
     }
 
     @Override
@@ -196,7 +207,8 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
             }
         }));
     }
-    boolean isImageFitToScreen=false;
+
+    boolean isImageFitToScreen = false;
 
     //Product Details dialog
     private void editDialogShow(final int position) {
@@ -210,7 +222,8 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
         final TextView productAvailability = (TextView) dialog.findViewById(R.id.dialog_stall_product_availability);
         final ImageView productImage = (ImageView) dialog.findViewById(R.id.dialog_stall_product_image);
 
-        productImage.setImageBitmap(StringToBitMap(mListProducts.get(position).getImage()));
+        //productImage.setImageBitmap(StringToBitMap(mListProducts.get(position).getImage()));
+        Glide.with(MyApplication.getAppContext()).load(mListProducts.get(position).getImage()).into(productImage);
         productName.setText(mListProducts.get(position).getName());
         productCompany.setText(mListProducts.get(position).getCompany());
         productDescription.setText(mListProducts.get(position).getDescription());
@@ -218,19 +231,19 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
         productAvailability.setText(mListProducts.get(position).getAvailability());
 
         dialog.show();
-        Button bcancel= (Button) dialog.findViewById(R.id.bcancel);
-        Button bviewstallmap= (Button) dialog.findViewById(R.id.bviewStallMap);
-        final android.widget.LinearLayout.LayoutParams params= (LinearLayout.LayoutParams) productImage.getLayoutParams();
+        Button bcancel = (Button) dialog.findViewById(R.id.bcancel);
+        Button bviewstallmap = (Button) dialog.findViewById(R.id.bviewStallMap);
+        final android.widget.LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) productImage.getLayoutParams();
 
         productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isImageFitToScreen) {
-                    isImageFitToScreen=false;
+                if (isImageFitToScreen) {
+                    isImageFitToScreen = false;
                     productImage.setLayoutParams(params);
                     productImage.setAdjustViewBounds(true);
-                }else{
-                    isImageFitToScreen=true;
+                } else {
+                    isImageFitToScreen = true;
                     productImage.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
                     productImage.setScaleType(ImageView.ScaleType.FIT_XY);
                 }
@@ -241,7 +254,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
         bcancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                L.t(getActivity(),"Request Canceled");
+                L.t(getActivity(), "Request Canceled");
                 dialog.cancel();
             }
         });
@@ -254,15 +267,17 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse,So
             }
         });
     }
-int pos;
 
-    private void getLocation(String name){
+    int pos;
+
+    private void getLocation(String name) {
 
 
         class GetLocation extends AsyncTask<Void, Void, Boolean> {
             public AsyncResponse delegate = null;
 
             private String stall;
+
             public GetLocation(String stall) {
                 this.stall = stall;
             }
@@ -282,37 +297,50 @@ int pos;
             @Override
             protected Boolean doInBackground(Void... params) {
 
-                Integer result=0;
+                Integer result = 0;
                 try {
-                    Class.forName("com.mysql.jdbc.Driver");
-                    String Url = ActivityFair.url;
-                    Connection con = DriverManager.getConnection(Url, ActivityFair.username, ActivityFair.password);
+                    String st = "Select * from " + ActivityFair.fair.getDb_name() + "_stalls where stall='" + stall+"'";
+                    System.out.println("Statement is "+st);
+
+                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/loadStalls.php");
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
                     System.out.println("Connected");
 
-                    PreparedStatement st = con.prepareStatement("Select location,stall_name from "+ActivityFair.fair.getDb_name()+"_stalls where stall=?");
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    String data = URLEncoder.encode("statement", "UTF-8") + "=" + URLEncoder.encode(st, "UTF-8");
+                    bufferedWriter.write(data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
 
-                    st.setString(1, stall);
-
-                    System.out.println("Statement");
-
-                    ResultSet rs = null;
-
-                    rs = st.executeQuery();
-
-                    while (rs.next())
-                    {
-                        location = rs.getString("location");
-                        stallname = rs.getString("stall_name");
-                        System.out.println(location+" "+stallname);
-                        return  true;
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String jsonString;
+                    while ((jsonString = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(jsonString + "\n");
                     }
+                    bufferedReader.close();
+                    inputStream.close();
+                    httpURLConnection.disconnect();
+                    JSONObject jsonObject = new JSONObject(stringBuilder.toString().trim());
+                    JSONArray jsonArray = jsonObject.getJSONArray("result");
+                    int count = 0;
 
-                } catch (ClassNotFoundException | SQLException e) {
+                    JSONObject rs = jsonArray.getJSONObject(count);
+                    location = rs.getString("location");
+                    stallname = rs.getString("stall_name");
+                    System.out.println(location + " " + stallname);
+                    return true;
+
+                } catch (Exception e) {
                     e.printStackTrace();
                     return false;
                 }
-
-                return false;
             }
         }
 
@@ -323,40 +351,35 @@ int pos;
 
     @Override
     public void processFinish(Boolean output) {
-        if(output) {
-            if(mListProducts.get(pos).getImage()!=null) {
+        if (output) {
+            if (mListProducts.get(pos).getImage() != null) {
                 Intent i = new Intent(getActivity(), ActivityProductMap.class);
                 i.putExtra("Location", location);
                 i.putExtra("Stallname", stallname);
                 i.putExtra("Image", mListProducts.get(pos).getImage());
                 startActivity(i);
-            }
-            else
-            {
+            } else {
                 Intent i = new Intent(getActivity(), ActivityStallMap.class);
                 i.putExtra("Location", location);
                 i.putExtra("Stallname", stallname);
                 startActivity(i);
             }
-        }
-        else {
+        } else {
             L.t(getActivity(), "Connection Error");
         }
 
     }
 
-    public Bitmap StringToBitMap(String encodedString){
+    public Bitmap StringToBitMap(String encodedString) {
         try {
-            byte [] encodeByte= Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
             return bitmap;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.getMessage();
             return null;
         }
     }
-
-
 
 
     @Override
@@ -388,15 +411,14 @@ int pos;
     public void onRefresh() {
         L.t(getActivity(), "Refreshing......");
         //load the whole feed again on refresh, dont try this at home :)
-        new TaskLoadProducts(this,ActivityFair.fair.getDb_name(),null,0).execute();
+        new TaskLoadProducts(this, ActivityFair.fair.getDb_name(), null, 0).execute();
 
     }
 
     //Click listener for Add Button
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.bsearchproduct)
-        {
+        if (v.getId() == R.id.bsearchproduct) {
             InputMethodManager inputManager = (InputMethodManager)
                     getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -407,7 +429,6 @@ int pos;
         }
 
     }
-
 
 
     //Touch

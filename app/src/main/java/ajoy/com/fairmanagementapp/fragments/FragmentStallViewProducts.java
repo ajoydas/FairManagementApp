@@ -25,6 +25,8 @@ import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
@@ -32,6 +34,7 @@ import ajoy.com.fairmanagementapp.activities.ActivityProductMap;
 import ajoy.com.fairmanagementapp.activities.ActivityStallMap;
 import ajoy.com.fairmanagementapp.activities.ActivityStallView;
 import ajoy.com.fairmanagementapp.adapters.AdapterProducts;
+import ajoy.com.fairmanagementapp.application.MyApplication;
 import ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
 import ajoy.com.fairmanagementapp.extras.ProductSorter;
 import ajoy.com.fairmanagementapp.logging.L;
@@ -179,7 +182,8 @@ public class FragmentStallViewProducts extends Fragment implements  View.OnClick
         final TextView productAvailability = (TextView) dialog.findViewById(R.id.dialog_stall_product_availability);
         final ImageView productImage = (ImageView) dialog.findViewById(R.id.dialog_stall_product_image);
 
-        productImage.setImageBitmap(StringToBitMap(mListProducts.get(position).getImage()));
+        //productImage.setImageBitmap(StringToBitMap(mListProducts.get(position).getImage()));
+        Glide.with(MyApplication.getAppContext()).load(mListProducts.get(position).getImage()).into(productImage);
         productName.setText(mListProducts.get(position).getName());
         productCompany.setText(mListProducts.get(position).getCompany());
         productDescription.setText(mListProducts.get(position).getDescription());

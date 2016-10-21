@@ -13,6 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -23,6 +26,7 @@ import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import ajoy.com.fairmanagementapp.application.MyApplication;
 import ajoy.com.fairmanagementapp.extras.PermissionUtils;
 import ajoy.com.fairmanagementapp.application.R;
 
@@ -37,6 +41,7 @@ public class ActivityProductMap extends AppCompatActivity implements OnMapReadyC
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private Toolbar mToolbar;
     private GroundOverlay mGroundOverlay;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +52,14 @@ public class ActivityProductMap extends AppCompatActivity implements OnMapReadyC
             stallName = extras.getString("Stallname");
             imageString = extras.getString("Image");
         }
-        image = StringToBitMap(imageString);
+        Glide.with(MyApplication.getAppContext()).load(imageString).asBitmap().into(new SimpleTarget() {
+            @Override
+            public void onResourceReady(Object resource, GlideAnimation glideAnimation) {
+                image= (Bitmap) resource;
+            }
+            ;
+        });
+        //image = StringToBitMap(imageString);
         System.out.println(markerpoint);
 
         setContentView(R.layout.activity_stall_map);
@@ -61,12 +73,12 @@ public class ActivityProductMap extends AppCompatActivity implements OnMapReadyC
     }
 
 
-    public Bitmap StringToBitMap(String encodedString){
+    public Bitmap StringToBitMap(String encodedString) {
         try {
-            byte [] encodeByte= Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
             return bitmap;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.getMessage();
             return null;
         }
@@ -84,7 +96,7 @@ public class ActivityProductMap extends AppCompatActivity implements OnMapReadyC
 
             stall = new LatLng(Double.parseDouble(d1), Double.parseDouble(d2));
         } catch (Exception e) {
-            stall = new LatLng(0,0);
+            stall = new LatLng(0, 0);
             e.printStackTrace();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Location Not Available!");
@@ -102,7 +114,7 @@ public class ActivityProductMap extends AppCompatActivity implements OnMapReadyC
         }
         mMap.addMarker(new MarkerOptions().position(stall).title(stallName));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(stall));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
         enableMyLocation();
 
         mGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()

@@ -27,6 +27,18 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -47,7 +59,7 @@ import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
-public class ActivityFair extends AppCompatActivity  implements MaterialTabListener, View.OnClickListener{
+public class ActivityFair extends AppCompatActivity implements MaterialTabListener, View.OnClickListener {
 
     public static final int TAB_DETAILS = 0;
     public static final int TAB_PRODUCTS = 1;
@@ -75,8 +87,8 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fair=(Fair)getIntent().getParcelableExtra("Information");
-        stall=new Stall();
+        fair = (Fair) getIntent().getParcelableExtra("Information");
+        stall = new Stall();
         setContentView(R.layout.activity_fair);
         setupFAB();
         setupTabs();
@@ -99,18 +111,15 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
 
     ProgressDialog loading;
 
-    private String user="",pass="",passrecieved="";
+    private String user = "", pass = "", response = "";
 
     public void onDrawerItemClicked(int index) {
         if (index == 0) {
             dialogShow();
-        }
-        else if(index==4)
-        {
+        } else if (index == 4) {
             startActivity(new Intent(this, ActivityAbout.class));
-        }
-        else {
-            mPager.setCurrentItem(index-1);
+        } else {
+            mPager.setCurrentItem(index - 1);
         }
     }
 
@@ -122,15 +131,15 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
 
         final EditText usernameInput = (EditText) dialog.findViewById(R.id.username);
         final EditText passwordInput = (EditText) dialog.findViewById(R.id.password);
-        Button bsignin= (Button) dialog.findViewById(R.id.bsignin);
-        Button bcancel= (Button) dialog.findViewById(R.id.bcancel);
+        Button bsignin = (Button) dialog.findViewById(R.id.bsignin);
+        Button bcancel = (Button) dialog.findViewById(R.id.bcancel);
         bsignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 //original
-                user=usernameInput.getText().toString();
-                pass=passwordInput.getText().toString();
+                user = usernameInput.getText().toString();
+                pass = passwordInput.getText().toString();
 
                /* user="stall1";
                 pass="stall1";*/
@@ -150,89 +159,107 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
     }
 
 
-    private class Mytask extends AsyncTask<Void,Void,Integer>
-    {
+    private class Mytask extends AsyncTask<Void, Void, Integer> {
 
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loading = ProgressDialog.show(ActivityFair.this, "Signing In", "Please wait...",true,true);
-            System.out.println(user+pass);
+            loading = ProgressDialog.show(ActivityFair.this, "Signing In", "Please wait...", true, true);
+            System.out.println(user + pass);
         }
 
         @Override
         protected Integer doInBackground(Void... params) {
 
             try {
-                Class.forName("com.mysql.jdbc.Driver");
-                String Url=url;
-                Connection con= DriverManager.getConnection(Url,username,password);
 
-                System.out.println("Connected");
-
-                PreparedStatement preparedStatement=con.prepareStatement("Select password from  "+fair.getDb_name()+"_users where username=?");
-                preparedStatement.setString(1,user);
-
-                System.out.println("Statement");
-
-                ResultSet rs=null;
+                //PreparedStatement preparedStatement=con.prepareStatement("Select password from  "+fair.getDb_name()+"_users where username=?");
                 //preparedStatement.setString(1,user);
-                rs=preparedStatement.executeQuery();
 
-                System.out.println("Executed");
+                URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/loginStall.php");
+                HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                String db = fair.getDb_name() + "_users";
+                String data = URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                        URLEncoder.encode("login_name", "UTF-8") + "=" + URLEncoder.encode(user, "UTF-8") + "&" +
+                        URLEncoder.encode("login_pass", "UTF-8") + "=" + URLEncoder.encode(pass, "UTF-8");
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
 
-                int rowcount=0;
-                if (rs.last()) {
-                    rowcount = rs.getRow();
-                    rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
-                }
-                System.out.println("Count: "+rowcount);
-                if(rowcount==0) return 0;
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String line = "";
+                if ((line = bufferedReader.readLine()) != null) {
+                    System.out.println(line);
+                    response += line;
+                    inputStream.close();
+                    bufferedReader.close();
+                    httpURLConnection.disconnect();
+                    if (response.contains("Success")) {
+                        String st = "Select * from  " + fair.getDb_name() + "_stalls where stall='" + user + "'";
+                        System.out.println(st);
+                        /*if (rowcount == 0) {
+                            L.T(getApplicationContext(), "Login Successful But User Information Not Found In Database!");
+                            connect.close();
+                            return 3;
+                        }*/
 
-                while(rs.next()) {
-                    passrecieved = rs.getString("password");
-                    System.out.println("username: " + user + " password: " + passrecieved);
-                }
+                        URL loadStallUrl = new URL("http://buetian14.com/fairmanagementapp/loadStalls.php");
+                        HttpURLConnection httpURLConnection2 = (HttpURLConnection) loadStallUrl.openConnection();
+                        httpURLConnection2.setRequestMethod("POST");
+                        httpURLConnection2.setDoOutput(true);
+                        httpURLConnection2.setDoInput(true);
+                        OutputStream outputStream2 = httpURLConnection2.getOutputStream();
+                        BufferedWriter bufferedWriter2 = new BufferedWriter(new OutputStreamWriter(outputStream2, "UTF-8"));
+                        String data2 = URLEncoder.encode("statement", "UTF-8") + "=" + URLEncoder.encode(st, "UTF-8");
+                        bufferedWriter2.write(data2);
+                        bufferedWriter2.flush();
+                        bufferedWriter2.close();
+                        outputStream2.close();
 
-                if (pass.equals(passrecieved)) {
-                    Connection connect= DriverManager.getConnection(Url,username,password);
-                    PreparedStatement statement=connect.prepareStatement("Select * from  "+fair.getDb_name()+"_stalls where stall=?");
-                    statement.setString(1,user);
-                    ResultSet internalrs=null;
-                    //preparedStatement.setString(1,user);
-                    internalrs=statement.executeQuery();
+                        InputStream inputStream2 = httpURLConnection2.getInputStream();
+                        BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader(inputStream2));
+                        StringBuilder stringBuilder = new StringBuilder();
+                        String jsonString;
+                        while ((jsonString = bufferedReader2.readLine()) != null) {
+                            stringBuilder.append(jsonString + "\n");
 
-                    int row=0;
-                    if (internalrs.last()) {
-                        rowcount = internalrs.getRow();
-                        internalrs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
-                    }
+                            System.out.println(jsonString);
+                        }
+                        bufferedReader2.close();
+                        inputStream2.close();
+                        httpURLConnection2.disconnect();
+                        JSONObject jsonObject = new JSONObject(stringBuilder.toString().trim());
+                        JSONArray jsonArray = jsonObject.getJSONArray("result");
+                        int count = 0;
 
-                    if(rowcount==0){
-                        L.T(getApplicationContext(),"Login Successful But User Information Not Found In Database!");
-                        connect.close();
-                        return 3;
-                    }
-
-                    while(internalrs.next()) {
-                        stall.setId(internalrs.getInt("id"));
-                        stall.setStall(internalrs.getString("stall"));
-                        stall.setStall_name(internalrs.getString("stall_name"));
-                        stall.setOwner(internalrs.getString("owner"));
-                        stall.setDescription(internalrs.getString("description"));
-                        stall.setLocation(internalrs.getString("location"));
+                        JSONObject rs = jsonArray.getJSONObject(count);
+                        stall = new Stall();
+                        stall.setId(rs.getInt("id"));
+                        stall.setStall(rs.getString("stall"));
+                        stall.setStall_name(rs.getString("stall_name"));
+                        stall.setOwner(rs.getString("owner"));
+                        stall.setDescription(rs.getString("description"));
+                        stall.setLocation(rs.getString("location"));
                         System.out.println(stall);
-                    }
-                    System.out.println(stall);
-                    connect.close();
-                    con.close();
-                    return 1;
-                }
-                con.close();
-                return 2;
 
-            } catch (ClassNotFoundException | SQLException e) {
+
+                        return 1;
+                    } else if (response.contains("Failed")) {
+                        return 2;
+                    }
+
+                }
+                return 0;
+
+            } catch (Exception e) {
                 e.printStackTrace();
                 return 0;
             }
@@ -243,14 +270,13 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
             super.onPostExecute(value);
             loading.dismiss();
 
-            if(value==1) {
+            if (value == 1) {
 
                 L.t(getApplicationContext(), "Login Successfull!");
                 Intent i = new Intent(MyApplication.getAppContext(), ActivitySeller.class);
                 i.putExtra("Information", stall);
                 startActivity(i);
-            }
-            else if(value==2) {
+            } else if (value == 2) {
                 //Toast.makeText(getApplicationContext(), "Login failed!",Toast.LENGTH_LONG).show();
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityFair.this);
                 builder.setTitle("Sign In Failed!");
@@ -273,9 +299,7 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
                 alertDialog.show();
 
                 //L.t(getApplicationContext(), "Password Wrong");
-            }
-            else if(value==0)
-            {
+            } else if (value == 0) {
                 //L.t(getApplicationContext(), "User Not Found or Check Connection");
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityFair.this);
                 builder.setTitle("Sign In Failed!");
@@ -448,7 +472,7 @@ public class ActivityFair extends AppCompatActivity  implements MaterialTabListe
 
     public void fairmapClicked(View view) {
         Intent i = new Intent(getApplicationContext(), ActivityFairMapView.class);
-        i.putExtra("Url",fair.getMap_address());
+        i.putExtra("Url", fair.getMap_address());
         startActivity(i);
     }
 

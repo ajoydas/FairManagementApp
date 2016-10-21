@@ -4,10 +4,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -37,66 +41,64 @@ public class FairUtils {
 
     public static ArrayList<Product> loadStallProducts(String fair_db, String stallname, String query, int option) {
         ArrayList<Product> listProducts = new ArrayList<>();
-        String Url = url;
-        PreparedStatement st = null;
+        String st = null;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection(Url, username, password);
-
-            System.out.println("Connected\nQuery: " + query);
-
             if (query == null || query.equals("") || option == 0) {
-                st = con.prepareStatement("select * from "+fair_db+"_products where stall=?");
-                //PreparedStatement stcount = con.prepareStatement("select count(*) from images where id = ?");
-                st.setString(1, stallname);
-
+                st = "select * from " + fair_db + "_products where stall='" + stallname + "'";
             } else if (option == 1) {
-                st = con.prepareStatement("select * from "+fair_db+"_products where stall=? and name like '%" + query + "%' ");
-                st.setString(1, stallname);
+                st = "select * from " + fair_db + "_products where stall='" + stallname + "' and name like '%" + query + "%' ";
             } else if (option == 2) {
-                st = con.prepareStatement("select * from "+fair_db+"_products where stall=? and company like '%" + query + "%' ");
-                st.setString(1, stallname);
+                st = "select * from " + fair_db + "_products where stall='" + stallname + "' and company like '%" + query + "%' ";
             }
 
             System.out.println("Statement");
 
-            ResultSet rs = null, rscount = null;
+            URL loadProductUrl = new URL(url + "loadProducts.php");
+            HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+            System.out.println("Connected\nQuery: " + query);
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            String data = URLEncoder.encode("statement", "UTF-8") + "=" + URLEncoder.encode(st, "UTF-8");
+            bufferedWriter.write(data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            outputStream.close();
 
-            rs = st.executeQuery();
-            //rscount=st.executeQuery();
-            int rowcount = 0;
-            if (rs.last()) {
-                rowcount = rs.getRow();
-                rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder stringBuilder = new StringBuilder();
+            String jsonString;
+            while ((jsonString = bufferedReader.readLine()) != null) {
+                stringBuilder.append(jsonString + "\n");
+            }
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+            JSONObject jsonObject = new JSONObject(stringBuilder.toString().trim());
+            JSONArray jsonArray = jsonObject.getJSONArray("result");
+            int count = 0;
+            while (count < jsonArray.length()) {
+                JSONObject rs = jsonArray.getJSONObject(count);
+                Product product = new Product();
+                product.setId(rs.getInt("id"));
+                product.setStall(rs.getString("stall"));
+                product.setName(rs.getString("name"));
+                product.setCompany(rs.getString("company"));
+                product.setDescription(rs.getString("description"));
+                product.setPrice(rs.getString("price"));
+                product.setAvailability(rs.getString("availability"));
+                product.setImage(rs.getString("image"));
+                listProducts.add(product);
+
+                count++;
             }
 
-            System.out.println("Count: " + rowcount);
+            return listProducts;
 
-            if (rowcount == 0) {
-                System.out.println(rowcount);
-
-                return null;
-            } else {
-
-                while (rs.next()) {
-                    Product product = new Product();
-                    product.setId(rs.getInt("id"));
-                    product.setStall(rs.getString("stall"));
-                    product.setName(rs.getString("name"));
-                    product.setCompany(rs.getString("company"));
-                    product.setDescription(rs.getString("description"));
-                    product.setPrice(rs.getString("price"));
-                    product.setAvailability(rs.getString("availability"));
-                    product.setImage(rs.getString("image"));
-
-                    listProducts.add(product);
-                }
-                //MyApplication.getWritableDatabaseProduct().insertProducts(DBProducts.ProductList, listProducts, true);
-                con.close();
-                return listProducts;
-            }
-
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -106,63 +108,64 @@ public class FairUtils {
 
     public static ArrayList<Product> loadSearchProducts(String fair_db, String query, int option) {
         ArrayList<Product> listProducts = new ArrayList<>();
-        String Url = url;
-        //Statement st=null;
-        PreparedStatement st = null;
-        ResultSet rs = null, rscount = null;
+        String st = null;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection(Url, username, password);
-
             System.out.println("Connected\nQuery: " + query);
 
             if (query == null || query.equals("") || option == 0) {
-                st = con.prepareStatement("select * from "+fair_db+"_products");
+                st = "select * from " + fair_db + "_products";
 
             } else if (option == 1) {
-                st = con.prepareStatement("select * from "+fair_db+"_products where name like '%" + query + "%' ");
+                st = "select * from " + fair_db + "_products where name like '%" + query + "%' ";
             } else if (option == 2) {
-                st = con.prepareStatement("select * from "+fair_db+"_products where company like '%" + query + "%' ");
+                st = "select * from " + fair_db + "_products where company like '%" + query + "%' ";
             }
 
+            URL loadProductUrl = new URL(url + "loadProducts.php");
+            HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            String data = URLEncoder.encode("statement", "UTF-8") + "=" + URLEncoder.encode(st, "UTF-8");
+            bufferedWriter.write(data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            outputStream.close();
 
-            System.out.println("Statement");
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder stringBuilder = new StringBuilder();
+            String jsonString;
+            while ((jsonString = bufferedReader.readLine()) != null) {
+                stringBuilder.append(jsonString + "\n");
+            }
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+            JSONObject jsonObject = new JSONObject(stringBuilder.toString().trim());
+            JSONArray jsonArray = jsonObject.getJSONArray("result");
+            int count = 0;
+            while (count < jsonArray.length()) {
+                JSONObject rs = jsonArray.getJSONObject(count);
+                Product product = new Product();
+                product.setId(rs.getInt("id"));
+                product.setStall(rs.getString("stall"));
+                product.setName(rs.getString("name"));
+                product.setCompany(rs.getString("company"));
+                product.setDescription(rs.getString("description"));
+                product.setPrice(rs.getString("price"));
+                product.setAvailability(rs.getString("availability"));
+                product.setImage(rs.getString("image"));
+                listProducts.add(product);
 
-            rs = st.executeQuery();
-
-            int rowcount = 0;
-            if (rs.last()) {
-                rowcount = rs.getRow();
-                rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
+                count++;
             }
 
-            System.out.println("Count: " + rowcount);
+            return listProducts;
 
-            if (rowcount == 0) {
-                System.out.println(rowcount);
-
-                return null;
-            } else {
-
-                while (rs.next()) {
-                    Product product = new Product();
-                    product.setId(rs.getInt("id"));
-                    product.setStall(rs.getString("stall"));
-                    product.setName(rs.getString("name"));
-                    product.setCompany(rs.getString("company"));
-                    product.setDescription(rs.getString("description"));
-                    product.setPrice(rs.getString("price"));
-                    product.setAvailability(rs.getString("availability"));
-                    product.setImage(rs.getString("image"));
-
-                    listProducts.add(product);
-                }
-                MyApplication.getWritableDatabaseProduct().insertProducts(DBProducts.ProductList, listProducts, true);
-                con.close();
-                return listProducts;
-            }
-
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -176,83 +179,23 @@ public class FairUtils {
         ArrayList<Fair> listFairs = new ArrayList<>();
         String Url = url;
         try {
-            /*Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection(Url, username, password);
-
-            System.out.println("Connected");
-
-            PreparedStatement st = con.prepareStatement("select * from fairs");
-
-            System.out.println("Statement");
-
-            ResultSet rs = null, rscount = null;
-
-            rs = st.executeQuery();
-            //rscount=st.executeQuery();
-            int rowcount = 0;
-            if (rs.last()) {
-                rowcount = rs.getRow();
-                rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
-            }
-
-            System.out.println("Count: " + rowcount);
-
-            if (rowcount == 0) {
-                System.out.println(rowcount);
-
-                return null;
-            } else {
-
-                while (rs.next()) {
-                    Fair fair = new Fair();
-                    fair.setId(rs.getInt("id"));
-                    fair.setDb_name(rs.getString("db_name"));
-                    fair.setTitle(rs.getString("title"));
-                    fair.setOrganizer(rs.getString("organizer"));
-                    fair.setLocation(rs.getString("location"));
-                    fair.setStart_date(rs.getDate("start_date"));
-                    fair.setEnd_date(rs.getDate("end_date"));
-                    fair.setOpen_time(rs.getTime("open_time"));
-                    fair.setClose_time(rs.getTime("close_time"));
-                    fair.setMap_address(rs.getString("map_address"));
-
-                    Calendar c = Calendar.getInstance();
-                    Date date = c.getTime();
-
-                    if (table == 1) {
-                        if ((fair.getStart_date()).compareTo(date) == -1 && (fair.getEnd_date()).compareTo(date)==1 ) listFairs.add(fair);
-                    } else if (table == 2) {
-                        if (fair.getStart_date().compareTo(date) != -1) listFairs.add(fair);
-                    }
-
-                    System.out.println("Loading again");
-
-                }
-                MyApplication.getWritableDatabaseFair().insertFairs((table == 1 ? DBFairs.RUNNING_FAIR : DBFairs.UPCOMING_FAIR), listFairs, true);
-                System.out.println("Done");
-                con.close();
-                return listFairs;
-            }
-*/
-            URL runingFairUrl = new URL(url + "loadfairs.php");
-            HttpURLConnection httpURLConnection= (HttpURLConnection) runingFairUrl.openConnection();
+            URL loadFairUrl = new URL(url + "loadfairs.php");
+            HttpURLConnection httpURLConnection = (HttpURLConnection) loadFairUrl.openConnection();
             InputStream inputStream = httpURLConnection.getInputStream();
-            BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder stringBuilder=new StringBuilder();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder stringBuilder = new StringBuilder();
             String jsonString;
-            while((jsonString=bufferedReader.readLine())!=null)
-            {
-                stringBuilder.append(jsonString+"\n");
+            while ((jsonString = bufferedReader.readLine()) != null) {
+                stringBuilder.append(jsonString + "\n");
             }
             bufferedReader.close();
             inputStream.close();
             httpURLConnection.disconnect();
-            JSONObject jsonObject=new JSONObject(stringBuilder.toString().trim());
-            JSONArray jsonArray=jsonObject.getJSONArray("result");
-            int count=0;
-            while (count<jsonArray.length())
-            {
-                JSONObject rs=jsonArray.getJSONObject(count);
+            JSONObject jsonObject = new JSONObject(stringBuilder.toString().trim());
+            JSONArray jsonArray = jsonObject.getJSONArray("result");
+            int count = 0;
+            while (count < jsonArray.length()) {
+                JSONObject rs = jsonArray.getJSONObject(count);
                 Fair fair = new Fair();
                 fair.setId(rs.getInt("id"));
                 fair.setDb_name(rs.getString("db_name"));
@@ -271,7 +214,8 @@ public class FairUtils {
                 Date date = c.getTime();
 
                 if (table == 1) {
-                    if ((fair.getStart_date()).compareTo(date) == -1 && (fair.getEnd_date()).compareTo(date)==1 ) listFairs.add(fair);
+                    if ((fair.getStart_date()).compareTo(date) == -1 && (fair.getEnd_date()).compareTo(date) == 1)
+                        listFairs.add(fair);
                 } else if (table == 2) {
                     if (fair.getStart_date().compareTo(date) != -1) listFairs.add(fair);
                 }
@@ -291,54 +235,63 @@ public class FairUtils {
         ArrayList<Stall> listStalls = new ArrayList<>();
         String Url = url;
         //Statement st=null;
-        PreparedStatement st = null;
-        ResultSet rs = null, rscount = null;
+        String st = null;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection(Url, username, password);
-
             System.out.println("Connected\nQuery: " + query);
 
             if (query == null || query.equals("")) {
-                st = con.prepareStatement("select * from "+fair_db+"_stalls WHERE stall_name is not null and location is not null and owner is not null and description is not null");
+                st = "select * from " + fair_db + "_stalls WHERE stall_name is not null and location is not null and owner is not null and description is not null";
 
             } else {
-                st = con.prepareStatement("select * from  "+fair_db+"_stalls where stall_name like '%" + query + "%' and stall_name is not null and location is not null and owner is not null and description is not null");
+                st = "select * from  " + fair_db + "_stalls where stall_name like '%" + query + "%' and stall_name is not null and location is not null and owner is not null and description is not null";
             }
 
             System.out.println("Statement");
 
-            rs = st.executeQuery();
-            int rowcount = 0;
-            if (rs.last()) {
-                rowcount = rs.getRow();
-                rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
+
+            URL loadProductUrl = new URL(url + "loadStalls.php");
+            HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            String data = URLEncoder.encode("statement", "UTF-8") + "=" + URLEncoder.encode(st, "UTF-8");
+            bufferedWriter.write(data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            outputStream.close();
+
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder stringBuilder = new StringBuilder();
+            String jsonString;
+            while ((jsonString = bufferedReader.readLine()) != null) {
+                stringBuilder.append(jsonString + "\n");
+            }
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+            JSONObject jsonObject = new JSONObject(stringBuilder.toString().trim());
+            JSONArray jsonArray = jsonObject.getJSONArray("result");
+            int count = 0;
+            while (count < jsonArray.length()) {
+                JSONObject rs = jsonArray.getJSONObject(count);
+                Stall stall = new Stall();
+                stall.setId(rs.getInt("id"));
+                stall.setStall(rs.getString("stall"));
+                stall.setStall_name(rs.getString("stall_name"));
+                stall.setOwner(rs.getString("owner"));
+                stall.setDescription(rs.getString("description"));
+                stall.setLocation(rs.getString("location"));
+                listStalls.add(stall);
+
+                count++;
             }
 
-            System.out.println("Count: " + rowcount);
+            return listStalls;
 
-            if (rowcount == 0) {
-                System.out.println(rowcount);
-
-                return null;
-            } else {
-
-                while (rs.next()) {
-                    Stall stall = new Stall();
-                    stall.setId(rs.getInt("id"));
-                    stall.setStall(rs.getString("stall"));
-                    stall.setStall_name(rs.getString("stall_name"));
-                    stall.setOwner(rs.getString("owner"));
-                    stall.setDescription(rs.getString("description"));
-                    stall.setLocation(rs.getString("location"));
-                    listStalls.add(stall);
-                }
-                MyApplication.getWritableDatabaseStall().insertStalls(DBStalls.StallList, listStalls, true);
-                con.close();
-                return listStalls;
-            }
-
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -349,58 +302,60 @@ public class FairUtils {
         ArrayList<Employee> listEmployees = new ArrayList<>();
         String Url = url;
         //Statement st=null;
-        PreparedStatement st = null;
-        ResultSet rs = null, rscount = null;
+        String st = null;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection(Url, username, password);
 
-            System.out.println("Connected\nQuery: " + query);
 
             if (query == null || query.equals("")) {
-                st = con.prepareStatement("select * from "+fair_db+"_employees where stall=?");
-                st.setString(1,stallname);
-
+                st = "select * from " + fair_db + "_employees where stall='" + stallname + "'";
             } else {
-                st = con.prepareStatement("select * from "+fair_db+"_employees where stall=? and name like '%" + query + "%' ");
-                st.setString(1,stallname);
+                st = "select * from " + fair_db + "_employees where stall='" + stallname + "' and name like '%" + query + "%' ";
             }
-
-
             System.out.println("Statement");
 
-            rs = st.executeQuery();
-            int rowcount = 0;
-            if (rs.last()) {
-                rowcount = rs.getRow();
-                rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
+            URL loadProductUrl = new URL(url + "loadEmployees.php");
+            HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+            System.out.println("Connected\nQuery: " + query);
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            String data = URLEncoder.encode("statement", "UTF-8") + "=" + URLEncoder.encode(st, "UTF-8");
+            bufferedWriter.write(data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            outputStream.close();
+
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder stringBuilder = new StringBuilder();
+            String jsonString;
+            while ((jsonString = bufferedReader.readLine()) != null) {
+                stringBuilder.append(jsonString + "\n");
             }
-
-            System.out.println("Count: " + rowcount);
-
-            if (rowcount == 0) {
-                System.out.println(rowcount);
-
-                return null;
-            } else {
-
-                while (rs.next()) {
-                    Employee employee = new Employee();
-                    employee.setId(rs.getInt("id"));
-                    employee.setStall(rs.getString("stall"));
-                    employee.setName(rs.getString("name"));
-                    employee.setDescription(rs.getString("description"));
-                    employee.setContact_no(rs.getString("contact_no"));
-                    employee.setPosition(rs.getString("position"));
-                    employee.setSalary(rs.getString("salary"));
-
-                    listEmployees.add(employee);
-                }
-                con.close();
-                return listEmployees;
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+            JSONObject jsonObject = new JSONObject(stringBuilder.toString().trim());
+            JSONArray jsonArray = jsonObject.getJSONArray("result");
+            int count = 0;
+            while (count < jsonArray.length()) {
+                JSONObject rs = jsonArray.getJSONObject(count);
+                Employee employee = new Employee();
+                employee.setId(rs.getInt("id"));
+                employee.setStall(rs.getString("stall"));
+                employee.setName(rs.getString("name"));
+                employee.setDescription(rs.getString("description"));
+                employee.setContact_no(rs.getString("contact_no"));
+                employee.setPosition(rs.getString("position"));
+                employee.setSalary(rs.getString("salary"));
+                listEmployees.add(employee);
+                count++;
             }
+            return listEmployees;
 
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -409,61 +364,61 @@ public class FairUtils {
 
     public static ArrayList<Sell> loadSells(String fair_db, String stallname, String query) {
         ArrayList<Sell> listSells = new ArrayList<>();
-        String Url = url;
-        //Statement st=null;
-        PreparedStatement st = null;
-        ResultSet rs = null, rscount = null;
+        String st = null;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection(Url, username, password);
-
-            System.out.println("Connected\nQuery: " + query);
-
             if (query == null || query.equals("")) {
-                st = con.prepareStatement("select * from "+fair_db+"_sells where stall=? ");
-                st.setString(1,stallname);
+                st = "select * from " + fair_db + "_sells where stall=stall='"+stallname+"'";
 
             } else {
-                st = con.prepareStatement("select * from "+fair_db+"_sells where stall=? and employee_name like '%" + query + "%' ");
-                st.setString(1,stallname);
+                st = "select * from " + fair_db + "_sells where stall=stall='"+stallname+"' and employee_name like '%" + query + "%' ";
             }
-
             System.out.println("Statement");
 
-            rs = st.executeQuery();
-            int rowcount = 0;
-            if (rs.last()) {
-                rowcount = rs.getRow();
-                rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
+            URL loadProductUrl = new URL(url + "loadEmployees.php");
+            HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+            System.out.println("Connected\nQuery: " + query);
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            String data = URLEncoder.encode("statement", "UTF-8") + "=" + URLEncoder.encode(st, "UTF-8");
+            bufferedWriter.write(data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            outputStream.close();
+
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder stringBuilder = new StringBuilder();
+            String jsonString;
+            while ((jsonString = bufferedReader.readLine()) != null) {
+                stringBuilder.append(jsonString + "\n");
+            }
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+            JSONObject jsonObject = new JSONObject(stringBuilder.toString().trim());
+            JSONArray jsonArray = jsonObject.getJSONArray("result");
+            int count = 0;
+            while (count < jsonArray.length()) {
+                JSONObject rs = jsonArray.getJSONObject(count);
+                Sell sell = new Sell();
+                sell.setId(rs.getInt("id"));
+                sell.setStall(rs.getString("stall"));
+                sell.setProduct_name(rs.getString("product_name"));
+                sell.setEmployee_name(rs.getString("employee_name"));
+                sell.setDate(rs.getString("date"));
+                sell.setTime(rs.getString("time"));
+                sell.setPrice(rs.getString("price"));
+                sell.setDescription(rs.getString("description"));
+                listSells.add(sell);
+                count++;
             }
 
-            System.out.println("Count: " + rowcount);
+            return listSells;
 
-            if (rowcount == 0) {
-                System.out.println(rowcount);
-
-                return null;
-            } else {
-
-                while (rs.next()) {
-                    Sell sell = new Sell();
-                    sell.setId(rs.getInt("id"));
-                    sell.setStall(rs.getString("stall"));
-                    sell.setProduct_name(rs.getString("product_name"));
-                    sell.setEmployee_name(rs.getString("employee_name"));
-                    sell.setDate(rs.getString("date"));
-                    sell.setTime(rs.getString("time"));
-                    sell.setPrice(rs.getString("price"));
-                    sell.setDescription(rs.getString("description"));
-
-                    listSells.add(sell);
-                }
-                System.out.println(listSells);
-                con.close();
-                return listSells;
-            }
-
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

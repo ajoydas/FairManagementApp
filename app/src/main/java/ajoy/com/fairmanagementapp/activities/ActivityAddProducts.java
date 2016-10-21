@@ -343,7 +343,7 @@ public class ActivityAddProducts extends AppCompatActivity {
                         result=1;
                     }
 
-                } catch (ClassNotFoundException | SQLException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return  result;

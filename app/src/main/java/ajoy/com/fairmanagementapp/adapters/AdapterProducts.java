@@ -11,9 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
+import ajoy.com.fairmanagementapp.application.MyApplication;
 import ajoy.com.fairmanagementapp.application.R;
 import ajoy.com.fairmanagementapp.objects.Product;
 
@@ -51,7 +54,8 @@ public class AdapterProducts  extends RecyclerView.Adapter<AdapterProducts.ViewH
         holder.productCompany.setText("Company/Author: "+currentProduct.getCompany());
         holder.productPrice.setText("Price:Tk "+currentProduct.getPrice());
         holder.productAvailability.setText("Available: " +currentProduct.getAvailability());
-        holder.productImage.setImageBitmap(StringToBitMap(currentProduct.getImage()));
+        Glide.with(MyApplication.getAppContext()).load(currentProduct.getImage()).into( holder.productImage);
+        //holder.productImage.setImageBitmap(StringToBitMap(currentProduct.getImage()));
 
         if (position > mPreviousPosition) {
             AnimationUtils.animateSunblind(holder, true);

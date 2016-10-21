@@ -26,6 +26,18 @@ import android.widget.TextView;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -165,40 +177,47 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
         protected Integer doInBackground(Void... params) {
 
             try {
-                Class.forName("com.mysql.jdbc.Driver");
-                String Url=url;
+                URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/updateStall.php");
+                HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                String db = ActivityFair.fair.getDb_name() + "_stalls";
+                String data = URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                        URLEncoder.encode("stall_name", "UTF-8") + "=" + URLEncoder.encode(stallname, "UTF-8") + "&" +
+                        URLEncoder.encode("stall_owner", "UTF-8") + "=" + URLEncoder.encode(stallowner, "UTF-8") + "&" +
+                        URLEncoder.encode("stall_description", "UTF-8") + "=" + URLEncoder.encode(stalldescription, "UTF-8") + "&" +
+                        URLEncoder.encode("stall", "UTF-8") + "=" + URLEncoder.encode(ActivitySeller.stall.getStall(), "UTF-8");
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
 
-                System.out.println(ActivityFair.fair.getDb_name());
-                Connection con= DriverManager.getConnection(Url,username,password);
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String line = "";
+                String response="";
+                if ((line = bufferedReader.readLine()) != null) {
+                    System.out.println(line);
+                    response += line;
+                    inputStream.close();
+                    bufferedReader.close();
+                    httpURLConnection.disconnect();
+                    if (response.contains("Success")) {
+                        ActivitySeller.stall.setStall_name(stallname);
+                        ActivitySeller.stall.setOwner(stallowner);
+                        ActivitySeller.stall.setDescription(stalldescription);
 
-                System.out.println("Connected");
-
-                PreparedStatement preparedStatement=con.prepareStatement("update "+ActivityFair.fair.getDb_name()+"_stalls set stall_name=?,owner=?,description=? where stall=?");
-                preparedStatement.setString(1,stallname);
-                preparedStatement.setString(2,stallowner);
-                preparedStatement.setString(3,stalldescription);
-                preparedStatement.setString(4,ActivitySeller.stall.getStall());
-
-                System.out.println("Statement");
-                int rs=0;
-                //preparedStatement.setString(1,user);
-                rs=preparedStatement.executeUpdate();
-
-                System.out.println("Executed");
-
-                System.out.println("Count: "+rs);
-
-                if(rs==1) {
-                    ActivitySeller.stall.setStall_name(stallname);
-                    ActivitySeller.stall.setOwner(stallowner);
-                    ActivitySeller.stall.setDescription(stalldescription);
-
-                    System.out.println(ActivitySeller.stall);
-                    return 1;
+                        System.out.println(ActivitySeller.stall);
+                        return 1;
+                    } else if (response.contains("Failed")) {
+                        return 0;
+                    }
                 }
-
                 return 0;
-            } catch (ClassNotFoundException | SQLException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return 0;
             }
