@@ -2,6 +2,7 @@ package ajoy.com.fairmanagementapp.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,12 +28,19 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -52,12 +60,14 @@ import ajoy.com.fairmanagementapp.activities.ActivityProductMap;
 import ajoy.com.fairmanagementapp.activities.ActivityStallMap;
 import ajoy.com.fairmanagementapp.adapters.AdapterProducts;
 import ajoy.com.fairmanagementapp.callbacks.ProductLoadedListener;
+import ajoy.com.fairmanagementapp.database.DBFavProducts;
 import ajoy.com.fairmanagementapp.extras.AsyncResponse;
 import ajoy.com.fairmanagementapp.extras.ProductSorter;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.application.MyApplication;
 import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.FavProduct;
 import ajoy.com.fairmanagementapp.objects.Product;
 import ajoy.com.fairmanagementapp.objects.Stall;
 import ajoy.com.fairmanagementapp.task.TaskLoadProducts;
@@ -84,6 +94,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
     private String location;
     private String stallname;
     private boolean res = false;
+    int pos;
 
 
     public static FragmentSearchProducts newInstance(String param1, String param2) {
@@ -209,7 +220,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
     }
 
     boolean isImageFitToScreen = false;
-
+    Button bviewfav;
     //Product Details dialog
     private void editDialogShow(final int position) {
         final Dialog dialog = new Dialog(getActivity());
@@ -233,6 +244,14 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
         dialog.show();
         Button bcancel = (Button) dialog.findViewById(R.id.bcancel);
         Button bviewstallmap = (Button) dialog.findViewById(R.id.bviewStallMap);
+        bviewfav = (Button) dialog.findViewById(R.id.bviewFav);
+
+        if (MyApplication.getWritableDatabaseFavProduct().queryFavProducts(ActivityFair.fair.getDb_name() + "_" + mListProducts.get(position).getId())) {
+            bviewfav.setText("Saved");
+        } else {
+            bviewfav.setText("Favourite");
+        }
+
         final android.widget.LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) productImage.getLayoutParams();
 
         productImage.setOnClickListener(new View.OnClickListener() {
@@ -263,23 +282,90 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
             @Override
             public void onClick(View v) {
                 pos = position;
-                getLocation(mListProducts.get(position).getStall());
+                getLocation(position,1);
+            }
+        });
+
+        bviewfav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println(bviewfav.getText().toString());
+                if (bviewfav.getText().toString().toLowerCase().equals("favourite")) {
+                    getLocation(position,2);
+                }
+                else
+                {
+                    try {
+                        if (MyApplication.getWritableDatabaseFavProduct().deleteIdentifier(ActivityFair.fair.getDb_name() + "_" + mListProducts.get(position).getId())) {
+                            bviewfav.setText("Favourite");
+
+                        } else {
+                            bviewfav.setText("Saved");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        L.t(MyApplication.getAppContext(), "Failed to remove!Try again.");
+                    }
+                }
             }
         });
     }
 
-    int pos;
+    private String saveToInternalStorage(Bitmap bitmapImage){
+        ContextWrapper cw = new ContextWrapper(MyApplication.getAppContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        String filename="product_"+System.currentTimeMillis()+".jpg";
+        File mypath=new File(directory,filename);
 
-    private void getLocation(String name) {
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath()+"/"+filename;
+    }
+    /*
+    private void loadImageFromStorage(String path)
+    {
+
+        try {
+            File f=new File(path, "profile.jpg");
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            ImageView img=(ImageView)findViewById(R.id.imgPicker);
+            img.setImageBitmap(b);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+*/
+
+    private void getLocation(int position,int id) {
 
 
         class GetLocation extends AsyncTask<Void, Void, Boolean> {
             public AsyncResponse delegate = null;
 
-            private String stall;
+            private int position;
+            private int id;
 
-            public GetLocation(String stall) {
-                this.stall = stall;
+            public GetLocation(int position,int id) {
+                this.position = position;
+                this.id = id;
             }
 
             @Override
@@ -291,7 +377,42 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
             @Override
             protected void onPostExecute(Boolean result) {
                 super.onPostExecute(result);
-                delegate.processFinish(result);
+                if(id==1) {
+                    delegate.processFinish(result);
+                }
+                else if(id==2)
+                {
+                    try {
+                        Glide.with(MyApplication.getAppContext()).load(mListProducts.get(position).getImage()).asBitmap().into(new SimpleTarget() {
+                            @Override
+                            public void onResourceReady(Object resource, GlideAnimation glideAnimation) {
+                                FavProduct favProduct = new FavProduct();
+                                favProduct.setIdentifier(ActivityFair.fair.getDb_name() + "_" + mListProducts.get(position).getId());
+                                favProduct.setFair(ActivityFair.fair.getTitle());
+                                favProduct.setLocation(ActivityFair.fair.getLocation());
+                                favProduct.setStart_date(ActivityFair.fair.getStart_date());
+                                favProduct.setEnd_date(ActivityFair.fair.getEnd_date());
+                                favProduct.setOpen_time(ActivityFair.fair.getOpen_time());
+                                favProduct.setClose_time(ActivityFair.fair.getClose_time());
+                                favProduct.setStall(stallname);
+                                favProduct.setName(mListProducts.get(position).getName());
+                                favProduct.setCompany(mListProducts.get(position).getCompany());
+                                favProduct.setDescription(mListProducts.get(position).getDescription());
+                                favProduct.setPrice(mListProducts.get(position).getPrice());
+                                favProduct.setAvailability(mListProducts.get(position).getAvailability());
+                                favProduct.setImage(saveToInternalStorage((Bitmap) resource));
+                                favProduct.setStalllocation(location);
+                                System.out.println(favProduct.getImage());
+                                MyApplication.getWritableDatabaseFavProduct().insertFavProducts(DBFavProducts.ProductList, favProduct, false);
+                                L.t(MyApplication.getAppContext(), "Marked as favourite.");
+                                bviewfav.setText("Saved");
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        L.t(MyApplication.getAppContext(), "Failed to mark!Try again.");
+                    }
+                }
             }
 
             @Override
@@ -299,7 +420,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
 
                 Integer result = 0;
                 try {
-                    String st = "Select * from " + ActivityFair.fair.getDb_name() + "_stalls where stall='" + stall+"'";
+                    String st = "Select * from " + ActivityFair.fair.getDb_name() + "_stalls where stall='" + mListProducts.get(position).getStall()+"'";
                     System.out.println("Statement is "+st);
 
                     URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/loadStalls.php");
@@ -344,7 +465,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
             }
         }
 
-        GetLocation ui = new GetLocation(name);
+        GetLocation ui = new GetLocation(position,id);
         ui.delegate = this;
         ui.execute();
     }
@@ -369,6 +490,9 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
         }
 
     }
+
+
+
 
     public Bitmap StringToBitMap(String encodedString) {
         try {

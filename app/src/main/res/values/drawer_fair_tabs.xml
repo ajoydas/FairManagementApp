@@ -2,6 +2,7 @@
 <resources>
     <string-array name="drawer_fair_tabs">
         <item>Seller Login</item>
+        <item>Favourites</item>
         <item>Fair Details</item>
         <item>Products</item>
         <item>Stalls</item>

@@ -111,8 +111,25 @@
         android:layout_height="wrap_content"
         android:text="View on  Google Map"
         android:id="@+id/bstallmap"
+        android:onClick="stallMapClicked"
         android:layout_below="@+id/bedit"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:onClick="stallMapClicked" />
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Save Employees As PDF"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bSaveEmployees"
+        android:layout_below="@+id/bstallmap"
+        android:layout_alignParentStart="true"
+        android:onClick="saveEmployeesClicked" />
+
+    <Button
+        android:text="Save Sells As PDF"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bSaveSells"
+        android:layout_below="@+id/bSaveEmployees"
+        android:layout_alignParentStart="true"
+        android:onClick="saveSellsClicked" />
 </RelativeLayout>

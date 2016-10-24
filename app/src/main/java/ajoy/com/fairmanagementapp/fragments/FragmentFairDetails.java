@@ -72,11 +72,11 @@ public class FragmentFairDetails extends Fragment {
 
 
         TextView title=(TextView) layout.findViewById(R.id.detailstitle);
-        title.setText((ActivityFair.fair.getTitle()));
+        title.setText(ActivityFair.fair.getTitle());
         TextView organizer=(TextView) layout.findViewById(R.id.detailsorganizer);
-        organizer.setText((ActivityFair.fair.getOrganizer()));
+        organizer.setText(ActivityFair.fair.getOrganizer());
         TextView location=(TextView) layout.findViewById(R.id.detailslocation);
-        location.setText((ActivityFair.fair.getLocation()));
+        location.setText(ActivityFair.fair.getLocation());
 
         Date date = ActivityFair.fair.getStart_date();
         TextView startdate=(TextView) layout.findViewById(R.id.detailsstartdate);

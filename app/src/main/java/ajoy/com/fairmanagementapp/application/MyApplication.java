@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import ajoy.com.fairmanagementapp.database.DBFairs;
+import ajoy.com.fairmanagementapp.database.DBFavProducts;
 import  ajoy.com.fairmanagementapp.database.DBProducts;
 import ajoy.com.fairmanagementapp.database.DBStalls;
 
@@ -17,6 +18,7 @@ public class MyApplication extends Application {
     private static MyApplication sInstance;
 
     private static DBProducts mDatabaseProduct;
+    private static DBFavProducts mDatabaseFavProduct;
     private static DBFairs mDatabaseFair;
     private static DBStalls mDatabaseStall;
 
@@ -33,6 +35,13 @@ public class MyApplication extends Application {
             mDatabaseProduct = new DBProducts(getAppContext());
         }
         return mDatabaseProduct;
+    }
+
+    public synchronized static DBFavProducts getWritableDatabaseFavProduct() {
+        if (mDatabaseFavProduct == null) {
+            mDatabaseFavProduct = new DBFavProducts(getAppContext());
+        }
+        return mDatabaseFavProduct;
     }
 
     public static DBFairs getWritableDatabaseFair() {

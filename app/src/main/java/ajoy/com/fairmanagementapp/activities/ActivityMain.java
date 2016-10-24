@@ -22,6 +22,7 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawer;
+import ajoy.com.fairmanagementapp.fragments.FragmentFavourites;
 import ajoy.com.fairmanagementapp.fragments.FragmentRunningFairs;
 import ajoy.com.fairmanagementapp.fragments.FragmentUpcomingFairs;
 import ajoy.com.fairmanagementapp.application.R;
@@ -73,6 +74,9 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
 
     public void onDrawerItemClicked(int index) {
         if (index == 2) {
+            startActivity(new Intent(this, ActivityFavourites.class));
+        }
+        else if (index == 3) {
             startActivity(new Intent(this, ActivityAbout.class));
         } else {
             mPager.setCurrentItem(index);

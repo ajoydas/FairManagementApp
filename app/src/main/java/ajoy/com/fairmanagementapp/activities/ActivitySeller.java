@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -22,7 +23,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 
@@ -31,6 +42,8 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -42,7 +55,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import ajoy.com.fairmanagementapp.callbacks.EmployeeLoadedListener;
+import ajoy.com.fairmanagementapp.callbacks.SellLoadedListener;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerSeller;
 import ajoy.com.fairmanagementapp.fragments.FragmentEmployees;
@@ -51,7 +67,11 @@ import ajoy.com.fairmanagementapp.fragments.FragmentStallDetails;
 import ajoy.com.fairmanagementapp.fragments.FragmentStallProducts;
 import ajoy.com.fairmanagementapp.logging.L;
 import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.objects.Employee;
+import ajoy.com.fairmanagementapp.objects.Sell;
 import ajoy.com.fairmanagementapp.objects.Stall;
+import ajoy.com.fairmanagementapp.task.TaskLoadEmployees;
+import ajoy.com.fairmanagementapp.task.TaskLoadSells;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
@@ -59,7 +79,7 @@ import it.neokree.materialtabs.MaterialTabListener;
 /**
  * Created by ajoy on 5/22/16.
  */
-public class ActivitySeller extends AppCompatActivity implements MaterialTabListener, View.OnClickListener{
+public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedListener,SellLoadedListener,MaterialTabListener, View.OnClickListener{
     public static final int TAB_DETAILS = 0;
     public static final int TAB_PRODUCTS = 1;
     public static final int TAB_EMPLOYEES = 2;
@@ -110,6 +130,119 @@ public class ActivitySeller extends AppCompatActivity implements MaterialTabList
         TextView location=(TextView)findViewById(R.id.detailsstalldescription);
         location.setText(ActivitySeller.stall.getDescription());
     }
+    ProgressDialog pdfDialog=null;
+    public void saveEmployeesClicked(View view) {
+        pdfDialog = new ProgressDialog(ActivitySeller.this);
+        pdfDialog.setTitle("Saving as Pdf...");
+        pdfDialog.show();
+        new TaskLoadEmployees(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),null).execute();
+    }
+
+    @Override
+    public void onEmployeeLoaded(ArrayList<Employee> listEmployees) {
+        BaseFont unicode = null;
+        try {
+            unicode = BaseFont.createFont("assets/kalpurush.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        Font font = new Font(unicode);
+        Document doc = new Document();
+//output file path
+        String outpath = Environment.getExternalStorageDirectory() + "/EmployeesDetail"+System.currentTimeMillis()+".pdf";
+//create pdf writer instance
+            PdfWriter.getInstance(doc, new FileOutputStream(outpath));
+//open the document for writing
+            doc.open();
+//add paragraph to the document
+            PdfPTable table =new PdfPTable(5);
+            PdfPCell cell =new PdfPCell(new Paragraph("Employees Detail:"));
+            cell.setColspan(5);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+
+            table.addCell("Name:");
+            table.addCell("Description:");
+            table.addCell("Contact No:");
+            table.addCell("Position:");
+            table.addCell("Salary:");
+
+            for(int i=0;i<listEmployees.size();i++)
+            {
+                table.addCell(new Paragraph(listEmployees.get(i).getName(),font));
+                table.addCell(new Paragraph(listEmployees.get(i).getDescription(),font));
+                table.addCell(new Paragraph(listEmployees.get(i).getContact_no(),font));
+                table.addCell(new Paragraph(listEmployees.get(i).getPosition(),font));
+                table.addCell(new Paragraph(listEmployees.get(i).getSalary(),font));
+            }
+
+            doc.add(table);
+//close the document
+            doc.close();
+            L.t(this,"Saved Succefully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            L.t(this,"Saving failed! Try again.");
+        }
+        pdfDialog.dismiss();
+    }
+
+
+    public void saveSellsClicked(View view) {
+        pdfDialog = new ProgressDialog(ActivitySeller.this);
+        pdfDialog.setTitle("Saving as Pdf...");
+        pdfDialog.show();
+        new TaskLoadSells(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),null).execute();
+    }
+
+
+    @Override
+    public void onSellLoaded(ArrayList<Sell> listSells) {
+        BaseFont unicode = null;
+        try {
+            unicode = BaseFont.createFont("assets/kalpurush.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font font = new Font(unicode);
+            Document doc = new Document();
+//output file path
+            String outpath = Environment.getExternalStorageDirectory() + "/SellsDetail"+System.currentTimeMillis()+".pdf";
+//create pdf writer instance
+            PdfWriter.getInstance(doc, new FileOutputStream(outpath));
+//open the document for writing
+            doc.open();
+//add paragraph to the document
+            PdfPTable table =new PdfPTable(6);
+            PdfPCell cell =new PdfPCell(new Paragraph("Sells Detail:"));
+            cell.setColspan(6);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+
+            table.addCell("Product:");
+            table.addCell("Employee:");
+            table.addCell("Date:");
+            table.addCell("Time:");
+            table.addCell("Price:");
+            table.addCell("Description:");
+
+            for(int i=0;i<listSells.size();i++)
+            {
+                table.addCell(new Paragraph(listSells.get(i).getProduct_name(),font));
+                table.addCell(new Paragraph(listSells.get(i).getEmployee_name(),font));
+                table.addCell(new Paragraph(listSells.get(i).getDate(),font));
+                table.addCell(new Paragraph(listSells.get(i).getTime(),font));
+                table.addCell(new Paragraph(listSells.get(i).getPrice(),font));
+                table.addCell(new Paragraph(listSells.get(i).getDescription(),font));
+            }
+
+            doc.add(table);
+//close the document
+            doc.close();
+            L.t(this,"Saved Successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            L.t(this,"Saving failed! Try again.");
+        }
+        pdfDialog.dismiss();
+    }
+
 
 
     public void stallMapClicked(View view) {

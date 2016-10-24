@@ -39,15 +39,11 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawerFair;
 import ajoy.com.fairmanagementapp.fragments.FragmentFairDetails;
+import ajoy.com.fairmanagementapp.fragments.FragmentFavourites;
 import ajoy.com.fairmanagementapp.fragments.FragmentSearchProducts;
 import ajoy.com.fairmanagementapp.fragments.FragmentSearchStalls;
 import ajoy.com.fairmanagementapp.logging.L;
@@ -116,10 +112,14 @@ public class ActivityFair extends AppCompatActivity implements MaterialTabListen
     public void onDrawerItemClicked(int index) {
         if (index == 0) {
             dialogShow();
-        } else if (index == 4) {
+        }
+        else if (index == 1) {
+            startActivity(new Intent(this, ActivityFavourites.class));
+        }
+        else if (index == 5) {
             startActivity(new Intent(this, ActivityAbout.class));
         } else {
-            mPager.setCurrentItem(index - 1);
+            mPager.setCurrentItem(index - 2);
         }
     }
 

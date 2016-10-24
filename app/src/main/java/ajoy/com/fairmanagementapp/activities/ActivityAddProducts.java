@@ -244,7 +244,7 @@ public class ActivityAddProducts extends AppCompatActivity {
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                     //ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    bitmap = codec(bitmap, 20);
+                    bitmap = codec(bitmap, 90);
                     imageView.setImageBitmap(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -252,7 +252,7 @@ public class ActivityAddProducts extends AppCompatActivity {
             } else if (requestCode == REQUEST_CAMERA) {
                 bitmap = (Bitmap) data.getExtras().get("data");
                 //ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap = codec(bitmap, 50);
+                bitmap = codec(bitmap, 90);
                 imageView.setImageBitmap(bitmap);
             }
 

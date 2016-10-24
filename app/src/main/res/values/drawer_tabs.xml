@@ -3,6 +3,7 @@
     <string-array name="drawer_tabs">
         <item>Running Fairs</item>
         <item>Upcoming Fairs</item>
+        <item>Favourites</item>
         <item>About</item>
     </string-array>
 </resources>

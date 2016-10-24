@@ -1,0 +1,20 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="ajoy.com.fairmanagementapp.activities.ActivityFavourites">
+
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/app_bar" />
+    <fragment
+        android:id="@+id/fragment_favourites"
+        android:name="ajoy.com.fairmanagementapp.fragments.FragmentFavourites"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:layout="@layout/fragment_favourites"
+        tools:layout="@layout/fragment_favourites"/>
+</LinearLayout>
