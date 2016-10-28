@@ -59,9 +59,7 @@ public class TaskLoadFairs extends AsyncTask<Void,Void,ArrayList<Fair>>  {
 
     @Override
     protected void onPostExecute(ArrayList<Fair> listFairs) {
-        if (myComponent != null) {
             myComponent.onFairLoaded(listFairs);
-        }
     }
 
 }

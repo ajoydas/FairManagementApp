@@ -21,7 +21,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
+    compile project(':itextg-5.5.8')
     compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'it.neokree:MaterialTabs:0.11'
     compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
@@ -32,7 +32,11 @@ dependencies {
     compile 'com.pkmmte.view:circularimageview:1.1'
     compile 'com.android.support:gridlayout-v7:25.0.0'
     compile 'com.android.support:recyclerview-v7:25.0.0'
-    compile 'com.google.android.gms:play-services-maps:9.6.1'
+    compile 'com.google.android.gms:play-services-maps:9.8.0'
     compile 'com.github.bumptech.glide:glide:3.6.1'
-    compile project(':itextg-5.5.8')
+    compile 'com.google.firebase:firebase-messaging:9.8.0'
+    testCompile 'junit:junit:4.12'
 }
+
+
+apply plugin: 'com.google.gms.google-services'

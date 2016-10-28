@@ -119,6 +119,9 @@ public class FairUtils {
                 st = "select * from " + fair_db + "_products where name like '%" + query + "%' ";
             } else if (option == 2) {
                 st = "select * from " + fair_db + "_products where company like '%" + query + "%' ";
+            }else if (option==3)
+            {
+                st = "select * from " + fair_db + "_products where id = '" + query + "' ";
             }
 
             URL loadProductUrl = new URL(url + "loadProducts.php");
@@ -181,6 +184,7 @@ public class FairUtils {
         try {
             URL loadFairUrl = new URL(url + "loadfairs.php");
             HttpURLConnection httpURLConnection = (HttpURLConnection) loadFairUrl.openConnection();
+            httpURLConnection.setConnectTimeout(5000);
             InputStream inputStream = httpURLConnection.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder stringBuilder = new StringBuilder();

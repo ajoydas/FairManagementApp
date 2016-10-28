@@ -2,8 +2,11 @@ package ajoy.com.fairmanagementapp.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import ajoy.com.fairmanagementapp.application.R;
 
@@ -11,13 +14,19 @@ public class ActivityFairMapView extends AppCompatActivity {
 
     private WebView mWebview ;
     String value=null;
+    private Toolbar mToolbar;
+    private ProgressBar mProgressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fair_map_view);
-
+        mToolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(mToolbar);
         System.out.println("Inside mapview");
+
+        mProgressBar = (ProgressBar)findViewById(R.id.progressBar);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -30,10 +39,12 @@ public class ActivityFairMapView extends AppCompatActivity {
 
             browser = (WebView) findViewById(R.id.webView);
             if (browser != null) {
+
                 browser .setWebViewClient(new WebViewClient() {
                     @Override
-                    public void onReceivedError(WebView view, int errorCode, String description, String   failingUrl) {
-
+                    public void onPageFinished(WebView view, String url) {
+                        super.onPageFinished(view, url);
+                        mProgressBar.setVisibility(View.INVISIBLE);
                     }
                 });
             }

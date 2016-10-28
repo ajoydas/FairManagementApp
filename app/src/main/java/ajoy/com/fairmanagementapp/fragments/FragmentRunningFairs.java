@@ -1,5 +1,6 @@
 package ajoy.com.fairmanagementapp.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +14,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -36,6 +39,8 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerFairs;
     private TextView mTextError;
+    private ProgressBar mProgressBar;
+
 
     public FragmentRunningFairs() {
         mListFairs = new ArrayList<>();
@@ -68,6 +73,8 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
         mAdapter = new AdapterFairs(getActivity());
         mRecyclerFairs.setAdapter(mAdapter);
 
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        mTextError = (TextView) layout.findViewById(R.id.tError);
         //L.t(getActivity(),"FragmentRunning: inside");
         if (savedInstanceState != null) {
             mListFairs = savedInstanceState.getParcelableArrayList(STATE_RUNNING_FAIRS);
@@ -115,10 +122,16 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
 
     @Override
     public void onFairLoaded(ArrayList<Fair> listFairs) {
-
+        mProgressBar.setVisibility(View.INVISIBLE);
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
+        if(listFairs==null)
+        {
+            mTextError.setVisibility(View.VISIBLE);
+            return;
+        }
+        mTextError.setVisibility(View.INVISIBLE);
         mListFairs=listFairs;
         mAdapter.setFairs(listFairs);
     }
@@ -126,6 +139,7 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
     @Override
     public void onRefresh() {
         L.t(getActivity(), "Refreshing....");
+        mTextError.setVisibility(View.INVISIBLE);
         new TaskLoadFairs(this,1).execute();
 
     }

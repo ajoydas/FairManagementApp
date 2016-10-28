@@ -1,106 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ajoy.com.fairmanagementapp.fragments.FragmentStallViewDetails">
 
-    <!-- TODO: Update blank fragment layout -->
-
-
-    <TableLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:shrinkColumns="2"
-        android:id="@+id/tableLayout"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="47dp">
+        android:layout_height="match_parent"
+        android:padding="20dp">
 
-        <TableRow>
+        <!-- TODO: Update blank fragment layout -->
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Name" />
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="30dp"
+            android:shrinkColumns="2">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text=" : "
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:id="@+id/detailsstallname"
-                android:paddingBottom="5dp"
-                android:textStyle="bold" />
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Owner"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text=" : "
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:id="@+id/detailsstallowner"
-                android:paddingBottom="5dp"
-                android:textStyle="bold" />
-
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Description"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text=" : "
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:id="@+id/detailsstalldescription"
-                android:paddingBottom="5dp"
-                android:textStyle="bold" />
-
-        </TableRow>
+            <TableRow android:paddingTop="10dp">
 
 
-    </TableLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textSize="18sp" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="View on  Google Map"
-        android:id="@+id/bstallmap"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/tableLayout" />
-</RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : "
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/detailsstallname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorButton1" />
+            </TableRow>
+
+            <TableRow android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Owner"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : "
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/detailsstallowner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorButton1" />
+
+            </TableRow>
+
+            <TableRow android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Description"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : "
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/detailsstalldescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorButton1" />
+
+            </TableRow>
+
+
+        </TableLayout>
+
+        <Button
+            android:id="@+id/bstallmap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tableLayout"
+            android:layout_centerHorizontal="true"
+            android:text="View on  Google Map"
+            android:textColor="@android:color/white"
+            android:background="@color/colorButton1"
+            android:layout_marginTop="30dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+    </RelativeLayout>
+</ScrollView>

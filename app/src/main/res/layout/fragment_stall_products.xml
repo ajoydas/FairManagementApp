@@ -25,21 +25,24 @@
         android:orientation="horizontal"
         android:paddingLeft="10dp"
         android:paddingBottom="10dp"
+        android:weightSum="2"
         >
 
 
         <RadioButton
             android:id="@+id/byName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:checked="true"
+            android:layout_weight="1"
             android:text="Name" />
 
         <RadioButton
             android:id="@+id/byCompany"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:checked="false"
+            android:layout_weight="1"
             android:text="Company/Author" />
 
 

@@ -27,7 +27,8 @@ public class FavProduct implements Parcelable {
     };
 
     private int id;
-    private String identifier;
+    private String table;
+    private String productid;
     private String fair;
     private String location;
     private Date start_date;
@@ -48,7 +49,8 @@ public class FavProduct implements Parcelable {
 
     public FavProduct(Parcel input) {
         id = input.readInt();
-        identifier = input.readString();
+        table = input.readString();
+        productid = input.readString();
         fair = input.readString();
         location = input.readString();
         long dateMillis=input.readLong();
@@ -70,9 +72,10 @@ public class FavProduct implements Parcelable {
 
     }
 
-    public FavProduct(int id,String identifier, String fair, String location, Date start_date, Date end_date, Time open_time, Time close_time, String stall, String name, String company, String description, String price, String availability, String image,String stalllocation) {
+    public FavProduct(int id,String table,String productid, String fair, String location, Date start_date, Date end_date, Time open_time, Time close_time, String stall, String name, String company, String description, String price, String availability, String image,String stalllocation) {
         this.id = id;
-        this.identifier = identifier;
+        this.table = table;
+        this.productid = productid;
         this.fair = fair;
         this.location = location;
         this.start_date = start_date;
@@ -89,6 +92,14 @@ public class FavProduct implements Parcelable {
         this.stalllocation = stalllocation;
     }
 
+    public String getProductid() {
+        return productid;
+    }
+
+    public void setProductid(String productid) {
+        this.productid = productid;
+    }
+
     public String getStalllocation() {
         return stalllocation;
     }
@@ -97,12 +108,12 @@ public class FavProduct implements Parcelable {
         this.stalllocation = stalllocation;
     }
 
-    public String getIdentifier() {
-        return identifier;
+    public String getTable() {
+        return table;
     }
 
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public void setTable(String table) {
+        this.table = table;
     }
 
     public String getFair() {
@@ -224,8 +235,9 @@ public class FavProduct implements Parcelable {
     @Override
     public String toString() {
         return "\nID: " + id +
-                "\nIdentifier: " + identifier +
+                "\nTable: " + table +
                 "\nFair: " + fair +
+                "\nProductId: " + productid +
                 "\nLocation: "+location+
                 "\nStartDate: "+start_date+
                 "\nEndDate: "+end_date+
@@ -249,7 +261,8 @@ public class FavProduct implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(id);
-        parcel.writeString(identifier);
+        parcel.writeString(table);
+        parcel.writeString(productid);
         parcel.writeString(fair);
         parcel.writeString(location);
         parcel.writeLong(start_date == null ? -1 : start_date.getTime());

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerFairs;
     private TextView mTextError;
+    private ProgressBar mProgressBar;
 
     public FragmentUpcomingFairs() {
         mListFairs = new ArrayList<>();
@@ -68,6 +70,8 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
         mAdapter = new AdapterFairs(getActivity());
         mRecyclerFairs.setAdapter(mAdapter);
 
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        mTextError = (TextView) layout.findViewById(R.id.tError);
         //L.t(getActivity(),"FragmentRunning: inside");
         if (savedInstanceState != null) {
             mListFairs = savedInstanceState.getParcelableArrayList(STATE_UPCOMING_FAIRS);
@@ -117,17 +121,24 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
 
     @Override
     public void onFairLoaded(ArrayList<Fair> listFairs) {
-
+        mProgressBar.setVisibility(View.INVISIBLE);
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
-        mListFairs = listFairs;
+        if(listFairs==null)
+        {
+            mTextError.setVisibility(View.VISIBLE);
+            return;
+        }
+        mTextError.setVisibility(View.INVISIBLE);
+        mListFairs=listFairs;
         mAdapter.setFairs(listFairs);
     }
 
     @Override
     public void onRefresh() {
         L.t(getActivity(), "Refreshing.....");
+        mTextError.setVisibility(View.INVISIBLE);
         //load the whole feed again on refresh, dont try this at home :)
         new TaskLoadFairs(this,2).execute();
 

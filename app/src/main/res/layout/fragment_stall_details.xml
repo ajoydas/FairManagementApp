@@ -1,135 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ajoy.com.fairmanagementapp.fragments.FragmentStallDetails">
 
-    <!-- TODO: Update blank fragment layout -->
-
-
-    <TableLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:shrinkColumns="2"
-        android:id="@+id/tableLayout"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="47dp">
+        android:layout_height="match_parent"
+        android:padding="20dp">
 
-        <TableRow>
+        <!-- TODO: Update blank fragment layout -->
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Name" />
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="47dp"
+            android:shrinkColumns="2">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text=" : "
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:id="@+id/detailsstallname"
-                android:paddingBottom="5dp"
-                android:textStyle="bold" />
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Owner"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text=" : "
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:id="@+id/detailsstallowner"
-                android:paddingBottom="5dp"
-                android:textStyle="bold" />
-
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Description"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text=" : "
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:id="@+id/detailsstalldescription"
-                android:paddingBottom="5dp"
-                android:textStyle="bold" />
-
-        </TableRow>
+            <TableRow android:layout_marginTop="5dp">
 
 
-    </TableLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textSize="18sp" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Edit Information"
-        android:id="@+id/bedit"
-        android:layout_below="@+id/tableLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:onClick="editDetailsClicked"
-        />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : "
+                    android:textSize="18sp" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="View on  Google Map"
-        android:id="@+id/bstallmap"
-        android:onClick="stallMapClicked"
-        android:layout_below="@+id/bedit"
-        android:layout_alignParentStart="true" />
+                <TextView
+                    android:id="@+id/detailsstallname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorButton1" />
+            </TableRow>
 
-    <Button
-        android:text="Save Employees As PDF"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/bSaveEmployees"
-        android:layout_below="@+id/bstallmap"
-        android:layout_alignParentStart="true"
-        android:onClick="saveEmployeesClicked" />
+            <TableRow android:layout_marginTop="5dp">
 
-    <Button
-        android:text="Save Sells As PDF"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/bSaveSells"
-        android:layout_below="@+id/bSaveEmployees"
-        android:layout_alignParentStart="true"
-        android:onClick="saveSellsClicked" />
-</RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Owner"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : "
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/detailsstallowner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorButton1" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Description"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : "
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/detailsstalldescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorButton1" />
+
+            </TableRow>
+
+
+        </TableLayout>
+
+        <Button
+            android:id="@+id/bedit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tableLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorButton1"
+            android:onClick="editDetailsClicked"
+            android:text="Edit Information"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/bstallmap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/bedit"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorButton1"
+            android:onClick="stallMapClicked"
+            android:text="View on  Google Map"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/bSaveEmployees"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/bstallmap"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorButton1"
+            android:onClick="saveEmployeesClicked"
+            android:text="Save Employees As PDF"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/bSaveSells"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/bSaveEmployees"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorButton1"
+            android:onClick="saveSellsClicked"
+            android:text="Save Sells As PDF"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>
+</ScrollView>

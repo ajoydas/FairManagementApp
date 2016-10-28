@@ -23,7 +23,9 @@
             android:text="Search"
             android:id="@+id/bsearchstall"
             android:layout_below="@+id/searchView"
-             />
+            android:background="@color/colorButton1"
+            android:textColor="@android:color/white"
+            />
     </RelativeLayout>
 
     <LinearLayout

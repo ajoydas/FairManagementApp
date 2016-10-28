@@ -4,8 +4,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Base64;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -21,10 +24,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -37,8 +40,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,11 +49,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
@@ -69,7 +65,6 @@ import ajoy.com.fairmanagementapp.application.MyApplication;
 import ajoy.com.fairmanagementapp.application.R;
 import ajoy.com.fairmanagementapp.objects.FavProduct;
 import ajoy.com.fairmanagementapp.objects.Product;
-import ajoy.com.fairmanagementapp.objects.Stall;
 import ajoy.com.fairmanagementapp.task.TaskLoadProducts;
 
 /**
@@ -77,7 +72,7 @@ import ajoy.com.fairmanagementapp.task.TaskLoadProducts;
  */
 
 public class FragmentSearchProducts extends Fragment implements AsyncResponse, SortListener, View.OnClickListener, ProductLoadedListener, SwipeRefreshLayout.OnRefreshListener {
-    private static SearchView searchView;
+    private static EditText searchView;
     private static RadioGroup radioGroup;
 
     private static final String STATE_STALL_PRODUCTS = "states_search_products";
@@ -115,7 +110,11 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View layout = inflater.inflate(R.layout.fragment_search_products, container, false);
         //L.t(getActivity(),"Inside stall Products!!!");
-        searchView = (SearchView) layout.findViewById(R.id.searchView);
+        searchView = (EditText) layout.findViewById(R.id.searchView);
+        /*EditText searchText = (EditText)
+                searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        Typeface myCustomFont = Typeface.createFromAsset(getContext().getAssets(),"kalpurush.ttf");
+        searchText.setTypeface(myCustomFont);*/
         option = 1;
         radioGroup = (RadioGroup) layout.findViewById(R.id.searchViewRadio);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -123,16 +122,18 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 // checkedId is the RadioButton selected
                 if (checkedId == R.id.byName) {
-                    searchView.setQueryHint("Search by Name");
+                    searchView.setHint("Search by Name");
                     option = 1;
                 } else {
-                    searchView.setQueryHint("Search by Author/Company");
+                    searchView.setHint("Search by Author/Company");
                     option = 2;
                 }
             }
         });
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 search = query;
@@ -146,7 +147,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
                 return false;
             }
         });
-
+*/
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeProducts);
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -246,11 +247,18 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
         Button bviewstallmap = (Button) dialog.findViewById(R.id.bviewStallMap);
         bviewfav = (Button) dialog.findViewById(R.id.bviewFav);
 
-        if (MyApplication.getWritableDatabaseFavProduct().queryFavProducts(ActivityFair.fair.getDb_name() + "_" + mListProducts.get(position).getId())) {
-            bviewfav.setText("Saved");
-        } else {
-            bviewfav.setText("Favourite");
+        try
+        {
+            if (MyApplication.getWritableDatabaseFavProduct().queryFavProducts(ActivityFair.fair.getDb_name() , String.valueOf(mListProducts.get(position).getId()))) {
+                bviewfav.setText("Saved");
+            } else {
+                bviewfav.setText("Favourite");
+            }
+        }catch (Exception e)
+        {
+            System.out.println(e);
         }
+
 
         final android.widget.LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) productImage.getLayoutParams();
 
@@ -296,7 +304,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
                 else
                 {
                     try {
-                        if (MyApplication.getWritableDatabaseFavProduct().deleteIdentifier(ActivityFair.fair.getDb_name() + "_" + mListProducts.get(position).getId())) {
+                        if (MyApplication.getWritableDatabaseFavProduct().deleteIdentifier(ActivityFair.fair.getDb_name(), String.valueOf(mListProducts.get(position).getId()))) {
                             bviewfav.setText("Favourite");
 
                         } else {
@@ -387,7 +395,8 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
                             @Override
                             public void onResourceReady(Object resource, GlideAnimation glideAnimation) {
                                 FavProduct favProduct = new FavProduct();
-                                favProduct.setIdentifier(ActivityFair.fair.getDb_name() + "_" + mListProducts.get(position).getId());
+                                favProduct.setTable(ActivityFair.fair.getDb_name());
+                                favProduct.setProductid(String.valueOf(mListProducts.get(position).getId()));
                                 favProduct.setFair(ActivityFair.fair.getTitle());
                                 favProduct.setLocation(ActivityFair.fair.getLocation());
                                 favProduct.setStart_date(ActivityFair.fair.getStart_date());
@@ -403,7 +412,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
                                 favProduct.setImage(saveToInternalStorage((Bitmap) resource));
                                 favProduct.setStalllocation(location);
                                 System.out.println(favProduct.getImage());
-                                MyApplication.getWritableDatabaseFavProduct().insertFavProducts(DBFavProducts.ProductList, favProduct, false);
+                                MyApplication.getWritableDatabaseFavProduct().insertFavProducts(favProduct, false);
                                 L.t(MyApplication.getAppContext(), "Marked as favourite.");
                                 bviewfav.setText("Saved");
                             }
@@ -548,7 +557,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
 
             inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-
+            search = searchView.getText().toString();
             searchResult();
         }
 

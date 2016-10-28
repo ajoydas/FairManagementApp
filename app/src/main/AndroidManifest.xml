@@ -84,8 +84,21 @@
             android:name="ajoy.com.fairmanagementapp.activities.ActivityStallView"
             android:label="@string/title_activity_stall_view" />
         <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityAbout" />
-        <activity android:name="ajoy.com.fairmanagementapp.fragments.FragmentFavourites" />
-        <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityFavourites"></activity>
+        <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityFavourites">
+        </activity>
+
+        <service android:name="ajoy.com.fairmanagementapp.services.MyFirebaseInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name="ajoy.com.fairmanagementapp.services.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
     </application>
 
 </manifest>

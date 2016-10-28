@@ -28,7 +28,7 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp">
 
-                <TableRow>
+                <TableRow android:paddingTop="5dp">
 
 
                     <TextView
@@ -49,11 +49,12 @@
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
                         android:id="@+id/dialog_stall_product_name"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="@color/colorButton1" />
 
                 </TableRow>
 
-                <TableRow>
+                <TableRow android:paddingTop="5dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -73,10 +74,11 @@
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
                         android:id="@+id/dialog_stall_product_company"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="@color/colorButton1" />
 
                 </TableRow>
-                <TableRow>
+                <TableRow android:paddingTop="5dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -96,9 +98,10 @@
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
                         android:id="@+id/dialog_stall_product_description"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="@color/colorButton1" />
                 </TableRow>
-                <TableRow>
+                <TableRow android:paddingTop="5dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -118,9 +121,10 @@
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
                         android:id="@+id/dialog_stall_product_price"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="@color/colorButton1" />
                 </TableRow>
-                <TableRow>
+                <TableRow android:paddingTop="5dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -140,7 +144,8 @@
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
                         android:id="@+id/dialog_stall_product_availability"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="@color/colorButton1" />
                 </TableRow>
 
 
@@ -156,14 +161,20 @@
                     android:layout_height="wrap_content"
                     android:text="Cancel"
                     android:id="@+id/bcancel"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:background="@color/colorButton1"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="5dp" />
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="View on Map"
                     android:id="@+id/bviewStallMap"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:background="@color/colorButton1"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="5dp" />
 
             </LinearLayout>
 
