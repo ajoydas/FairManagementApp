@@ -209,7 +209,10 @@
                             android:layout_centerHorizontal="true"
                             android:layout_weight="1"
                             android:onClick="uploadImageClicked"
-                            android:text="Update Image" />
+                            android:text="Update Image"
+                            android:background="@color/colorButton1"
+                            android:textColor="@android:color/white"
+                            android:layout_margin="5dp" />
 
                     </TableRow>
 
@@ -232,7 +235,10 @@
                     android:layout_below="@+id/uploadedimage"
                     android:id="@+id/bdeleteProduct"
                     android:layout_marginTop="15dp"
-                    android:onClick="deleteButtonClicked"/>
+                    android:onClick="deleteButtonClicked"
+                    android:background="@color/colorButton1"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="5dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -246,7 +252,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="cancelClicked"
-                        android:text="Cancel" />
+                        android:text="Cancel"
+                        android:background="@color/colorButton1"
+                        android:textColor="@android:color/white"
+                        android:layout_margin="5dp" />
 
                     <Button
                         android:id="@+id/bcanceladd"
@@ -254,7 +263,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="editProductClicked"
-                        android:text="Save Product" />
+                        android:text="Save Product"
+                        android:background="@color/colorButton1"
+                        android:textColor="@android:color/white"
+                        android:layout_margin="5dp" />
 
 
                 </LinearLayout>

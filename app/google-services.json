@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "632761824560",
+    "firebase_url": "https://fair-files.firebaseio.com",
+    "project_id": "fair-files",
+    "storage_bucket": "fair-files.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:632761824560:android:02f63a27ffa62855",
+        "android_client_info": {
+          "package_name": "ajoy.com.fairmanagementapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "632761824560-qad12qjkmhdvs3pk0v93rneorjq1pctd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ajoy.com.fairmanagementapp",
+            "certificate_hash": "CFC3062C2E9246BD0F3B4E2482170A8EC04D1B8F"
+          }
+        },
+        {
+          "client_id": "632761824560-7g09poda8apr3uih1gav8m9akkh9it9m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0avB5aIOigtlLAiceeqAXoY5MdUBRlHs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "632761824560-7g09poda8apr3uih1gav8m9akkh9it9m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

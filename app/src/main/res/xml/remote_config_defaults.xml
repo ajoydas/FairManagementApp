@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START xml_defaults -->
+<defaultsMap>
+    <entry>
+        <key>Server</key>
+        <value>http://buetian14.com/fairmanagementapp/</value>
+    </entry>
+    <entry>
+        <key>Count</key>
+        <value>20</value>
+    </entry>
+    <entry>
+        <key>Email</key>
+        <value>ajoydas1996@gmail.com</value>
+    </entry>
+    <entry>
+        <key>ContactNumber</key>
+        <value>tel:01521487525</value>
+    </entry>
+</defaultsMap>
+    <!-- END xml_defaults -->

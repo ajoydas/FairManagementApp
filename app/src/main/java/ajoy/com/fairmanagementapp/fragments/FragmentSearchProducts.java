@@ -1,6 +1,7 @@
 package ajoy.com.fairmanagementapp.fragments;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -52,6 +54,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
+import ajoy.com.fairmanagementapp.activities.ActivityMain;
 import ajoy.com.fairmanagementapp.activities.ActivityProductMap;
 import ajoy.com.fairmanagementapp.activities.ActivityStallMap;
 import ajoy.com.fairmanagementapp.adapters.AdapterProducts;
@@ -81,7 +84,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private RecyclerView mRecyclerProducts;
-    private TextView mTextError;
+
     private ProductSorter mSorter = new ProductSorter();
 
     private String search;
@@ -90,7 +93,8 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
     private String stallname;
     private boolean res = false;
     int pos;
-
+    private ProgressBar mProgressBar;
+    private TextView mTextError;
 
     public static FragmentSearchProducts newInstance(String param1, String param2) {
         FragmentSearchProducts fragment = new FragmentSearchProducts();
@@ -111,6 +115,8 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
         final View layout = inflater.inflate(R.layout.fragment_search_products, container, false);
         //L.t(getActivity(),"Inside stall Products!!!");
         searchView = (EditText) layout.findViewById(R.id.searchView);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        mTextError = (TextView) layout.findViewById(R.id.tError);
         /*EditText searchText = (EditText)
                 searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         Typeface myCustomFont = Typeface.createFromAsset(getContext().getAssets(),"kalpurush.ttf");
@@ -432,7 +438,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
                     String st = "Select * from " + ActivityFair.fair.getDb_name() + "_stalls where stall='" + mListProducts.get(position).getStall()+"'";
                     System.out.println("Statement is "+st);
 
-                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/loadStalls.php");
+                    URL loadProductUrl = new URL(ActivityMain.Server+"loadStalls.php");
                     HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
                     System.out.println("Connected");
 
@@ -526,13 +532,45 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
     @Override
     public void onProductLoaded(ArrayList<Product> listProducts) {
 
-        if (mSwipeRefreshLayout.isRefreshing()) {
+       /* if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
         mListProducts = listProducts;
         mAdapter.setProducts(listProducts);
-    }
+*/
+        mProgressBar.setVisibility(View.INVISIBLE);
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+        if(listProducts==null)
+        {
+            mTextError.setText("Please check the connection.\nSwipe to refresh.");
+            mTextError.setVisibility(View.VISIBLE);
+            mListProducts=null;
+            mAdapter.setProducts(mListProducts);
+            return;
+        }
+        else if (listProducts.get(0).getId()==-1)
+        {
+            mTextError.setText("There is no product for this fair available.");
+            mTextError.setVisibility(View.VISIBLE);
+            mListProducts=null;
+            mAdapter.setProducts(mListProducts);
+            return;
+        }
+        mTextError.setVisibility(View.INVISIBLE);
+        mListProducts=listProducts;
+        mAdapter.setProducts(listProducts);
 
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mProgressBar.getVisibility()==View.VISIBLE)
+        {
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
+    }
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

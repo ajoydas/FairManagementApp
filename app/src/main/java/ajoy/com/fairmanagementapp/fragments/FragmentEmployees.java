@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
+import ajoy.com.fairmanagementapp.activities.ActivityMain;
 import ajoy.com.fairmanagementapp.activities.ActivitySeller;
 import ajoy.com.fairmanagementapp.adapters.AdapterEmployees;
 import ajoy.com.fairmanagementapp.callbacks.EmployeeLoadedListener;
@@ -54,20 +56,20 @@ import ajoy.com.fairmanagementapp.task.TaskLoadEmployees;
  * Created by ajoy on 5/27/16.
  */
 public class FragmentEmployees extends Fragment implements AsyncResponse,View.OnClickListener,EmployeeLoadedListener, SwipeRefreshLayout.OnRefreshListener{
-    private static SearchView searchView;
+    private static EditText searchView;
     private static RadioGroup radioGroup;
 
     private static final String STATE_STALL_PRODUCTS = "states_stall_employee";
     protected ArrayList<Employee> mListEmployees;
     private AdapterEmployees mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
     private RecyclerView mRecyclerEmployees;
-    private TextView mTextError;
 
     private String search;
     private int option;
 
+    private ProgressBar mProgressBar;
+    private TextView mTextError;
     public static FragmentEmployees newInstance(String param1, String param2) {
         FragmentEmployees fragment = new FragmentEmployees();
         Bundle args = new Bundle();
@@ -86,10 +88,12 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View layout = inflater.inflate(R.layout.fragment_employees, container, false);
         //L.t(getActivity(),"Inside stall Employees!!!");
-        searchView= (SearchView) layout.findViewById(R.id.searchView);
+        searchView= (EditText) layout.findViewById(R.id.searchView);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        mTextError = (TextView) layout.findViewById(R.id.tError);
         option=1;
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 search = query;
@@ -102,7 +106,7 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
                 search=newText;
                 return false;
             }
-        });
+        });*/
 
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeProducts);
@@ -312,7 +316,7 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
             @Override
             protected Boolean doInBackground(Void... params) {
                 try {
-                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/updateEmployee.php");
+                    URL loadProductUrl = new URL(ActivityMain.Server+"updateEmployee.php");
                     HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
                     httpURLConnection.setRequestMethod("POST");
                     httpURLConnection.setDoOutput(true);
@@ -406,7 +410,7 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
 
                 Integer result=0;
                 try {
-                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/deleteEmployee.php");
+                    URL loadProductUrl = new URL(ActivityMain.Server+"deleteEmployee.php");
                     HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
                     httpURLConnection.setRequestMethod("POST");
                     httpURLConnection.setDoOutput(true);
@@ -532,7 +536,7 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
 
                 Integer result = 0;
                 try {
-                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/addEmployee.php");
+                    URL loadProductUrl = new URL(ActivityMain.Server+"addEmployee.php");
                     HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
                     httpURLConnection.setRequestMethod("POST");
                     httpURLConnection.setDoOutput(true);
@@ -609,11 +613,44 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
     @Override
     public void onEmployeeLoaded(ArrayList<Employee> listEmployees) {
 
-        if (mSwipeRefreshLayout.isRefreshing()) {
+        /*if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
         mListEmployees = listEmployees;
         mAdapter.setEmployees(listEmployees);
+*/
+        mProgressBar.setVisibility(View.INVISIBLE);
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+        if(listEmployees==null)
+        {
+            mTextError.setText("Please check the connection.\nSwipe to refresh.");
+            mTextError.setVisibility(View.VISIBLE);
+            mListEmployees=null;
+            mAdapter.setEmployees(mListEmployees);
+            return;
+        }
+        else if (listEmployees.get(0).getId()==-1)
+        {
+            mTextError.setText("There is no employee available.");
+            mTextError.setVisibility(View.VISIBLE);
+            mListEmployees=null;
+            mAdapter.setEmployees(mListEmployees);
+            return;
+        }
+        mTextError.setVisibility(View.INVISIBLE);
+        mListEmployees=listEmployees;
+        mAdapter.setEmployees(listEmployees);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mProgressBar.getVisibility()==View.VISIBLE)
+        {
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -651,7 +688,7 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
 
             inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-
+            search = searchView.getText().toString();
             searchResult(search);
         }
 

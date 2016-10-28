@@ -46,13 +46,6 @@
         <activity
             android:name="ajoy.com.fairmanagementapp.activities.ActivitySeller"
             android:label="@string/title_activity_seller" />
-        <activity
-            android:name="ajoy.com.fairmanagementapp.activities.ActivityTouchEvent"
-            android:label="@string/title_activity_sub">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ajoy.com.fairmanagementapp.activities.ActivityMain" />
-        </activity>
         <activity android:name="ajoy.com.fairmanagementapp.activities.ActivityFairMapView" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

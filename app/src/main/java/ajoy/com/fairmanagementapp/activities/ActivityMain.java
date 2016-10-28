@@ -4,6 +4,7 @@ package ajoy.com.fairmanagementapp.activities;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -16,10 +17,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 
 import ajoy.com.fairmanagementapp.anim.AnimationUtils;
+import ajoy.com.fairmanagementapp.application.BuildConfig;
 import ajoy.com.fairmanagementapp.extras.SortListener;
 import ajoy.com.fairmanagementapp.fragments.FragmentDrawer;
 import ajoy.com.fairmanagementapp.fragments.FragmentFavourites;
@@ -47,11 +53,40 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
     private FloatingActionButton mFAB;
     private FloatingActionMenu mFABMenu;
     private FragmentDrawer mDrawerFragment;
-
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    public static String Server="";
+    public static long Count=20;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettings(configSettings);
+        mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
+
+        Server=mFirebaseRemoteConfig.getString("Server");
+        Count=mFirebaseRemoteConfig.getLong("Count");
+
+        mFirebaseRemoteConfig.fetch(0)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            //Toast.makeText(StartActivity.this, "Fetch Successfull", Toast.LENGTH_SHORT).show();
+                            mFirebaseRemoteConfig.activateFetched();
+                        } else {
+                            //Toast.makeText(StartActivity.this, "Fetch Failed", Toast.LENGTH_SHORT).show();
+                        }
+                        Server=mFirebaseRemoteConfig.getString("Server");
+                        Count=mFirebaseRemoteConfig.getLong("Count");
+                    }
+                });
+
+
         setupTabs();
         setupDrawer();
         //animate the Toolbar when it comes into the picture
@@ -82,6 +117,7 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
             mPager.setCurrentItem(index);
         }
     }
+
 
     public View getContainerToolbar() {
         return mContainerToolbar;

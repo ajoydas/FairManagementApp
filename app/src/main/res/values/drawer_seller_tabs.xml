@@ -2,10 +2,12 @@
 <resources>
     <string-array name="drawer_seller_tabs">
         <item>Seller Logout</item>
+        <item>Change Password</item>
         <item>Stall Details</item>
         <item>Products</item>
         <item>Employees</item>
         <item>Sells</item>
         <item>About</item>
+        <item>Contact Support</item>
     </string-array>
 </resources>

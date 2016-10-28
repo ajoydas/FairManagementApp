@@ -18,7 +18,8 @@
         android:layout_marginLeft="56dp"
         android:gravity="right"
         android:textSize="@dimen/size_text_primary"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/colorButton1" />
 
     <TextView
         android:id="@+id/productCompany"

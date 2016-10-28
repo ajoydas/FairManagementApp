@@ -19,8 +19,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -46,7 +48,7 @@ import ajoy.com.fairmanagementapp.task.TaskLoadStallProducts;
  * Created by ajoy on 5/29/16.
  */
 public class FragmentStallViewProducts extends Fragment implements  View.OnClickListener,ProductLoadedListener, SwipeRefreshLayout.OnRefreshListener {
-    private static SearchView searchView;
+    private static EditText searchView;
     private static RadioGroup radioGroup;
 
     private static final String STATE_STALL_PRODUCTS = "states_search_products";
@@ -55,7 +57,6 @@ public class FragmentStallViewProducts extends Fragment implements  View.OnClick
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private RecyclerView mRecyclerProducts;
-    private TextView mTextError;
     private ProductSorter mSorter = new ProductSorter();
 
     private String search;
@@ -63,6 +64,9 @@ public class FragmentStallViewProducts extends Fragment implements  View.OnClick
     private String location;
     private String stallname;
     private boolean res=false;
+
+    private ProgressBar mProgressBar;
+    private TextView mTextError;
 
 
     public static FragmentStallViewProducts newInstance(String param1, String param2) {
@@ -84,7 +88,9 @@ public class FragmentStallViewProducts extends Fragment implements  View.OnClick
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View layout = inflater.inflate(R.layout.fragment_search_products, container, false);
         //L.t(getActivity(),"Inside stall Products!!!");
-        searchView= (SearchView) layout.findViewById(R.id.searchView);
+        searchView= (EditText) layout.findViewById(R.id.searchView);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        mTextError = (TextView) layout.findViewById(R.id.tError);
         option=1;
         radioGroup= (RadioGroup) layout.findViewById(R.id.searchViewRadio);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
@@ -93,17 +99,17 @@ public class FragmentStallViewProducts extends Fragment implements  View.OnClick
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 // checkedId is the RadioButton selected
                 if (checkedId==R.id.byName){
-                    searchView.setQueryHint("Search by Name");
+                    searchView.setHint("Search by Name");
                     option=1;
                 }
                 else {
-                    searchView.setQueryHint("Search by Author/Company");
+                    searchView.setHint("Search by Author/Company");
                     option=2;
                 }
             }
         });
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 search = query;
@@ -116,7 +122,7 @@ public class FragmentStallViewProducts extends Fragment implements  View.OnClick
                 search=newText;
                 return false;
             }
-        });
+        });*/
 
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeProducts);
@@ -266,10 +272,34 @@ public class FragmentStallViewProducts extends Fragment implements  View.OnClick
     @Override
     public void onProductLoaded(ArrayList<Product> listProducts) {
 
-        if (mSwipeRefreshLayout.isRefreshing()) {
+        /*if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
         mListProducts = listProducts;
+        mAdapter.setProducts(listProducts);
+*/
+        mProgressBar.setVisibility(View.INVISIBLE);
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+        if(listProducts==null)
+        {
+            mTextError.setText("Please check the connection.\nSwipe to refresh.");
+            mTextError.setVisibility(View.VISIBLE);
+            mListProducts=null;
+            mAdapter.setProducts(mListProducts);
+            return;
+        }
+        else if (listProducts.get(0).getId()==-1)
+        {
+            mTextError.setText("There is no product for this stall available.");
+            mTextError.setVisibility(View.VISIBLE);
+            mListProducts=null;
+            mAdapter.setProducts(mListProducts);
+            return;
+        }
+        mTextError.setVisibility(View.INVISIBLE);
+        mListProducts=listProducts;
         mAdapter.setProducts(listProducts);
     }
 
@@ -298,7 +328,7 @@ public class FragmentStallViewProducts extends Fragment implements  View.OnClick
 
             inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-
+            search = searchView.getText().toString();
             searchResult();
         }
 

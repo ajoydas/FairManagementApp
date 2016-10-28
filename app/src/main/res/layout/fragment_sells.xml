@@ -7,14 +7,22 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <SearchView
+        <EditText
+            android:id="@+id/searchView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:hint="Search By Employee"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
+        <!--<SearchView
             android:id="@+id/searchView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:paddingLeft="20dp"
-            android:queryHint="Search By Employee" />
+            android:queryHint="Search By Employee" />-->
     </RelativeLayout>
 
     <LinearLayout
@@ -26,23 +34,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Search"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_margin="5dp"
             android:id="@+id/bsearchsell"
             android:layout_weight="1"
+            android:background="@color/colorButton1"
+            android:textColor="@android:color/white"
             />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_margin="5dp"
             android:id="@+id/baddsell"
-            android:padding="5dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@color/colorButton1"
+            android:textColor="@android:color/white"
+            />
     </LinearLayout>
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -62,10 +74,27 @@
                 android:layout_height="match_parent" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
-
-
     </FrameLayout>
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
 
+        <TextView
+            android:id="@+id/tError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="Please check the connection.\nSwipe to refresh."
+            android:textColor="@color/colorButton1"
+            android:textSize="18sp"
+            android:visibility="invisible" />
+    </RelativeLayout>
 
 </LinearLayout>

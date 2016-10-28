@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -40,7 +42,7 @@ import ajoy.com.fairmanagementapp.task.TaskLoadStalls;
  */
 
 public class FragmentSearchStalls extends Fragment implements SortListener,View.OnClickListener,StallLoadedListener, SwipeRefreshLayout.OnRefreshListener{
-    private static SearchView searchView;
+    private static EditText searchView;
 
     private static final String STATE_STALL_STALLS = "states_search_stalls";
     protected ArrayList<Stall> mListStalls;
@@ -56,6 +58,7 @@ public class FragmentSearchStalls extends Fragment implements SortListener,View.
     private String location;
     private String stallname;
     private boolean res=false;
+    private ProgressBar mProgressBar;
 
 
     public static FragmentSearchStalls newInstance(String param1, String param2) {
@@ -77,10 +80,12 @@ public class FragmentSearchStalls extends Fragment implements SortListener,View.
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View layout = inflater.inflate(R.layout.fragment_search_stalls, container, false);
         //L.t(getActivity(),"Inside Stalls!!!");
-        searchView= (SearchView) layout.findViewById(R.id.searchView);
+        searchView= (EditText) layout.findViewById(R.id.searchView);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        mTextError = (TextView) layout.findViewById(R.id.tError);
         option=1;
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 search = query;
@@ -94,7 +99,7 @@ public class FragmentSearchStalls extends Fragment implements SortListener,View.
                 return false;
             }
         });
-
+*/
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeStalls);
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -197,11 +202,45 @@ public class FragmentSearchStalls extends Fragment implements SortListener,View.
     @Override
     public void onStallLoaded(ArrayList<Stall> listStalls) {
 
-        if (mSwipeRefreshLayout.isRefreshing()) {
+        /*if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
         mListStalls = listStalls;
         mAdapter.setStalls(listStalls);
+*/
+
+        mProgressBar.setVisibility(View.INVISIBLE);
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+        if(listStalls==null)
+        {
+            mTextError.setText("Please check the connection.\nSwipe to refresh.");
+            mTextError.setVisibility(View.VISIBLE);
+            mListStalls=null;
+            mAdapter.setStalls(mListStalls);
+            return;
+        }
+        else if (listStalls.get(0).getId()==-1)
+        {
+            mTextError.setText("There is no stall for this fair available.");
+            mTextError.setVisibility(View.VISIBLE);
+            mListStalls=null;
+            mAdapter.setStalls(mListStalls);
+            return;
+        }
+        mTextError.setVisibility(View.INVISIBLE);
+        mListStalls=listStalls;
+        mAdapter.setStalls(listStalls);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mProgressBar.getVisibility()==View.VISIBLE)
+        {
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -229,7 +268,7 @@ public class FragmentSearchStalls extends Fragment implements SortListener,View.
 
             inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-
+            search = searchView.getText().toString();
             searchResult();
         }
 

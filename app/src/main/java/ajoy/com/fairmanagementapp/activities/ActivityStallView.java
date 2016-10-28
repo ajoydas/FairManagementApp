@@ -46,15 +46,6 @@ public class ActivityStallView extends AppCompatActivity implements MaterialTabL
     private FragmentDrawerSeller mDrawerFragment;
 
 
-    ProgressDialog loading;
-    private static final String url = "jdbc:mysql://162.221.186.242:3306/buetian1_fairinfo";
-    private static final String username = "buetian1_ajoy";
-    private static final String password = "termjan2016";
-    private String stallname;
-    private String stallowner;
-    private String stalldescription;
-
-
     public static Stall stall;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

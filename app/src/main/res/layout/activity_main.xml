@@ -27,7 +27,8 @@
                 android:layout_height="48dp"
                 android:layout_below="@+id/app_bar"
                 app:accentColor="@color/colorAccent"
-                app:primaryColor="@color/colorPrimary" />
+                app:primaryColor="@color/colorPrimary"
+                />
                 <!--app:hasIcons="true"-->
                 <!--app:iconColor="@android:color/white"-->
         </LinearLayout>

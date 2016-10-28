@@ -33,8 +33,8 @@ public class TaskLoadEmployees extends AsyncTask<Void,Void,ArrayList<Employee>> 
 
     @Override
     protected void onPostExecute(ArrayList<Employee> listEmployees) {
-        if (myComponent != null) {
+        //if (myComponent != null) {
             myComponent.onEmployeeLoaded(listEmployees);
-        }
+        //}
     }
 }

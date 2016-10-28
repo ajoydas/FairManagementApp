@@ -113,6 +113,15 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if(mProgressBar.getVisibility()==View.VISIBLE)
+        {
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //save the movie list to a parcelable prior to rotation or configuration change
@@ -128,7 +137,18 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
         }
         if(listFairs==null)
         {
+            mTextError.setText("Please check the connection.\nSwipe to refresh.");
             mTextError.setVisibility(View.VISIBLE);
+            mListFairs=null;
+            mAdapter.setFairs(mListFairs);
+            return;
+        }
+        else if (listFairs.get(0).getId()==-1)
+        {
+            mTextError.setText("There is no running fair available.");
+            mTextError.setVisibility(View.VISIBLE);
+            mListFairs=null;
+            mAdapter.setFairs(mListFairs);
             return;
         }
         mTextError.setVisibility(View.INVISIBLE);

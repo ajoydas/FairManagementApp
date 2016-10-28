@@ -1,116 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:shrinkColumns="2"
-        android:id="@+id/tableLayout"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp">
-
-        <TableRow>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Name" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text=" : "
-                />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/updatestallname"
-                android:inputType="textMultiLine"
-                android:ems="10"
-                android:lines="3"
-                />
-
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Owner"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text=" : "
-                />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:id="@+id/updatestallowner"
-                android:inputType="textMultiLine"
-                android:ems="10"
-                android:lines="3"
-                />
-
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Description"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text=" : "
-                />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:id="@+id/updatestalldescription"
-                android:inputType="textMultiLine"
-                android:ems="10"
-                android:lines="4"
-                />
-
-        </TableRow>
-
-
-    </TableLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <Button
-            android:layout_width="wrap_content"
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cancel"
-            android:id="@+id/bcancel"
-            android:layout_weight="1"/>
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:shrinkColumns="2">
 
-        <Button
-            android:layout_width="wrap_content"
+            <TableRow>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : "
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/updatestallname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="3" />
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Owner"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : "
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/updatestallowner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="3"
+                    android:textSize="18sp" />
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Description"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : "
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/updatestalldescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="4"
+                    android:textSize="18sp" />
+
+            </TableRow>
+
+
+        </TableLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save"
-            android:id="@+id/bsave"
-            android:layout_weight="1"/>
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/bcancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/colorButton1"
+                android:text="Cancel"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/bsave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/colorButton1"
+                android:text="Save"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

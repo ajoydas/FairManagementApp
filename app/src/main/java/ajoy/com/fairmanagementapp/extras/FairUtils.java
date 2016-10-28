@@ -22,29 +22,30 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
+import ajoy.com.fairmanagementapp.activities.ActivityMain;
 import ajoy.com.fairmanagementapp.database.DBFairs;
 import ajoy.com.fairmanagementapp.database.DBProducts;
 import ajoy.com.fairmanagementapp.database.DBStalls;
 import ajoy.com.fairmanagementapp.application.MyApplication;
 import ajoy.com.fairmanagementapp.objects.Employee;
 import ajoy.com.fairmanagementapp.objects.Fair;
+import ajoy.com.fairmanagementapp.objects.FavProduct;
 import ajoy.com.fairmanagementapp.objects.Product;
 import ajoy.com.fairmanagementapp.objects.Sell;
 import ajoy.com.fairmanagementapp.objects.Stall;
 
 
 public class FairUtils {
-    private static final String url = "http://buetian14.com/fairmanagementapp/";
-    private static final String username = "buetian1_ajoy";
-    private static final String password = "termjan2016";
+    private static final String url = ActivityMain.Server;
 
     public static ArrayList<Product> loadStallProducts(String fair_db, String stallname, String query, int option) {
         ArrayList<Product> listProducts = new ArrayList<>();
         String st = null;
         try {
             if (query == null || query.equals("") || option == 0) {
-                st = "select * from " + fair_db + "_products where stall='" + stallname + "'";
+                st = "select * from " + fair_db + "_products where stall='" + stallname + "' limit "+ActivityMain.Count;
             } else if (option == 1) {
                 st = "select * from " + fair_db + "_products where stall='" + stallname + "' and name like '%" + query + "%' ";
             } else if (option == 2) {
@@ -95,7 +96,12 @@ public class FairUtils {
 
                 count++;
             }
-
+            if(listProducts.size()==0)
+            {
+                Product product=new Product();
+                product.setId(-1);
+                listProducts.add(product);
+            }
             return listProducts;
 
         } catch (Exception e) {
@@ -113,7 +119,7 @@ public class FairUtils {
             System.out.println("Connected\nQuery: " + query);
 
             if (query == null || query.equals("") || option == 0) {
-                st = "select * from " + fair_db + "_products";
+                st = "select * from " + fair_db + "_products limit "+ActivityMain.Count;
 
             } else if (option == 1) {
                 st = "select * from " + fair_db + "_products where name like '%" + query + "%' ";
@@ -126,6 +132,7 @@ public class FairUtils {
 
             URL loadProductUrl = new URL(url + "loadProducts.php");
             HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+            httpURLConnection.setConnectTimeout(15000);
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setDoInput(true);
@@ -165,7 +172,12 @@ public class FairUtils {
 
                 count++;
             }
-
+            if(listProducts.size()==0)
+            {
+                Product product=new Product();
+                product.setId(-1);
+                listProducts.add(product);
+            }
             return listProducts;
 
         } catch (Exception e) {
@@ -184,7 +196,7 @@ public class FairUtils {
         try {
             URL loadFairUrl = new URL(url + "loadfairs.php");
             HttpURLConnection httpURLConnection = (HttpURLConnection) loadFairUrl.openConnection();
-            httpURLConnection.setConnectTimeout(5000);
+            httpURLConnection.setConnectTimeout(10000);
             InputStream inputStream = httpURLConnection.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder stringBuilder = new StringBuilder();
@@ -206,8 +218,10 @@ public class FairUtils {
                 fair.setTitle(rs.getString("title"));
                 fair.setOrganizer(rs.getString("organizer"));
                 fair.setLocation(rs.getString("location"));
-                fair.setStart_date(new SimpleDateFormat("yyyy-mm-dd").parse(rs.getString("start_date")));
-                fair.setEnd_date(new SimpleDateFormat("yyyy-mm-dd").parse(rs.getString("end_date")));
+                //System.out.println(rs.getString("start_date"));
+                //System.out.println(new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(rs.getString("start_date")));
+                fair.setStart_date(new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(rs.getString("start_date")));
+                fair.setEnd_date(new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(rs.getString("end_date")));
                 fair.setOpen_time(Time.valueOf(rs.getString("open_time")));
                 fair.setClose_time(Time.valueOf(rs.getString("close_time")));
                 fair.setMap_address(rs.getString("map_address"));
@@ -218,15 +232,19 @@ public class FairUtils {
                 Date date = c.getTime();
 
                 if (table == 1) {
-                    if ((fair.getStart_date()).compareTo(date) == -1 && (fair.getEnd_date()).compareTo(date) == 1)
-                        listFairs.add(fair);
+                    if ((fair.getStart_date()).compareTo(date) == -1 && (fair.getEnd_date()).compareTo(date) == 1) listFairs.add(fair);
                 } else if (table == 2) {
                     if (fair.getStart_date().compareTo(date) != -1) listFairs.add(fair);
                 }
                 count++;
             }
+            if(listFairs.size()==0)
+            {
+                Fair fair=new Fair();
+                fair.setId(-1);
+                listFairs.add(fair);
+            }
             return listFairs;
-
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -255,6 +273,7 @@ public class FairUtils {
 
             URL loadProductUrl = new URL(url + "loadStalls.php");
             HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+            httpURLConnection.setConnectTimeout(10000);
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setDoInput(true);
@@ -292,7 +311,12 @@ public class FairUtils {
 
                 count++;
             }
-
+            if(listStalls.size()==0)
+            {
+                Stall stall=new Stall();
+                stall.setId(-1);
+                listStalls.add(stall);
+            }
             return listStalls;
 
         } catch (Exception e) {
@@ -320,6 +344,7 @@ public class FairUtils {
             URL loadProductUrl = new URL(url + "loadEmployees.php");
             HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
             System.out.println("Connected\nQuery: " + query);
+            httpURLConnection.setConnectTimeout(10000);
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setDoInput(true);
@@ -357,6 +382,12 @@ public class FairUtils {
                 listEmployees.add(employee);
                 count++;
             }
+            if(listEmployees.size()==0)
+            {
+                Employee employee=new Employee();
+                employee.setId(-1);
+                listEmployees.add(employee);
+            }
             return listEmployees;
 
         } catch (Exception e) {
@@ -381,6 +412,7 @@ public class FairUtils {
             URL loadProductUrl = new URL(url + "loadSells.php");
             HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
             System.out.println("Connected\nQuery: " + query);
+            httpURLConnection.setConnectTimeout(10000);
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setDoInput(true);
@@ -420,7 +452,12 @@ public class FairUtils {
                 listSells.add(sell);
                 count++;
             }
-
+            if(listSells.size()==0)
+            {
+                Sell sell=new Sell();
+                sell.setId(-1);
+                listSells.add(sell);
+            }
             return listSells;
 
         } catch (Exception e) {

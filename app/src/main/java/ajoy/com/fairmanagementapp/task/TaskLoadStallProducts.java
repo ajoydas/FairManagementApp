@@ -36,8 +36,8 @@ public class TaskLoadStallProducts extends AsyncTask<Void,Void,ArrayList<Product
 
     @Override
     protected void onPostExecute(ArrayList<Product> listMovies) {
-        if (myComponent != null) {
+        //if (myComponent != null) {
             myComponent.onProductLoaded(listMovies);
-        }
+        //}
     }
 }

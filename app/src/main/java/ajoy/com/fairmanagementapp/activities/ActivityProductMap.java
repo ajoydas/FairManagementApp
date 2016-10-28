@@ -60,7 +60,12 @@ public class ActivityProductMap extends AppCompatActivity implements OnMapReadyC
             ;
         });
         //image = StringToBitMap(imageString);
-        System.out.println(markerpoint);
+        try {
+            System.out.println(markerpoint);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
         setContentView(R.layout.activity_stall_map);
 

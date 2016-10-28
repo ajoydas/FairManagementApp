@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ajoy.com.fairmanagementapp.activities.ActivityFair;
+import ajoy.com.fairmanagementapp.activities.ActivityMain;
 import ajoy.com.fairmanagementapp.activities.ActivityProductMap;
 import ajoy.com.fairmanagementapp.activities.ActivityStallMap;
 import ajoy.com.fairmanagementapp.adapters.AdapterFavProducts;
@@ -378,7 +379,7 @@ public class FragmentFavourites  extends Fragment {
                     String st =  "select * from " + mListFavProducts.get(position).getTable() + "_products where id = '" + mListFavProducts.get(position).getProductid() + "' ";
                     System.out.println("Statement is "+st);
 
-                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/loadProducts.php");
+                    URL loadProductUrl = new URL(ActivityMain.Server+"loadProducts.php");
                     HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
                     httpURLConnection.setRequestMethod("POST");
                     httpURLConnection.setDoOutput(true);
@@ -416,7 +417,7 @@ public class FragmentFavourites  extends Fragment {
                         product.setImage(rs.getString("image"));
                         count++;
                     }
-                    URL loadProductUrl2 = new URL("http://buetian14.com/fairmanagementapp/searchFair.php");
+                    URL loadProductUrl2 = new URL(ActivityMain.Server+"searchFair.php");
                     HttpURLConnection httpURLConnection2 = (HttpURLConnection) loadProductUrl2.openConnection();
                     httpURLConnection2.setRequestMethod("POST");
                     httpURLConnection2.setDoOutput(true);
@@ -446,8 +447,8 @@ public class FragmentFavourites  extends Fragment {
                         JSONObject rs = jsonArray2.getJSONObject(count2);
                         product.setFair(rs.getString("title"));
                         product.setLocation(rs.getString("location"));
-                        product.setStart_date(new SimpleDateFormat("yyyy-mm-dd").parse(rs.getString("start_date")));
-                        product.setEnd_date(new SimpleDateFormat("yyyy-mm-dd").parse(rs.getString("end_date")));
+                        product.setStart_date(new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString("start_date")));
+                        product.setEnd_date(new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString("end_date")));
                         product.setOpen_time(Time.valueOf(rs.getString("open_time")));
                         product.setClose_time(Time.valueOf(rs.getString("close_time")));
                         count2++;
@@ -455,7 +456,7 @@ public class FragmentFavourites  extends Fragment {
 
                     st = "Select * from " + mListFavProducts.get(position).getTable() + "_stalls where stall='"+stall+"'";
 
-                    URL loadProductUrl3 = new URL("http://buetian14.com/fairmanagementapp/loadStalls.php");
+                    URL loadProductUrl3 = new URL(ActivityMain.Server+"loadStalls.php");
                     HttpURLConnection httpURLConnection3 = (HttpURLConnection) loadProductUrl3.openConnection();
                     System.out.println("Connected");
 
@@ -485,7 +486,7 @@ public class FragmentFavourites  extends Fragment {
                     int count3 = 0;
 
                     JSONObject rs = jsonArray3.getJSONObject(count3);
-                    product.setLocation(rs.getString("location"));
+                    product.setStalllocation(rs.getString("location"));
                     product.setStall(rs.getString("stall_name"));
                     return true;
 

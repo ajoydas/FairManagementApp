@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -54,19 +55,20 @@ import ajoy.com.fairmanagementapp.task.TaskLoadSells;
  * Created by ajoy on 6/2/16.
  */
 public class FragmentSells extends Fragment implements AsyncResponse, View.OnClickListener, SellLoadedListener, SwipeRefreshLayout.OnRefreshListener {
-    private static SearchView searchView;
+    private static EditText searchView;
     private static RadioGroup radioGroup;
 
     private static final String STATE_STALL_PRODUCTS = "states_sells";
     protected ArrayList<Sell> mListSells;
     private AdapterSells mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
     private RecyclerView mRecyclerSells;
-    private TextView mTextError;
 
     private String search;
     private int option;
+
+    private ProgressBar mProgressBar;
+    private TextView mTextError;
 
     public static FragmentSells newInstance(String param1, String param2) {
         FragmentSells fragment = new FragmentSells();
@@ -86,10 +88,12 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View layout = inflater.inflate(R.layout.fragment_sells, container, false);
         //L.t(getActivity(), "Inside stall Sells!!!");
-        searchView = (SearchView) layout.findViewById(R.id.searchView);
+        searchView = (EditText) layout.findViewById(R.id.searchView);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        mTextError = (TextView) layout.findViewById(R.id.tError);
         option = 1;
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 search = query;
@@ -102,7 +106,7 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
                 search = newText;
                 return false;
             }
-        });
+        });*/
 
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeProducts);
@@ -612,13 +616,46 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
     @Override
     public void onSellLoaded(ArrayList<Sell> listSells) {
 
-        if (mSwipeRefreshLayout.isRefreshing()) {
+       /* if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
         mListSells = listSells;
+        mAdapter.setSells(listSells);*/
+
+        mProgressBar.setVisibility(View.INVISIBLE);
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+        if(listSells==null)
+        {
+            mTextError.setText("Please check the connection.\nSwipe to refresh.");
+            mTextError.setVisibility(View.VISIBLE);
+            mListSells=null;
+            mAdapter.setSells(mListSells);
+            return;
+        }
+        else if (listSells.get(0).getId()==-1)
+        {
+            mTextError.setText("There is no sells available.");
+            mTextError.setVisibility(View.VISIBLE);
+            mListSells=null;
+            mAdapter.setSells(mListSells);
+            return;
+        }
+        mTextError.setVisibility(View.INVISIBLE);
+        mListSells=listSells;
         mAdapter.setSells(listSells);
+
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mProgressBar.getVisibility()==View.VISIBLE)
+        {
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
+    }
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -654,7 +691,7 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
 
             inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-
+            search = searchView.getText().toString();
             searchResult(search);
         }
 

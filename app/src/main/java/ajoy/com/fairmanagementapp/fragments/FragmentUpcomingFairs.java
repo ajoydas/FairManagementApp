@@ -127,7 +127,18 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
         }
         if(listFairs==null)
         {
+            mTextError.setText("Please check the connection.\nSwipe to refresh.");
             mTextError.setVisibility(View.VISIBLE);
+            mListFairs=null;
+            mAdapter.setFairs(mListFairs);
+            return;
+        }
+        else if (listFairs.get(0).getId()==-1)
+        {
+            mTextError.setText("There is no upcoming fair available.");
+            mTextError.setVisibility(View.VISIBLE);
+            mListFairs=null;
+            mAdapter.setFairs(mListFairs);
             return;
         }
         mTextError.setVisibility(View.INVISIBLE);
@@ -144,6 +155,14 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
 
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mProgressBar.getVisibility()==View.VISIBLE)
+        {
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
+    }
 
     //Touch
     public static interface ClickListener {

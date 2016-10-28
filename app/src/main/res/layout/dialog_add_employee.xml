@@ -154,14 +154,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cancel" />
+                android:text="Cancel"
+                android:background="@color/colorButton1"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/bsave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Save" />
+                android:text="Save"
+                android:background="@color/colorButton1"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/white" />
         </LinearLayout>
 
     </LinearLayout>

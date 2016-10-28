@@ -56,10 +56,6 @@ public class ActivityEditProducts extends AppCompatActivity {
     private ImageView ivImage;
     private String userChoosenTask;
 
-    public static final String url = "jdbc:mysql://162.221.186.242:3306/buetian1_fairinfo";
-    public static final String username = "buetian1_ajoy";
-    public static final String password = "termjan2016";
-
     private ImageView imageView;
     private EditText nameInput;
     private EditText companyInput;
@@ -380,7 +376,7 @@ public class ActivityEditProducts extends AppCompatActivity {
 
                     System.out.println(rows);*/
 
-                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/updateProduct.php");
+                    URL loadProductUrl = new URL(ActivityMain.Server+"updateProduct.php");
                     HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
                     httpURLConnection.setRequestMethod("POST");
                     httpURLConnection.setDoOutput(true);
@@ -518,7 +514,7 @@ public class ActivityEditProducts extends AppCompatActivity {
 
                 Integer result=0;
                 try {
-                    URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/deleteProduct.php");
+                    URL loadProductUrl = new URL(ActivityMain.Server+"deleteProduct.php");
                     HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
                     httpURLConnection.setRequestMethod("POST");
                     httpURLConnection.setDoOutput(true);

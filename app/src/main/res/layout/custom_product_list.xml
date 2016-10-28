@@ -18,21 +18,23 @@
         android:id="@+id/productTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/productImage"
-        android:layout_marginLeft="56dp"
         android:gravity="right"
         android:textSize="@dimen/size_text_primary"
         android:textStyle="bold"
-        android:textColor="@color/colorButton1" />
+        android:textColor="@color/colorButton1"
+        android:layout_toEndOf="@+id/productImage" />
 
     <TextView
         android:id="@+id/productCompany"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:gravity="right"
+
         android:layout_below="@id/productTitle"
+        android:layout_toEndOf="@+id/productImage"
         android:textSize="@dimen/size_text_secondary"
         />
     <TextView
@@ -40,14 +42,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:gravity="right"
         android:layout_below="@id/productCompany"
+        android:layout_toEndOf="@+id/productImage"
         android:textSize="@dimen/size_text_secondary" />
     <TextView
         android:id="@+id/productAvailability"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="right"
         android:layout_alignParentRight="true"
         android:layout_below="@id/productPrice"
+        android:layout_toEndOf="@+id/productImage"
         android:textSize="@dimen/size_text_secondary" />
 
 </RelativeLayout>

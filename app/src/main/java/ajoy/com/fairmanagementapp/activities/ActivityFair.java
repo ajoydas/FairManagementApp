@@ -75,10 +75,6 @@ public class ActivityFair extends AppCompatActivity implements MaterialTabListen
     public static Fair fair;
     private static Stall stall;
 
-    public static final String url = "jdbc:mysql://162.221.186.242:3306/buetian1_fairinfo";
-    public static final String username = "buetian1_ajoy";
-    public static final String password = "termjan2016";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +103,7 @@ public class ActivityFair extends AppCompatActivity implements MaterialTabListen
 
     ProgressDialog loading;
 
-    private String user = "", pass = "", response = "";
+    private String user = "", pass = "";
 
     public void onDrawerItemClicked(int index) {
         if (index == 0) {
@@ -177,7 +173,7 @@ public class ActivityFair extends AppCompatActivity implements MaterialTabListen
                 //PreparedStatement preparedStatement=con.prepareStatement("Select password from  "+fair.getDb_name()+"_users where username=?");
                 //preparedStatement.setString(1,user);
 
-                URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/loginStall.php");
+                URL loadProductUrl = new URL(ActivityMain.Server+"loginStall.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setDoOutput(true);
@@ -196,6 +192,7 @@ public class ActivityFair extends AppCompatActivity implements MaterialTabListen
                 InputStream inputStream = httpURLConnection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 String line = "";
+                String response = "";
                 if ((line = bufferedReader.readLine()) != null) {
                     System.out.println(line);
                     response += line;
@@ -211,7 +208,7 @@ public class ActivityFair extends AppCompatActivity implements MaterialTabListen
                             return 3;
                         }*/
 
-                        URL loadStallUrl = new URL("http://buetian14.com/fairmanagementapp/loadStalls.php");
+                        URL loadStallUrl = new URL(ActivityMain.Server+"loadStalls.php");
                         HttpURLConnection httpURLConnection2 = (HttpURLConnection) loadStallUrl.openConnection();
                         httpURLConnection2.setRequestMethod("POST");
                         httpURLConnection2.setDoOutput(true);
@@ -368,10 +365,13 @@ public class ActivityFair extends AppCompatActivity implements MaterialTabListen
         //define the icons for the sub action buttons
         ImageView iconSortName = new ImageView(this);
         iconSortName.setImageResource(R.drawable.ic_action_alphabets);
+        iconSortName.setBackgroundColor(getResources().getColor(R.color.colorButton1));
         ImageView iconSortDate = new ImageView(this);
         iconSortDate.setImageResource(R.drawable.ic_action_calendar);
+        iconSortDate.setBackgroundColor(getResources().getColor(R.color.colorButton1));
         ImageView iconSortRatings = new ImageView(this);
         iconSortRatings.setImageResource(R.drawable.ic_action_important);
+        iconSortRatings.setBackgroundColor(getResources().getColor(R.color.colorButton1));
 
         //set the background for all the sub buttons
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);

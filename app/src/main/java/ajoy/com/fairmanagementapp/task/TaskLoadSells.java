@@ -33,9 +33,9 @@ public class TaskLoadSells extends AsyncTask<Void, Void, ArrayList<Sell>> {
 
     @Override
     protected void onPostExecute(ArrayList<Sell> listSells) {
-        if (myComponent != null) {
+        //if (myComponent != null) {
             myComponent.onSellLoaded(listSells);
-        }
+        //}
     }
 }
 

@@ -31,8 +31,8 @@ public class TaskLoadStalls extends AsyncTask<Void,Void,ArrayList<Stall>> {
 
     @Override
     protected void onPostExecute(ArrayList<Stall> listStalls) {
-        if (myComponent != null) {
+        //if (myComponent != null) {
             myComponent.onStallLoaded(listStalls);
-        }
+        //}
     }
 }

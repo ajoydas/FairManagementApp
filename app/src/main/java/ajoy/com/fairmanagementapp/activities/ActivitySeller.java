@@ -1,13 +1,19 @@
 package ajoy.com.fairmanagementapp.activities;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -25,6 +31,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -57,6 +67,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import ajoy.com.fairmanagementapp.application.BuildConfig;
+import ajoy.com.fairmanagementapp.application.MyApplication;
 import ajoy.com.fairmanagementapp.callbacks.EmployeeLoadedListener;
 import ajoy.com.fairmanagementapp.callbacks.SellLoadedListener;
 import ajoy.com.fairmanagementapp.extras.SortListener;
@@ -96,23 +108,54 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
     private FloatingActionButton mFAB;
     private FloatingActionMenu mFABMenu;
     private FragmentDrawerSeller mDrawerFragment;
-
+    private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 123;
+    private Intent callIntent;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     ProgressDialog loading;
-    public static final String url = "jdbc:mysql://162.221.186.242:3306/buetian1_fairinfo";
-    public static final String username = "buetian1_ajoy";
-    public static final String password = "termjan2016";
 
     private String stallname;
     private String stallowner;
     private String stalldescription;
-
+    private String contactnum;
+    private String email;
 
     public static Stall stall;
+    private String newpass1;
+    private String newpass2;
+    private String oldpass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         stall=(Stall)getIntent().getParcelableExtra("Information");
+
+
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettings(configSettings);
+        mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
+
+        contactnum=mFirebaseRemoteConfig.getString("ContactNumber");
+        email=mFirebaseRemoteConfig.getString("Email");
+
+        mFirebaseRemoteConfig.fetch(0)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            //Toast.makeText(StartActivity.this, "Fetch Successfull", Toast.LENGTH_SHORT).show();
+                            mFirebaseRemoteConfig.activateFetched();
+                        } else {
+                            //Toast.makeText(StartActivity.this, "Fetch Failed", Toast.LENGTH_SHORT).show();
+                        }
+                        contactnum=mFirebaseRemoteConfig.getString("ContactNumber");
+                        email=mFirebaseRemoteConfig.getString("Email");
+                    }
+                });
+
 
         setContentView(R.layout.activity_seller);
         setupTabs();
@@ -310,7 +353,7 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
         protected Integer doInBackground(Void... params) {
 
             try {
-                URL loadProductUrl = new URL("http://buetian14.com/fairmanagementapp/updateStall.php");
+                URL loadProductUrl = new URL(ActivityMain.Server+"updateStall.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setDoOutput(true);
@@ -416,10 +459,268 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
     public void onDrawerItemClicked(int index) {
         if (index == 0) {
             finish();
-        } else if (index == 5) {
+        }
+        else if(index==1)
+        {
+            dialogShow();
+        }
+        else if (index == 6) {
             startActivity(new Intent(this, ActivityAbout.class));
-        } else {
+        }
+        else if (index == 7) {
+            final CharSequence[] items = { "Call Us", "Email Us",
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySeller.this);
+            builder.setTitle("Contact Us!");
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int item) {
+                    if (items[item].equals("Call Us")) {
+                        //System.out.println("Call us clicked");
+                        dialog.dismiss();
+                        makeCallfunc();
+                    } else if (items[item].equals("Email Us")) {
+                        //System.out.println("Email us clicked");
+                        Intent i = new Intent(Intent.ACTION_SEND);
+                        i.setType("message/rfc822");
+                        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{email});
+                        i.putExtra(Intent.EXTRA_SUBJECT, "Contact");
+                        i.putExtra(Intent.EXTRA_TEXT   , "Please write here");
+                        try {
+                            startActivity(Intent.createChooser(i, "Send mail..."));
+                        } catch (android.content.ActivityNotFoundException ex) {
+                            Toast.makeText(ActivitySeller.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else if (items[item].equals("Cancel")) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            builder.show();
+        }
+        else {
             mPager.setCurrentItem(index - 1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_CALL_PHONE: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission was granted!
+                    // Perform the action
+                    startActivity(callIntent);
+                } else {
+                    // Permission was denied
+                    // :(
+                    // Gracefully handle the denial
+                    Toast.makeText(ActivitySeller.this, "Requesting Call Permission Denied!", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+
+        }
+    }
+
+    void makeCallfunc()
+    {
+        callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse(contactnum));
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+                {
+                    // We will need to request the permission
+                    System.out.println("Inside version Requesting.....");
+
+                    System.out.println("Requesting.....");
+                    ActivityCompat.requestPermissions(ActivitySeller.this,
+                            new String[]{Manifest.permission.CALL_PHONE},
+                            MY_PERMISSIONS_REQUEST_CALL_PHONE);
+
+                    // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an app-defined int constant
+                } else {
+                    // The permission is granted, we can perform the action
+                    startActivity(callIntent);
+                }
+            }
+            else
+            {
+                startActivity(callIntent);
+            }
+        } catch (Exception e) {
+            Toast.makeText(ActivitySeller.this, "Call Permission Denied!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    private void dialogShow() {
+        final Dialog dialog = new Dialog(ActivitySeller.this);
+        dialog.setTitle("Seller Change Password");
+        dialog.setContentView(R.layout.dialog_change_password);
+        dialog.show();
+
+        final EditText oldPassInput = (EditText) dialog.findViewById(R.id.eoldpass);
+        final EditText newPass1Input = (EditText) dialog.findViewById(R.id.enewpass1);
+        final EditText newPass2Input = (EditText) dialog.findViewById(R.id.enewpass2);
+        Button bupdate = (Button) dialog.findViewById(R.id.bupdate);
+        Button bcancel = (Button) dialog.findViewById(R.id.bcancel);
+        bupdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //original
+                oldpass = oldPassInput.getText().toString();
+                newpass1 = newPass1Input.getText().toString();
+                newpass2 = newPass2Input.getText().toString();
+
+                if(!newpass1.equals(newpass2))
+                {
+                    L.t(getApplicationContext(), "New passwords don't match.");
+                }
+                else if(newpass1.length()<6)
+                {
+                    L.t(getApplicationContext(), "New passwords must contain atleast 6 characters .");
+                }
+                else {
+                    new ActivitySeller.Passwordtask().execute();
+                    dialog.cancel();
+                }
+            }
+        });
+
+        bcancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                L.t(getApplicationContext(), "Request Canceled");
+                dialog.cancel();
+            }
+        });
+    }
+
+
+    private class Passwordtask extends AsyncTask<Void, Void, Integer> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = ProgressDialog.show(ActivitySeller.this, "Updating...", "Please wait...", true, true);
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+
+            try {
+
+                //PreparedStatement preparedStatement=con.prepareStatement("Select password from  "+fair.getDb_name()+"_users where username=?");
+                //preparedStatement.setString(1,user);
+
+                URL loadProductUrl = new URL(ActivityMain.Server+"changePassStall.php");
+                HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                String db = ActivityFair.fair.getDb_name() + "_users";
+                String data = URLEncoder.encode("db_table", "UTF-8") + "=" + URLEncoder.encode(db, "UTF-8") + "&" +
+                        URLEncoder.encode("login_name", "UTF-8") + "=" + URLEncoder.encode(ActivitySeller.stall.getStall(), "UTF-8") + "&" +
+                        URLEncoder.encode("login_old_pass", "UTF-8") + "=" + URLEncoder.encode(oldpass, "UTF-8") + "&" +
+                        URLEncoder.encode("login_new_pass", "UTF-8") + "=" + URLEncoder.encode(newpass1, "UTF-8");
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String line = "";
+                String response = "";
+                if ((line = bufferedReader.readLine()) != null) {
+                    System.out.println(line);
+                    response += line;
+                    inputStream.close();
+                    bufferedReader.close();
+                    httpURLConnection.disconnect();
+                    if (response.contains("Success")) {
+                        return 2;
+                    }
+                    else if (response.contains("Failed1")) {
+                        return 1;
+                    }
+                    return 0;
+                }
+                else
+                {
+                    inputStream.close();
+                    bufferedReader.close();
+                    httpURLConnection.disconnect();
+                }
+                return 0;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer value) {
+            super.onPostExecute(value);
+            loading.dismiss();
+
+            if (value == 2) {
+                L.t(getApplicationContext(), "Update Successfull!");
+            }else if (value == 1) {
+                //L.t(getApplicationContext(), "User Not Found or Check Connection");
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySeller.this);
+                builder.setTitle("Update Failed!");
+                builder.setMessage("Old password is not correct! Try again?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        dialogShow();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+            }
+            else if (value == 0) {
+                //L.t(getApplicationContext(), "User Not Found or Check Connection");
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySeller.this);
+                builder.setTitle("Update Failed!");
+                builder.setMessage("Connection to the database not established. Try again?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        dialogShow();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+            }
         }
     }
 

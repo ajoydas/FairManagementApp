@@ -209,7 +209,9 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_weight="1"
                                 android:onClick="uploadImageClicked"
-                                android:text="Upload Image" />
+                                android:text="Upload Image"
+                                android:background="@color/colorButton1"
+                                android:textColor="@android:color/white" />
 
                     </TableRow>
 
@@ -237,7 +239,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="cancelClicked"
-                        android:text="Cancel" />
+                        android:text="Cancel"
+                        android:background="@color/colorButton1"
+                        android:layout_margin="5dp"
+                        android:textColor="@android:color/white" />
 
                     <Button
                         android:id="@+id/bcanceladd"
@@ -245,7 +250,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="addProductClicked"
-                        android:text="Add Product" />
+                        android:text="Add Product"
+                        android:background="@color/colorButton1"
+                        android:layout_margin="5dp"
+                        android:textColor="@android:color/white" />
 
 
                 </LinearLayout>
