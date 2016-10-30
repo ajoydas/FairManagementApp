@@ -241,7 +241,13 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
         final ImageView productImage = (ImageView) dialog.findViewById(R.id.dialog_stall_product_image);
 
         //productImage.setImageBitmap(StringToBitMap(mListProducts.get(position).getImage()));
-        Glide.with(MyApplication.getAppContext()).load(mListProducts.get(position).getImage()).into(productImage);
+        try
+        {
+            Glide.with(MyApplication.getAppContext()).load(mListProducts.get(position).getImage()).into(productImage);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         productName.setText(mListProducts.get(position).getName());
         productCompany.setText(mListProducts.get(position).getCompany());
         productDescription.setText(mListProducts.get(position).getDescription());
@@ -580,7 +586,7 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
 
     @Override
     public void onRefresh() {
-        L.t(getActivity(), "Refreshing......");
+        //L.t(getActivity(), "Refreshing......");
         //load the whole feed again on refresh, dont try this at home :)
         new TaskLoadProducts(this, ActivityFair.fair.getDb_name(), null, 0).execute();
 

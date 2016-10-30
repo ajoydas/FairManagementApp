@@ -148,7 +148,7 @@ public class FragmentUpcomingFairs extends Fragment implements FairLoadedListene
 
     @Override
     public void onRefresh() {
-        L.t(getActivity(), "Refreshing.....");
+        //L.t(getActivity(), "Refreshing.....");
         mTextError.setVisibility(View.INVISIBLE);
         //load the whole feed again on refresh, dont try this at home :)
         new TaskLoadFairs(this,2).execute();

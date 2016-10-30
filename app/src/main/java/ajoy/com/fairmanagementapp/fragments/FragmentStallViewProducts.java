@@ -312,7 +312,7 @@ public class FragmentStallViewProducts extends Fragment implements  View.OnClick
 
     @Override
     public void onRefresh() {
-        L.t(getActivity(), "Refreshing.....");
+        //L.t(getActivity(), "Refreshing.....");
         //load the whole feed again on refresh, dont try this at home :)
         new TaskLoadStallProducts(this,ActivityFair.fair.getDb_name(), ActivityStallView.stall.getStall(),null,0).execute();
 

@@ -1,9 +1,11 @@
 package ajoy.com.fairmanagementapp.activities;
 
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -56,10 +60,23 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     public static String Server="";
     public static long Count=20;
+    public static String email;
+    private static final int REQUEST_INVITE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        try {
+            if (getIntent().getBooleanExtra("Exit me", false)) {
+                finish();
+                return; // add this to prevent from doing unnecessary stuffs
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
@@ -70,6 +87,7 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
 
         Server=mFirebaseRemoteConfig.getString("Server");
         Count=mFirebaseRemoteConfig.getLong("Count");
+        email=mFirebaseRemoteConfig.getString("Email");
 
         mFirebaseRemoteConfig.fetch(0)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -83,6 +101,7 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
                         }
                         Server=mFirebaseRemoteConfig.getString("Server");
                         Count=mFirebaseRemoteConfig.getLong("Count");
+                        email=mFirebaseRemoteConfig.getString("Email");
                     }
                 });
 
@@ -113,7 +132,20 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
         }
         else if (index == 3) {
             startActivity(new Intent(this, ActivityAbout.class));
-        } else {
+        }
+        else if (index == 4) {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("message/rfc822");
+            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{email});
+            i.putExtra(Intent.EXTRA_SUBJECT, "Contact");
+            i.putExtra(Intent.EXTRA_TEXT   , "Please write here");
+            try {
+                startActivity(Intent.createChooser(i, "Send mail..."));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(ActivityMain.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else {
             mPager.setCurrentItem(index);
         }
     }
@@ -156,17 +188,46 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement 
-        if (id == R.id.about) {
-            startActivity(new Intent(this, ActivityAbout.class));
-            return true;
+        switch (item.getItemId()) {
+            case R.id.invite_menu:
+                sendInvitation();
+                return true;
+            case R.id.about_menu:
+                startActivity(new Intent(this, ActivityAbout.class));
+                return true;
+            case R.id.contact_menu:
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("message/rfc822");
+                i.putExtra(Intent.EXTRA_EMAIL  , new String[]{email});
+                i.putExtra(Intent.EXTRA_SUBJECT, "Contact");
+                i.putExtra(Intent.EXTRA_TEXT   , "Please write here");
+                try {
+                    startActivity(Intent.createChooser(i, "Send mail..."));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(ActivityMain.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            case R.id.exit_menu:
+                /*Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);*/
+                android.os.Process.killProcess(android.os.Process.myPid());
+                super.onDestroy();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
+    private void sendInvitation() {
+        Intent intent = new AppInviteInvitation.IntentBuilder(" Invitation")
+                .setMessage("Please install Fair Files (a fair management app)")
+                .setCallToActionText("Call to action")
+                .build();
+        startActivityForResult(intent, REQUEST_INVITE);
+    }
 
     @Override
     public void onTabSelected(MaterialTab materialTab) {
@@ -243,5 +304,26 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
         private Drawable getIcon(int position) {
             return getResources().getDrawable(icons[position]);
         }
+    }
+
+    boolean doubleBackToExitPressedOnce = false;
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            android.os.Process.killProcess(android.os.Process.myPid());
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 }

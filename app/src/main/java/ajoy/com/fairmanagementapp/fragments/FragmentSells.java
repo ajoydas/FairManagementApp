@@ -668,7 +668,7 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
 
     @Override
     public void onRefresh() {
-        L.t(getActivity(), "Refreshing......");
+        //L.t(getActivity(), "Refreshing......");
         //load the whole feed again on refresh, dont try this at home :)
         new TaskLoadSells(this, ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(), null).execute();
 

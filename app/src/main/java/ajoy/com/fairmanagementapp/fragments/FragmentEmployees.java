@@ -665,7 +665,7 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
 
     @Override
     public void onRefresh() {
-        L.t(getActivity(), "Refreshing.....");
+        //L.t(getActivity(), "Refreshing.....");
         new TaskLoadEmployees(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),null).execute();
 
     }

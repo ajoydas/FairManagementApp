@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.ActivityMain">
     <item
+        android:id="@+id/password_menu"
+        android:title="Change Password" />
+    <item
         android:id="@+id/invite_menu"
         android:title="Invite others" />
 
@@ -12,7 +15,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/contact_menu"
-        android:title="Contact Us" />
+        android:title="Contact Support" />
     <item
         android:id="@+id/exit_menu"
         android:title="Exit"

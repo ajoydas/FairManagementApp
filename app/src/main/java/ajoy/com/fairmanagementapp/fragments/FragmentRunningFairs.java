@@ -158,7 +158,7 @@ public class FragmentRunningFairs extends Fragment implements FairLoadedListener
 
     @Override
     public void onRefresh() {
-        L.t(getActivity(), "Refreshing....");
+        //L.t(getActivity(), "Refreshing....");
         mTextError.setVisibility(View.INVISIBLE);
         new TaskLoadFairs(this,1).execute();
 

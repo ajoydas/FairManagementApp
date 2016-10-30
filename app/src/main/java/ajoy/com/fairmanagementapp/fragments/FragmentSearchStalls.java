@@ -252,7 +252,7 @@ public class FragmentSearchStalls extends Fragment implements SortListener,View.
 
     @Override
     public void onRefresh() {
-        L.t(getActivity(), "Refreshing......");
+        //L.t(getActivity(), "Refreshing......");
         //load the whole feed again on refresh, dont try this at home :)
         new TaskLoadStalls(this,ActivityFair.fair.getDb_name(),null).execute();
 
