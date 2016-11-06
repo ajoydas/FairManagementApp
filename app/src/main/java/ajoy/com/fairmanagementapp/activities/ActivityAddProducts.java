@@ -84,11 +84,55 @@ public class ActivityAddProducts extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        //mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_arrow_back_black));
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //What to do on back clicked
+                finish();
+            }
+        });
         imageView = (ImageView) findViewById(R.id.uploadedimage);
         nameInput = (EditText) findViewById(R.id.addproductname);
         companyInput = (EditText) findViewById(R.id.addproductcompany);
         descriptionInput = (EditText) findViewById(R.id.addproductdescription);
         priceInput = (EditText) findViewById(R.id.addproductprice);
+        nameInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        companyInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        descriptionInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        priceInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+
         availability = "High";
         image = null;
         bitmap = null;
@@ -110,6 +154,10 @@ public class ActivityAddProducts extends AppCompatActivity {
         });
 
 
+    }
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     public void addProductClicked(View view) {
@@ -240,7 +288,7 @@ public class ActivityAddProducts extends AppCompatActivity {
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                     //ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    bitmap = codec(bitmap, 90);
+                    //bitmap = codec(bitmap, 90);
                     imageView.setImageBitmap(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -248,7 +296,7 @@ public class ActivityAddProducts extends AppCompatActivity {
             } else if (requestCode == REQUEST_CAMERA) {
                 bitmap = (Bitmap) data.getExtras().get("data");
                 //ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap = codec(bitmap, 90);
+                //bitmap = codec(bitmap, 90);
                 imageView.setImageBitmap(bitmap);
             }
 

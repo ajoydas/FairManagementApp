@@ -1,5 +1,6 @@
 package ajoy.com.fairmanagementapp.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -89,6 +90,14 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
         final View layout = inflater.inflate(R.layout.fragment_sells, container, false);
         //L.t(getActivity(), "Inside stall Sells!!!");
         searchView = (EditText) layout.findViewById(R.id.searchView);
+        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
         mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
         mTextError = (TextView) layout.findViewById(R.id.tError);
         option = 1;
@@ -130,6 +139,10 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
         return layout;
     }
 
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
     private void searchResult(String s) {
         new TaskLoadSells(this, ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(), search).execute();
@@ -173,6 +186,7 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
         final TextView time = (TextView) editDialog.findViewById(R.id.selltime);
         final TextView price = (TextView) editDialog.findViewById(R.id.sellprice);
         final TextView description = (TextView) editDialog.findViewById(R.id.selldescription);
+
 
         product.setText(mListSells.get(position).getProduct_name());
         employee.setText(mListSells.get(position).getEmployee_name());
@@ -243,7 +257,54 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
         final EditText time = (EditText) editSellDialog.findViewById(R.id.addselltime);
         final EditText price = (EditText) editSellDialog.findViewById(R.id.addsellprice);
         final EditText description = (EditText) editSellDialog.findViewById(R.id.addselldescription);
-
+        product.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        employee.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        date.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        time.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        price.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        description.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
         product.setText(mListSells.get(position).getProduct_name());
         employee.setText(mListSells.get(position).getEmployee_name());
         date.setText(mListSells.get(position).getDate());
@@ -471,6 +532,54 @@ public class FragmentSells extends Fragment implements AsyncResponse, View.OnCli
         final EditText price = (EditText) addDialog.findViewById(R.id.addsellprice);
         final EditText description = (EditText) addDialog.findViewById(R.id.addselldescription);
 
+        product.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        employee.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        date.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        time.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        price.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        description.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
 
         addDialog.show();
         Button bcancel = (Button) addDialog.findViewById(R.id.bcancel);

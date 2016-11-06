@@ -1,5 +1,6 @@
 package ajoy.com.fairmanagementapp.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -115,6 +116,14 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
         final View layout = inflater.inflate(R.layout.fragment_search_products, container, false);
         //L.t(getActivity(),"Inside stall Products!!!");
         searchView = (EditText) layout.findViewById(R.id.searchView);
+        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
         mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
         mTextError = (TextView) layout.findViewById(R.id.tError);
         /*EditText searchText = (EditText)
@@ -180,6 +189,10 @@ public class FragmentSearchProducts extends Fragment implements AsyncResponse, S
         return layout;
     }
 
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
     @Override
     public void onSortByName() {
         mSorter.sortProductsByName(mListProducts);

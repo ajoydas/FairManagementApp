@@ -1,5 +1,6 @@
 package ajoy.com.fairmanagementapp.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -81,6 +82,14 @@ public class FragmentSearchStalls extends Fragment implements SortListener,View.
         final View layout = inflater.inflate(R.layout.fragment_search_stalls, container, false);
         //L.t(getActivity(),"Inside Stalls!!!");
         searchView= (EditText) layout.findViewById(R.id.searchView);
+        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
         mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
         mTextError = (TextView) layout.findViewById(R.id.tError);
         option=1;
@@ -126,6 +135,10 @@ public class FragmentSearchStalls extends Fragment implements SortListener,View.
         mAdapter.setStalls(mListStalls);
 
         return layout;
+    }
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override

@@ -57,7 +57,6 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
     private FloatingActionButton mFAB;
     private FloatingActionMenu mFABMenu;
     private FragmentDrawer mDrawerFragment;
-    private FirebaseRemoteConfig mFirebaseRemoteConfig;
     public static String Server="";
     public static long Count=20;
     public static String email;
@@ -78,32 +77,6 @@ public class ActivityMain extends AppCompatActivity implements MaterialTabListen
             e.printStackTrace();
         }
 
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setDeveloperModeEnabled(BuildConfig.DEBUG)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettings(configSettings);
-        mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
-
-        Server=mFirebaseRemoteConfig.getString("Server");
-        Count=mFirebaseRemoteConfig.getLong("Count");
-        email=mFirebaseRemoteConfig.getString("Email");
-
-        mFirebaseRemoteConfig.fetch(0)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            //Toast.makeText(StartActivity.this, "Fetch Successfull", Toast.LENGTH_SHORT).show();
-                            mFirebaseRemoteConfig.activateFetched();
-                        } else {
-                            //Toast.makeText(StartActivity.this, "Fetch Failed", Toast.LENGTH_SHORT).show();
-                        }
-                        Server=mFirebaseRemoteConfig.getString("Server");
-                        Count=mFirebaseRemoteConfig.getLong("Count");
-                        email=mFirebaseRemoteConfig.getString("Email");
-                    }
-                });
 
 
         setupTabs();

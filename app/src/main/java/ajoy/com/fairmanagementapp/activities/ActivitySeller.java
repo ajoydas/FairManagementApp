@@ -27,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -95,7 +96,7 @@ import it.neokree.materialtabs.MaterialTabListener;
 /**
  * Created by ajoy on 5/22/16.
  */
-public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedListener,SellLoadedListener,MaterialTabListener, View.OnClickListener{
+public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedListener, SellLoadedListener, MaterialTabListener, View.OnClickListener {
     public static final int TAB_DETAILS = 0;
     public static final int TAB_PRODUCTS = 1;
     public static final int TAB_EMPLOYEES = 2;
@@ -113,6 +114,10 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
     private FloatingActionMenu mFABMenu;
     private FragmentDrawerSeller mDrawerFragment;
     private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 123;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE_EMPLOYEE = 231;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE_SELL = 321;
+
+
     private Intent callIntent;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
@@ -133,7 +138,7 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        stall=(Stall)getIntent().getParcelableExtra("Information");
+        stall = (Stall) getIntent().getParcelableExtra("Information");
 
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
@@ -143,8 +148,8 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
         mFirebaseRemoteConfig.setConfigSettings(configSettings);
         mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
 
-        contactnum=mFirebaseRemoteConfig.getString("ContactNumber");
-        email=mFirebaseRemoteConfig.getString("Email");
+        contactnum = mFirebaseRemoteConfig.getString("ContactNumber");
+        email = mFirebaseRemoteConfig.getString("Email");
 
         mFirebaseRemoteConfig.fetch(0)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -156,8 +161,8 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
                         } else {
                             //Toast.makeText(StartActivity.this, "Fetch Failed", Toast.LENGTH_SHORT).show();
                         }
-                        contactnum=mFirebaseRemoteConfig.getString("ContactNumber");
-                        email=mFirebaseRemoteConfig.getString("Email");
+                        contactnum = mFirebaseRemoteConfig.getString("ContactNumber");
+                        email = mFirebaseRemoteConfig.getString("Email");
                     }
                 });
 
@@ -169,21 +174,46 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
     }
 
 
-    public void update()
-    {
-        TextView title=(TextView)findViewById(R.id.detailsstallname);
+    public void update() {
+        TextView title = (TextView) findViewById(R.id.detailsstallname);
         title.setText(ActivitySeller.stall.getStall_name());
-        TextView organizer=(TextView)findViewById(R.id.detailsstallowner);
+        TextView organizer = (TextView) findViewById(R.id.detailsstallowner);
         organizer.setText(ActivitySeller.stall.getOwner());
-        TextView location=(TextView)findViewById(R.id.detailsstalldescription);
+        TextView location = (TextView) findViewById(R.id.detailsstalldescription);
         location.setText(ActivitySeller.stall.getDescription());
     }
-    ProgressDialog pdfDialog=null;
+
+    ProgressDialog pdfDialog = null;
+
     public void saveEmployeesClicked(View view) {
-        pdfDialog = new ProgressDialog(ActivitySeller.this);
-        pdfDialog.setTitle("Saving as Pdf...");
-        pdfDialog.show();
-        new TaskLoadEmployees(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),null).execute();
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    // We will need to request the permission
+                    ActivityCompat.requestPermissions(ActivitySeller.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE_EMPLOYEE);
+
+                    // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an app-defined int constant
+                } else {
+                    // The permission is granted, we can perform the action
+                    pdfDialog = new ProgressDialog(ActivitySeller.this);
+                    pdfDialog.setTitle("Saving as Pdf...");
+                    pdfDialog.show();
+                    new TaskLoadEmployees(this, ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(), null).execute();
+
+                }
+            } else {
+                pdfDialog = new ProgressDialog(ActivitySeller.this);
+                pdfDialog.setTitle("Saving as Pdf...");
+                pdfDialog.show();
+                new TaskLoadEmployees(this, ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(), null).execute();
+
+            }
+        } catch (Exception e) {
+            Toast.makeText(ActivitySeller.this, "Storage Permission Denied!", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override
@@ -191,18 +221,18 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
         BaseFont unicode = null;
         try {
             unicode = BaseFont.createFont("assets/kalpurush.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-        Font font = new Font(unicode);
-        Document doc = new Document();
+            Font font = new Font(unicode);
+            Document doc = new Document();
 //output file path
-        String outpath = Environment.getExternalStorageDirectory() + "/EmployeesDetail"+System.currentTimeMillis()+".pdf";
+            String outpath = Environment.getExternalStorageDirectory() + "/EmployeesDetail" + System.currentTimeMillis() + ".pdf";
 //create pdf writer instance
             PdfWriter.getInstance(doc, new FileOutputStream(outpath));
 //open the document for writing
             doc.open();
 //add paragraph to the document
-            doc.add(new Paragraph("Generation Time: "+DateFormat.getDateTimeInstance().format(new Date())+"\nGenerated By: Fair Files App\n\n"));
-            PdfPTable table =new PdfPTable(5);
-            PdfPCell cell =new PdfPCell(new Paragraph("Employees Detail:"));
+            doc.add(new Paragraph("Generation Time: " + DateFormat.getDateTimeInstance().format(new Date()) + "\nGenerated By: Fair Files App\n\n"));
+            PdfPTable table = new PdfPTable(5);
+            PdfPCell cell = new PdfPCell(new Paragraph("Employees Detail:"));
             cell.setColspan(5);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             table.addCell(cell);
@@ -213,33 +243,53 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
             table.addCell("Position:");
             table.addCell("Salary:");
 
-            for(int i=0;i<listEmployees.size();i++)
-            {
-                table.addCell(new Paragraph(listEmployees.get(i).getName(),font));
-                table.addCell(new Paragraph(listEmployees.get(i).getDescription(),font));
-                table.addCell(new Paragraph(listEmployees.get(i).getContact_no(),font));
-                table.addCell(new Paragraph(listEmployees.get(i).getPosition(),font));
-                table.addCell(new Paragraph(listEmployees.get(i).getSalary(),font));
+            for (int i = 0; i < listEmployees.size(); i++) {
+                table.addCell(new Paragraph(listEmployees.get(i).getName(), font));
+                table.addCell(new Paragraph(listEmployees.get(i).getDescription(), font));
+                table.addCell(new Paragraph(listEmployees.get(i).getContact_no(), font));
+                table.addCell(new Paragraph(listEmployees.get(i).getPosition(), font));
+                table.addCell(new Paragraph(listEmployees.get(i).getSalary(), font));
             }
 
             doc.add(table);
 //close the document
             doc.close();
-            L.t(this,"Saved Succefully");
+            L.t(this, "Saved Succefully");
 
         } catch (Exception e) {
             e.printStackTrace();
-            L.t(this,"Saving failed! Try again.");
+            L.t(this, "Saving failed! Try again.");
         }
         pdfDialog.dismiss();
     }
 
 
     public void saveSellsClicked(View view) {
-        pdfDialog = new ProgressDialog(ActivitySeller.this);
-        pdfDialog.setTitle("Saving as Pdf...");
-        pdfDialog.show();
-        new TaskLoadSells(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),null).execute();
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    // We will need to request the permission
+                    ActivityCompat.requestPermissions(ActivitySeller.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE_EMPLOYEE);
+
+                    // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an app-defined int constant
+                } else {
+                    // The permission is granted, we can perform the action
+                    pdfDialog = new ProgressDialog(ActivitySeller.this);
+                    pdfDialog.setTitle("Saving as Pdf...");
+                    pdfDialog.show();
+                    new TaskLoadSells(this, ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(), null).execute();
+                }
+            } else {
+                pdfDialog = new ProgressDialog(ActivitySeller.this);
+                pdfDialog.setTitle("Saving as Pdf...");
+                pdfDialog.show();
+                new TaskLoadSells(this, ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(), null).execute();
+            }
+        } catch (Exception e) {
+            Toast.makeText(ActivitySeller.this, "Storage Permission Denied!", Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -251,15 +301,15 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
             Font font = new Font(unicode);
             Document doc = new Document();
 //output file path
-            String outpath = Environment.getExternalStorageDirectory() + "/SellsDetail"+System.currentTimeMillis()+".pdf";
+            String outpath = Environment.getExternalStorageDirectory() + "/SellsDetail" + System.currentTimeMillis() + ".pdf";
 //create pdf writer instance
             PdfWriter.getInstance(doc, new FileOutputStream(outpath));
 //open the document for writing
             doc.open();
 //add paragraph to the document
-            doc.add(new Paragraph("Generation Time: "+DateFormat.getDateTimeInstance().format(new Date())+"\nGenerated By: Fair Files App\n\n"));
-            PdfPTable table =new PdfPTable(6);
-            PdfPCell cell =new PdfPCell(new Paragraph("Sells Detail:"));
+            doc.add(new Paragraph("Generation Time: " + DateFormat.getDateTimeInstance().format(new Date()) + "\nGenerated By: Fair Files App\n\n"));
+            PdfPTable table = new PdfPTable(6);
+            PdfPCell cell = new PdfPCell(new Paragraph("Sells Detail:"));
             cell.setColspan(6);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             table.addCell(cell);
@@ -271,34 +321,32 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
             table.addCell("Price:");
             table.addCell("Description:");
 
-            for(int i=0;i<listSells.size();i++)
-            {
-                table.addCell(new Paragraph(listSells.get(i).getProduct_name(),font));
-                table.addCell(new Paragraph(listSells.get(i).getEmployee_name(),font));
-                table.addCell(new Paragraph(listSells.get(i).getDate(),font));
-                table.addCell(new Paragraph(listSells.get(i).getTime(),font));
-                table.addCell(new Paragraph(listSells.get(i).getPrice(),font));
-                table.addCell(new Paragraph(listSells.get(i).getDescription(),font));
+            for (int i = 0; i < listSells.size(); i++) {
+                table.addCell(new Paragraph(listSells.get(i).getProduct_name(), font));
+                table.addCell(new Paragraph(listSells.get(i).getEmployee_name(), font));
+                table.addCell(new Paragraph(listSells.get(i).getDate(), font));
+                table.addCell(new Paragraph(listSells.get(i).getTime(), font));
+                table.addCell(new Paragraph(listSells.get(i).getPrice(), font));
+                table.addCell(new Paragraph(listSells.get(i).getDescription(), font));
             }
 
             doc.add(table);
 //close the document
             doc.close();
-            L.t(this,"Saved Successfully");
+            L.t(this, "Saved Successfully");
 
         } catch (Exception e) {
             e.printStackTrace();
-            L.t(this,"Saving failed! Try again.");
+            L.t(this, "Saving failed! Try again.");
         }
         pdfDialog.dismiss();
     }
 
 
-
     public void stallMapClicked(View view) {
         Intent i = new Intent(ActivitySeller.this, ActivityStallMap.class);
-        i.putExtra("Location",ActivitySeller.stall.getLocation());
-        i.putExtra("Stallname",ActivitySeller.stall.getStall_name());
+        i.putExtra("Location", ActivitySeller.stall.getLocation());
+        i.putExtra("Stallname", ActivitySeller.stall.getStall_name());
 
         startActivity(i);
     }
@@ -318,18 +366,41 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
         updatename.setText(ActivitySeller.stall.getStall_name());
         updateowner.setText(ActivitySeller.stall.getOwner());
         updatedescription.setText(ActivitySeller.stall.getDescription());
-
+        updatename.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        updateowner.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        updatedescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
         dialog.show();
-        Button bsave= (Button) dialog.findViewById(R.id.bsave);
-        Button bcancel= (Button) dialog.findViewById(R.id.bcancel);
+        Button bsave = (Button) dialog.findViewById(R.id.bsave);
+        Button bcancel = (Button) dialog.findViewById(R.id.bcancel);
 
         bsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 //original
-                stallname=updatename.getText().toString();
-                stallowner=updateowner.getText().toString();
+                stallname = updatename.getText().toString();
+                stallowner = updateowner.getText().toString();
                 stalldescription = updatedescription.getText().toString();
 
                 new Mytask().execute();
@@ -346,21 +417,20 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
         });
     }
 
-    private class Mytask extends AsyncTask<Void,Void,Integer>
-    {
+    private class Mytask extends AsyncTask<Void, Void, Integer> {
 
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loading = ProgressDialog.show(ActivitySeller.this, "Updating Information", "Please wait...",true,true);
+            loading = ProgressDialog.show(ActivitySeller.this, "Updating Information", "Please wait...", true, true);
         }
 
         @Override
         protected Integer doInBackground(Void... params) {
 
             try {
-                URL loadProductUrl = new URL(ActivityMain.Server+"updateStall.php");
+                URL loadProductUrl = new URL(ActivityMain.Server + "updateStall.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setDoOutput(true);
@@ -381,7 +451,7 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
                 InputStream inputStream = httpURLConnection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 String line = "";
-                String response="";
+                String response = "";
                 if ((line = bufferedReader.readLine()) != null) {
                     System.out.println(line);
                     response += line;
@@ -398,9 +468,7 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
                     } else if (response.contains("Failed")) {
                         return 0;
                     }
-                }
-                else
-                {
+                } else {
                     inputStream.close();
                     bufferedReader.close();
                     httpURLConnection.disconnect();
@@ -417,11 +485,10 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
             super.onPostExecute(value);
             loading.dismiss();
 
-            if(value==1) {
+            if (value == 1) {
                 L.t(ActivitySeller.this, "Updated Successfully!");
                 update();
-            }
-            else if(value==0) {
+            } else if (value == 0) {
                 //Toast.makeText(getApplicationContext(), "Login failed!",Toast.LENGTH_LONG).show();
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySeller.this);
                 builder.setTitle("Update Failed!");
@@ -447,8 +514,7 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
             }
         }
     }
-    
-    
+
 
     private void setupDrawer() {
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -466,25 +532,19 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
     public void onDrawerItemClicked(int index) {
         if (index == 0) {
             finish();
-        }
-        else if(index==1)
-        {
+        } else if (index == 1) {
             dialogShow();
-        }
-        else if (index == 6) {
+        } else if (index == 6) {
             startActivity(new Intent(this, ActivityAbout.class));
-        }
-        else if (index == 7) {
+        } else if (index == 7) {
             getSupport();
-        }
-        else {
+        } else {
             mPager.setCurrentItem(index - 1);
         }
     }
 
-    public void getSupport()
-    {
-        final CharSequence[] items = { "Call Us", "Email Us",
+    public void getSupport() {
+        final CharSequence[] items = {"Call Us", "Email Us",
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySeller.this);
@@ -500,9 +560,9 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
                     //System.out.println("Email us clicked");
                     Intent i = new Intent(Intent.ACTION_SEND);
                     i.setType("message/rfc822");
-                    i.putExtra(Intent.EXTRA_EMAIL  , new String[]{email});
+                    i.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
                     i.putExtra(Intent.EXTRA_SUBJECT, "Contact");
-                    i.putExtra(Intent.EXTRA_TEXT   , "Please write here");
+                    i.putExtra(Intent.EXTRA_TEXT, "Please write here");
                     try {
                         startActivity(Intent.createChooser(i, "Send mail..."));
                     } catch (android.content.ActivityNotFoundException ex) {
@@ -533,18 +593,39 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
                 }
                 return;
             }
+            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE_EMPLOYEE: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    pdfDialog = new ProgressDialog(ActivitySeller.this);
+                    pdfDialog.setTitle("Saving as Pdf...");
+                    pdfDialog.show();
+                    new TaskLoadEmployees(this, ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(), null).execute();
+                } else {
+
+                    Toast.makeText(ActivitySeller.this, "Requesting Storage Permission Denied!", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE_SELL: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    pdfDialog = new ProgressDialog(ActivitySeller.this);
+                    pdfDialog.setTitle("Saving as Pdf...");
+                    pdfDialog.show();
+                    new TaskLoadSells(this, ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(), null).execute();                } else {
+
+                    Toast.makeText(ActivitySeller.this, "Requesting Storage Permission Denied!", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
 
         }
     }
 
-    void makeCallfunc()
-    {
+    void makeCallfunc() {
         callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse(contactnum));
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
-                {
+                if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     // We will need to request the permission
                     System.out.println("Inside version Requesting.....");
 
@@ -558,9 +639,7 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
                     // The permission is granted, we can perform the action
                     startActivity(callIntent);
                 }
-            }
-            else
-            {
+            } else {
                 startActivity(callIntent);
             }
         } catch (Exception e) {
@@ -578,6 +657,30 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
         final EditText oldPassInput = (EditText) dialog.findViewById(R.id.eoldpass);
         final EditText newPass1Input = (EditText) dialog.findViewById(R.id.enewpass1);
         final EditText newPass2Input = (EditText) dialog.findViewById(R.id.enewpass2);
+        oldPassInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        newPass1Input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        newPass2Input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
         Button bupdate = (Button) dialog.findViewById(R.id.bupdate);
         Button bcancel = (Button) dialog.findViewById(R.id.bcancel);
         bupdate.setOnClickListener(new View.OnClickListener() {
@@ -589,15 +692,11 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
                 newpass1 = newPass1Input.getText().toString();
                 newpass2 = newPass2Input.getText().toString();
 
-                if(!newpass1.equals(newpass2))
-                {
+                if (!newpass1.equals(newpass2)) {
                     L.t(getApplicationContext(), "New passwords don't match.");
-                }
-                else if(newpass1.length()<6)
-                {
+                } else if (newpass1.length() < 6) {
                     L.t(getApplicationContext(), "New passwords must contain atleast 6 characters .");
-                }
-                else {
+                } else {
                     new ActivitySeller.Passwordtask().execute();
                     dialog.cancel();
                 }
@@ -631,7 +730,7 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
                 //PreparedStatement preparedStatement=con.prepareStatement("Select password from  "+fair.getDb_name()+"_users where username=?");
                 //preparedStatement.setString(1,user);
 
-                URL loadProductUrl = new URL(ActivityMain.Server+"changePassStall.php");
+                URL loadProductUrl = new URL(ActivityMain.Server + "changePassStall.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) loadProductUrl.openConnection();
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setDoOutput(true);
@@ -660,14 +759,11 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
                     httpURLConnection.disconnect();
                     if (response.contains("Success")) {
                         return 2;
-                    }
-                    else if (response.contains("Failed1")) {
+                    } else if (response.contains("Failed1")) {
                         return 1;
                     }
                     return 0;
-                }
-                else
-                {
+                } else {
                     inputStream.close();
                     bufferedReader.close();
                     httpURLConnection.disconnect();
@@ -687,7 +783,7 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
 
             if (value == 2) {
                 L.t(getApplicationContext(), "Update Successfull!");
-            }else if (value == 1) {
+            } else if (value == 1) {
                 //L.t(getApplicationContext(), "User Not Found or Check Connection");
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySeller.this);
                 builder.setTitle("Update Failed!");
@@ -709,8 +805,7 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
 
-            }
-            else if (value == 0) {
+            } else if (value == 0) {
                 //L.t(getApplicationContext(), "User Not Found or Check Connection");
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySeller.this);
                 builder.setTitle("Update Failed!");
@@ -804,6 +899,7 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
                 return super.onOptionsItemSelected(item);
         }
     }
+
     private void sendInvitation() {
         Intent intent = new AppInviteInvitation.IntentBuilder(" Invitation")
                 .setMessage("Please install Fair Files (a fair management app)")
@@ -815,16 +911,33 @@ public class ActivitySeller extends AppCompatActivity implements EmployeeLoadedL
     @Override
     public void onTabSelected(MaterialTab materialTab) {
         //when a Tab is selected, update the ViewPager to reflect the changes
+        View focus = getCurrentFocus();
+        if (focus != null) {
+            hideKeyboard(focus);
+        }
         mPager.setCurrentItem(materialTab.getPosition());
     }
 
 
     @Override
     public void onTabReselected(MaterialTab materialTab) {
+        View focus = getCurrentFocus();
+        if (focus != null) {
+            hideKeyboard(focus);
+        }
     }
 
     @Override
     public void onTabUnselected(MaterialTab materialTab) {
+        View focus = getCurrentFocus();
+        if (focus != null) {
+            hideKeyboard(focus);
+        }
+    }
+
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override

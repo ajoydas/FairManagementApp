@@ -1,5 +1,6 @@
 package ajoy.com.fairmanagementapp.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -86,6 +87,14 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
         final View layout = inflater.inflate(R.layout.fragment_stall_products, container, false);
         //L.t(getActivity(),"Inside stall Products!!!");
         searchView= (EditText) layout.findViewById(R.id.searchView);
+        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
         mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
         mTextError = (TextView) layout.findViewById(R.id.tError);
         option=1;
@@ -143,7 +152,10 @@ public class FragmentStallProducts extends Fragment implements View.OnClickListe
         return layout;
     }
 
-
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
     private void searchResult(String s)
     {
         new TaskLoadStallProducts(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),search,option).execute();

@@ -1,5 +1,6 @@
 package ajoy.com.fairmanagementapp.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -89,6 +90,15 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
         final View layout = inflater.inflate(R.layout.fragment_employees, container, false);
         //L.t(getActivity(),"Inside stall Employees!!!");
         searchView= (EditText) layout.findViewById(R.id.searchView);
+        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+
         mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
         mTextError = (TextView) layout.findViewById(R.id.tError);
         option=1;
@@ -241,6 +251,46 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
         final EditText employeecontactno = (EditText) editEmployeeDialog.findViewById(R.id.addemployeecontactno);
         final EditText employeeposition = (EditText) editEmployeeDialog.findViewById(R.id.addemployeeposition);
         final EditText employeesalary = (EditText) editEmployeeDialog.findViewById(R.id.addemployeesalary);
+        employeeName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        employeedescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        employeecontactno.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        employeeposition.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        employeesalary.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
 
         employeeName.setText(mListEmployees.get(position).getName());
         employeedescription.setText(mListEmployees.get(position).getDescription());
@@ -471,6 +521,46 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
         final EditText employeeposition = (EditText) addDialog.findViewById(R.id.addemployeeposition);
         final EditText employeesalary = (EditText) addDialog.findViewById(R.id.addemployeesalary);
 
+        employeeName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        employeedescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        employeecontactno.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        employeeposition.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        employeesalary.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
 
         addDialog.show();
         Button bcancel = (Button) addDialog.findViewById(R.id.bcancel);
@@ -668,6 +758,10 @@ public class FragmentEmployees extends Fragment implements AsyncResponse,View.On
         //L.t(getActivity(), "Refreshing.....");
         new TaskLoadEmployees(this,ActivityFair.fair.getDb_name(), ActivitySeller.stall.getStall(),null).execute();
 
+    }
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     //Click listener for Add Button

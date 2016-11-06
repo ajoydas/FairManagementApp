@@ -2,12 +2,20 @@ package ajoy.com.fairmanagementapp.activities;
 
 import android.content.Intent;
 import android.provider.SyncStateContract;
+import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.viksaa.sssplash.lib.activity.AwesomeSplash;
 import com.viksaa.sssplash.lib.cnst.Flags;
 import com.viksaa.sssplash.lib.model.ConfigSplash;
 
+import ajoy.com.fairmanagementapp.application.BuildConfig;
+import ajoy.com.fairmanagementapp.application.MyApplication;
 import ajoy.com.fairmanagementapp.application.R;
 
 /**
@@ -19,6 +27,7 @@ public class SplashScreen extends AwesomeSplash {
 
     //DO NOT OVERRIDE onCreate()!
     //if you need to start some services do it in initSplash()!
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
 
     @Override
@@ -67,7 +76,35 @@ public class SplashScreen extends AwesomeSplash {
 
         //transit to another activity here
         //or do whatever you want
-        finish();
-        startActivity(new Intent(this,ActivityMain.class));
+
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettings(configSettings);
+        mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
+
+        ActivityMain.Server=mFirebaseRemoteConfig.getString("Server");
+        ActivityMain.Count=mFirebaseRemoteConfig.getLong("Count");
+        ActivityMain.email=mFirebaseRemoteConfig.getString("Email");
+
+        mFirebaseRemoteConfig.fetch(0)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            //Toast.makeText(MyApplication.getAppContext(), "Fetch Successfull", Toast.LENGTH_SHORT).show();
+                            mFirebaseRemoteConfig.activateFetched();
+                        } else {
+                            //Toast.makeText(MyApplication.getAppContext(), "Fetch Failed", Toast.LENGTH_SHORT).show();
+                        }
+                        ActivityMain.Server=mFirebaseRemoteConfig.getString("Server");
+                        ActivityMain.Count=mFirebaseRemoteConfig.getLong("Count");
+                        ActivityMain.email=mFirebaseRemoteConfig.getString("Email");
+                        finish();
+                        startActivity(new Intent(MyApplication.getAppContext(),ActivityMain.class));
+                    }
+                });
+
     }
 }

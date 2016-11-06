@@ -1,5 +1,6 @@
 package ajoy.com.fairmanagementapp.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.google.android.gms.appinvite.AppInviteInvitation;
@@ -157,16 +159,32 @@ public class ActivityStallView extends AppCompatActivity implements MaterialTabL
     @Override
     public void onTabSelected(MaterialTab materialTab) {
         //when a Tab is selected, update the ViewPager to reflect the changes
+        View focus = getCurrentFocus();
+        if (focus != null) {
+            hideKeyboard(focus);
+        }
         mPager.setCurrentItem(materialTab.getPosition());
     }
 
 
     @Override
     public void onTabReselected(MaterialTab materialTab) {
+        View focus = getCurrentFocus();
+        if (focus != null) {
+            hideKeyboard(focus);
+        }
     }
 
     @Override
     public void onTabUnselected(MaterialTab materialTab) {
+        View focus = getCurrentFocus();
+        if (focus != null) {
+            hideKeyboard(focus);
+        }
+    }
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override

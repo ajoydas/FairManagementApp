@@ -47,7 +47,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Project Name"
+                            android:text="App"
                             android:textSize="16sp" />
 
                         <TextView
@@ -60,7 +60,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:text="Fair Management App"
+                            android:text="Fair Files"
                             android:textSize="16sp"
                             android:textStyle="bold" />
                     </TableRow>
@@ -71,7 +71,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Supervisor"
+                            android:text="Developer"
                             android:textSize="16sp" />
 
                         <TextView
@@ -85,13 +85,13 @@
                             <ImageView
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
-                                android:src="@drawable/ishtiyaque" />
+                                android:src="@drawable/my_pic" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:ems="10"
-                                android:text="Ishtiyaque Ahmad"
+                                android:text="Ajoy Das\nCSE,BUET"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:paddingTop="2dp"
@@ -127,7 +127,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:ems="10"
-                                android:text="Saad al Muttaki"
+                                android:text="Saad al Muttaki\nCSE,BUET"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:paddingTop="2dp"
@@ -141,7 +141,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Student Name"
+                            android:text="Version"
                             android:textSize="16sp" />
 
                         <TextView
@@ -155,56 +155,9 @@
                             android:layout_height="wrap_content"
                             android:ems="10"
                             android:textSize="16sp"
-                            android:text="Ajoy Das"
+                            android:text="1.0.1"
                             android:textStyle="bold" />
                     </TableRow>
-
-                    <TableRow>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Student Id"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" : "
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:textSize="16sp"
-                            android:text="1405079"
-                            android:textStyle="bold" />
-                    </TableRow>
-
-                    <TableRow>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Submission Date"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" : "
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:textSize="16sp"
-                            android:text="08-06-16"
-                            android:textStyle="bold" />
-                    </TableRow>
-
 
                 </TableLayout>
 

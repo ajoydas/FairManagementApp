@@ -1,13 +1,19 @@
 package ajoy.com.fairmanagementapp.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.URLUtil;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -15,7 +21,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.appinvite.AppInviteInvitation;
 
+import ajoy.com.fairmanagementapp.application.MyApplication;
 import ajoy.com.fairmanagementapp.application.R;
+import ajoy.com.fairmanagementapp.logging.L;
 
 public class ActivityFairMapView extends AppCompatActivity {
 
@@ -53,29 +61,66 @@ public class ActivityFairMapView extends AppCompatActivity {
             value = extras.getString("Url");
         }
         System.out.println(value);
+        if(URLUtil.isValidUrl(value)) {
 
 
-        try {
+            try {
 
-            browser = (WebView) findViewById(R.id.webView);
-            if (browser != null) {
+                browser = (WebView) findViewById(R.id.webView);
+                if (browser != null) {
 
-                browser .setWebViewClient(new WebViewClient() {
-                    @Override
-                    public void onPageFinished(WebView view, String url) {
-                        super.onPageFinished(view, url);
-                        mProgressBar.setVisibility(View.INVISIBLE);
-                    }
-                });
+                    browser.setWebViewClient(new WebViewClient() {
+                        @Override
+                        public void onPageFinished(WebView view, String url) {
+                            super.onPageFinished(view, url);
+                            mProgressBar.setVisibility(View.INVISIBLE);
+                        }
+
+                        @Override
+                        public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                            super.onReceivedHttpError(view, request, errorResponse);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ActivityFairMapView.this);
+                            builder.setTitle("Map Not Available!");
+                            builder.setMessage("The map of the fair is not available now.");
+                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                    finish();
+                                }
+                            });
+
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                        }
+
+                    });
+                }
+
+                if (browser != null) {
+                    browser.getSettings().setJavaScriptEnabled(true);
+                    browser.loadUrl(value);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
+        else
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(ActivityFairMapView.this);
+            builder.setTitle("Map Not Available!");
+            builder.setMessage("The map of the fair is not available now.");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                    finish();
+                }
+            });
 
-            if (browser != null) {
-                browser.getSettings().setJavaScriptEnabled(true);
-                browser.loadUrl(value);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         }
 
 

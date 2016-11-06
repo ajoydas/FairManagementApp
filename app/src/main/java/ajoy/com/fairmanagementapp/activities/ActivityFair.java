@@ -1,5 +1,6 @@
 package ajoy.com.fairmanagementapp.activities;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -91,7 +93,10 @@ public class ActivityFair extends AppCompatActivity implements MaterialTabListen
         setupDrawer();
 
     }
-
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
     private void setupDrawer() {
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         mContainerToolbar = (ViewGroup) findViewById(R.id.container_app_bar);
@@ -478,16 +483,28 @@ public class ActivityFair extends AppCompatActivity implements MaterialTabListen
     @Override
     public void onTabSelected(MaterialTab materialTab) {
         //when a Tab is selected, update the ViewPager to reflect the changes
+        View focus = getCurrentFocus();
+        if (focus != null) {
+            hideKeyboard(focus);
+        }
         mPager.setCurrentItem(materialTab.getPosition());
     }
 
 
     @Override
     public void onTabReselected(MaterialTab materialTab) {
+        View focus = getCurrentFocus();
+        if (focus != null) {
+            hideKeyboard(focus);
+        }
     }
 
     @Override
     public void onTabUnselected(MaterialTab materialTab) {
+        View focus = getCurrentFocus();
+        if (focus != null) {
+            hideKeyboard(focus);
+        }
     }
 
     @Override
